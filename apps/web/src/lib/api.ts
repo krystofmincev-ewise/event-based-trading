@@ -60,6 +60,20 @@ const isQuantiles = (value: unknown): boolean =>
   isRecord(value) &&
   hasFiniteFields(value, ["p05", "p25", "median", "p75", "p95"]);
 
+const isOrderedQuantiles = (
+  value: unknown,
+  minimum = Number.NEGATIVE_INFINITY,
+  maximum = Number.POSITIVE_INFINITY,
+): boolean =>
+  isQuantiles(value) &&
+  isRecord(value) &&
+  (value.p05 as number) >= minimum &&
+  (value.p05 as number) <= (value.p25 as number) &&
+  (value.p25 as number) <= (value.median as number) &&
+  (value.median as number) <= (value.p75 as number) &&
+  (value.p75 as number) <= (value.p95 as number) &&
+  (value.p95 as number) <= maximum;
+
 const isHistogram = (value: unknown): boolean =>
   isRecord(value) &&
   Array.isArray(value.domain) &&
@@ -72,9 +86,35 @@ const isHistogram = (value: unknown): boolean =>
     (bin) => isRecord(bin) && hasFiniteFields(bin, ["lower", "upper", "count"]),
   );
 
+const isResearchScenarioManifest = (value: unknown): boolean =>
+  value === null ||
+  (isRecord(value) &&
+    value.kind === "empirical-research-proxy" &&
+    typeof value.datasetVersion === "string" &&
+    typeof value.profileId === "string" &&
+    (value.capitalizationId === "small" ||
+      value.capitalizationId === "mid" ||
+      value.capitalizationId === "large") &&
+    (value.horizonTradingDays === 1 || value.horizonTradingDays === 10) &&
+    (value.direction === "up" ||
+      value.direction === "down" ||
+      value.direction === "absolute") &&
+    (value.threshold === 0 ||
+      value.threshold === 0.02 ||
+      value.threshold === 0.05 ||
+      value.threshold === 0.1) &&
+    Number.isFinite(value.companyMoveMultiplier) &&
+    Number.isFinite(value.modelProbabilityLift) &&
+    value.termsExecutable === false &&
+    value.sizingEligibility === "research-only");
+
 const isSimulationInput = (value: unknown): boolean =>
   isRecord(value) &&
   typeof value.seed === "string" &&
+  typeof value.calibrationUncertaintyEnabled === "boolean" &&
+  (value.opportunityArrival === "fixed" ||
+    value.opportunityArrival === "poisson") &&
+  isResearchScenarioManifest(value.researchScenarioManifest) &&
   hasFiniteFields(value, [
     "winProbability",
     "probabilityHaircut",
@@ -89,6 +129,9 @@ const isSimulationInput = (value: unknown): boolean =>
     "ruinThresholdFraction",
     "annualRiskFreeRate",
     "severeDrawdownFraction",
+    "calibrationEffectiveSampleSize",
+    "weeklyProbabilityLogitStdDev",
+    "executionCostCoefficientVariation",
   ]);
 
 const isContractEconomics = (value: unknown): boolean =>
@@ -156,8 +199,8 @@ const isSimulationMetrics = (value: unknown): boolean =>
 const isSimulationMetadata = (value: unknown): boolean =>
   isRecord(value) &&
   hasFiniteFields(value, [
-    "tradeCount",
-    "effectiveTradesPerWeek",
+    "expectedOpportunityCount",
+    "effectiveOpportunitiesPerWeek",
     "horizonYears",
     "pathCount",
     "checkpointCount",
@@ -170,10 +213,25 @@ const isSimulationMetadata = (value: unknown): boolean =>
     "initialExecutedFraction",
     "eligiblePositionAttemptCount",
     "approximatedLargeContractExecutions",
+    "skippedInvalidCostOpportunityCount",
+    "meanLatentWinProbability",
+    "meanWeeklyWinProbability",
   ]) &&
   isNullableFinite(value.meanExecutedFractionPerEligibleAttempt) &&
   isNullableFinite(value.zeroContractRatePerEligibleAttempt) &&
-  hasStringFields(value, ["seed", "simulationModel"]) &&
+  typeof value.seed === "string" &&
+  (value.simulationModel === "iid binary whole-contract target-fraction" ||
+    value.simulationModel ===
+      "stochastic binary whole-contract target-fraction") &&
+  (value.expectedOpportunityCount as number) >= 0 &&
+  (value.effectiveOpportunitiesPerWeek as number) >= 0 &&
+  (value.skippedInvalidCostOpportunityCount as number) >= 0 &&
+  (value.meanLatentWinProbability as number) >= 0 &&
+  (value.meanLatentWinProbability as number) <= 1 &&
+  (value.meanWeeklyWinProbability as number) >= 0 &&
+  (value.meanWeeklyWinProbability as number) <= 1 &&
+  isOrderedQuantiles(value.realizedOpportunityCount, 0) &&
+  isOrderedQuantiles(value.latentWinProbability, 0, 1) &&
   typeof value.continuousFractionReferenceCapped === "boolean" &&
   typeof value.cagrOutputCapped === "boolean" &&
   value.continuousFractionReferenceIgnoresWholeContractRounding === true;

@@ -115,8 +115,8 @@ describe("runSimulation", () => {
       eventsPerWeek: 3,
       horizonWeeks: 2,
     });
-    expect(result.metadata.tradeCount).toBe(6);
-    expect(result.metadata.effectiveTradesPerWeek).toBe(3);
+    expect(result.metadata.expectedOpportunityCount).toBe(6);
+    expect(result.metadata.effectiveOpportunitiesPerWeek).toBe(3);
     expect(result.fan.at(-1)?.week).toBe(2);
   });
 
@@ -188,7 +188,7 @@ describe("runSimulation", () => {
       horizonWeeks: 1,
       ruinThresholdFraction: 0.99,
     });
-    expect(result.metadata.tradeCount).toBe(2);
+    expect(result.metadata.expectedOpportunityCount).toBe(2);
     expect(result.metadata.eligiblePositionAttemptCount).toBe(100);
   });
 });

@@ -40,6 +40,21 @@ describe("validateSimulationInput", () => {
     }
   });
 
+  it("accepts a fractional Poisson mean but still rejects fractional fixed counts", () => {
+    const poisson = validateSimulationInput({
+      ...DEFAULT_SIMULATION_INPUT,
+      opportunityArrival: "poisson",
+      eventsPerWeek: 1.5,
+    });
+    expect(poisson.success).toBe(true);
+    const fixed = validateSimulationInput({
+      ...DEFAULT_SIMULATION_INPUT,
+      opportunityArrival: "fixed",
+      eventsPerWeek: 1.5,
+    });
+    expect(fixed.success).toBe(false);
+  });
+
   it("rejects combinations that exceed the local operation budget", () => {
     const result = validateSimulationInput({
       ...DEFAULT_SIMULATION_INPUT,

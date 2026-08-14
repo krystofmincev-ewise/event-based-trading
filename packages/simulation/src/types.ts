@@ -1,3 +1,17 @@
+export interface ResearchScenarioManifest {
+  kind: "empirical-research-proxy";
+  datasetVersion: string;
+  profileId: string;
+  capitalizationId: "small" | "mid" | "large";
+  horizonTradingDays: 1 | 10;
+  direction: "up" | "down" | "absolute";
+  threshold: 0 | 0.02 | 0.05 | 0.1;
+  companyMoveMultiplier: number;
+  modelProbabilityLift: number;
+  termsExecutable: false;
+  sizingEligibility: "research-only";
+}
+
 export interface SimulationInput {
   winProbability: number;
   probabilityHaircut: number;
@@ -13,6 +27,12 @@ export interface SimulationInput {
   ruinThresholdFraction: number;
   annualRiskFreeRate: number;
   severeDrawdownFraction: number;
+  opportunityArrival: "fixed" | "poisson";
+  calibrationUncertaintyEnabled: boolean;
+  calibrationEffectiveSampleSize: number;
+  weeklyProbabilityLogitStdDev: number;
+  executionCostCoefficientVariation: number;
+  researchScenarioManifest: ResearchScenarioManifest | null;
 }
 
 export interface ContractEconomics {
@@ -150,8 +170,8 @@ export interface SimulationDefinitions {
 }
 
 export interface SimulationMetadata {
-  tradeCount: number;
-  effectiveTradesPerWeek: number;
+  expectedOpportunityCount: number;
+  effectiveOpportunitiesPerWeek: number;
   horizonYears: number;
   pathCount: number;
   seed: string;
@@ -169,8 +189,15 @@ export interface SimulationMetadata {
   meanExecutedFractionPerEligibleAttempt: number | null;
   zeroContractRatePerEligibleAttempt: number | null;
   approximatedLargeContractExecutions: number;
+  skippedInvalidCostOpportunityCount: number;
   continuousFractionReferenceIgnoresWholeContractRounding: true;
-  simulationModel: "iid binary whole-contract target-fraction";
+  realizedOpportunityCount: QuantileSummary;
+  latentWinProbability: QuantileSummary;
+  meanLatentWinProbability: number;
+  meanWeeklyWinProbability: number;
+  simulationModel:
+    | "iid binary whole-contract target-fraction"
+    | "stochastic binary whole-contract target-fraction";
 }
 
 export interface SimulationResult {

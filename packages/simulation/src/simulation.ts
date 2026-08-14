@@ -11,6 +11,11 @@ import {
 import { createWeeklyReturnAccumulator } from "./metrics.js";
 import { hashSeed, randomAt } from "./prng.js";
 import {
+  appendNumericalWarnings,
+  impliedCagr,
+  positionForLogCapital,
+} from "./simulationHelpers.js";
+import {
   createHistogram,
   mean,
   quantileSorted,
@@ -24,10 +29,10 @@ import type {
   SimulationInput,
   SimulationResult,
 } from "./types.js";
+import { runStochasticSimulation } from "./stochasticSimulation.js";
 
 const FAN_POINT_LIMIT = 65;
 const SAMPLE_PATH_LIMIT = 6;
-const MAX_FINITE_LOG = Math.log(Number.MAX_VALUE);
 
 const DEFINITIONS: SimulationDefinitions = {
   winMultiplier: "Capital × (1 + f × b), where b is NET profit per unit stake.",
@@ -51,32 +56,6 @@ const DEFINITIONS: SimulationDefinitions = {
     "Before each event, floor(target fraction × current bankroll / all-in contract cost) determines an integer contract count. Unused risk budget remains cash.",
 };
 
-const MAX_EXACT_CONTRACT_LOG = Math.log(Number.MAX_SAFE_INTEGER);
-
-const positionForLogCapital = (
-  logCapital: number,
-  displayCapital: number,
-  targetFraction: number,
-  allInCost: number,
-): { executedFraction: number; approximated: boolean } => {
-  if (targetFraction === 0 || logCapital === Number.NEGATIVE_INFINITY) {
-    return { executedFraction: 0, approximated: false };
-  }
-  const logDesiredContracts =
-    logCapital + Math.log(targetFraction) - Math.log(allInCost);
-  if (logDesiredContracts > MAX_EXACT_CONTRACT_LOG) {
-    return { executedFraction: targetFraction, approximated: true };
-  }
-  return {
-    executedFraction: wholeContractPosition(
-      displayCapital,
-      targetFraction,
-      allInCost,
-    ).executedFraction,
-    approximated: false,
-  };
-};
-
 const checkpointTrades = (tradeCount: number): number[] => {
   const count = Math.min(FAN_POINT_LIMIT, tradeCount + 1);
   const values = new Set<number>([0, tradeCount]);
@@ -93,24 +72,9 @@ const samplePathIndices = (pathCount: number): number[] => {
   );
 };
 
-const impliedCagr = (
-  terminalCapital: number,
-  startingCapital: number,
-  years: number,
-): { value: number; capped: boolean } => {
-  if (terminalCapital === 0) return { value: -1, capped: false };
-  const annualLogGrowth =
-    (Math.log(terminalCapital) - Math.log(startingCapital)) / years;
-  if (annualLogGrowth >= MAX_FINITE_LOG) {
-    return { value: Number.MAX_VALUE, capped: true };
-  }
-  const value = Math.expm1(annualLogGrowth);
-  return Number.isFinite(value)
-    ? { value, capped: false }
-    : { value: Number.MAX_VALUE, capped: true };
-};
-
-export const runSimulation = (input: SimulationInput): SimulationResult => {
+export const runFixedSimulation = (
+  input: SimulationInput,
+): SimulationResult => {
   const tradeCount = input.eventsPerWeek * input.horizonWeeks;
   const horizonYears = input.horizonWeeks / 52;
   const effectiveTradesPerWeek = input.eventsPerWeek;
@@ -332,36 +296,15 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       "The starting risk budget cannot purchase one whole contract, so no position is initially executable.",
     );
   }
-  if (approximatedLargeContractExecutions > 0) {
-    warnings.push(
-      `${approximatedLargeContractExecutions.toLocaleString("en-US")} extreme-scale executions exceeded JavaScript's exact integer range; target-fraction dynamics were used because one-contract rounding was immaterial at that scale.`,
-    );
-  }
-  if (annualized.sharpe === null || annualized.sortino === null) {
-    warnings.push(
-      "A zero return or downside denominator makes one or more risk-adjusted ratios undefined.",
-    );
-  }
-  if (cappedPathCount > 0) {
-    warnings.push(
-      `${cappedPathCount} simulated paths crossed finite capital display range; log wealth remained canonical for drawdown and weekly risk metrics.`,
-    );
-  }
-  if (continuousFractionReferenceCapped) {
-    warnings.push(
-      "The unstopped continuous-fraction expected-terminal reference exceeded finite display range and was capped.",
-    );
-  }
-  if (cagrOutputCapped) {
-    warnings.push(
-      "One or more implied CAGR outputs exceeded finite numeric range and were capped at Number.MAX_VALUE; interpret this as overflow, not a forecast.",
-    );
-  }
-  if (practicalRuinCount > 0) {
-    warnings.push(
-      "The continuous-fraction expected-terminal reference ignores the practical-ruin stop and is not directly comparable when that stop binds.",
-    );
-  }
+  appendNumericalWarnings(warnings, {
+    approximatedLargeContractExecutions,
+    riskAdjustedRatioUndefined:
+      annualized.sharpe === null || annualized.sortino === null,
+    cappedPathCount,
+    continuousFractionReferenceCapped,
+    cagrOutputCapped,
+    practicalRuinCount,
+  });
 
   return {
     input,
@@ -388,8 +331,8 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     terminalReturnHistogram: createHistogram(terminalReturns),
     maxDrawdownHistogram: createHistogram(maxDrawdowns),
     metadata: {
-      tradeCount,
-      effectiveTradesPerWeek,
+      expectedOpportunityCount: tradeCount,
+      effectiveOpportunitiesPerWeek: effectiveTradesPerWeek,
       horizonYears,
       pathCount: input.pathCount,
       seed: input.seed,
@@ -413,10 +356,35 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
           ? null
           : zeroContractOpportunityCount / executableOpportunityCount,
       approximatedLargeContractExecutions,
+      skippedInvalidCostOpportunityCount: 0,
       continuousFractionReferenceIgnoresWholeContractRounding: true,
+      realizedOpportunityCount: {
+        p05: tradeCount,
+        p25: tradeCount,
+        median: tradeCount,
+        p75: tradeCount,
+        p95: tradeCount,
+      },
+      latentWinProbability: {
+        p05: input.winProbability,
+        p25: input.winProbability,
+        median: input.winProbability,
+        p75: input.winProbability,
+        p95: input.winProbability,
+      },
+      meanLatentWinProbability: input.winProbability,
+      meanWeeklyWinProbability: input.winProbability,
       simulationModel: "iid binary whole-contract target-fraction",
     },
     definitions: DEFINITIONS,
     warnings,
   };
 };
+
+export const runSimulation = (input: SimulationInput): SimulationResult =>
+  input.opportunityArrival === "poisson" ||
+  input.calibrationUncertaintyEnabled ||
+  input.weeklyProbabilityLogitStdDev > 0 ||
+  input.executionCostCoefficientVariation > 0
+    ? runStochasticSimulation(input)
+    : runFixedSimulation(input);

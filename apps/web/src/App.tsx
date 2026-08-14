@@ -1,9 +1,17 @@
-import { DEFAULT_SIMULATION_INPUT } from "@event-lab/simulation";
-import type { SimulationInput } from "@event-lab/simulation";
+import {
+  DEFAULT_EMPIRICAL_SCENARIO,
+  DEFAULT_SIMULATION_INPUT,
+  resolveEmpiricalScenario,
+} from "@event-lab/simulation";
+import type {
+  EmpiricalScenarioSelection,
+  SimulationInput,
+} from "@event-lab/simulation";
 import { useState } from "react";
 
 import { AnalyticsDashboard } from "./components/AnalyticsDashboard.js";
 import { ControlPanel } from "./components/ControlPanel.js";
+import { EmpiricalScenarioBuilder } from "./components/EmpiricalScenarioBuilder.js";
 import { Header } from "./components/Header.js";
 import { KellySection } from "./components/KellySection.js";
 import { MarketCapContext } from "./components/MarketCapContext.js";
@@ -11,8 +19,29 @@ import { MetricStrip } from "./components/MetricStrip.js";
 import { Overview } from "./components/Overview.js";
 import { useLabData } from "./hooks/useLabData.js";
 
+const SCENARIO_DERIVED_INPUTS = [
+  "winProbability",
+  "probabilityHaircut",
+  "contractPurchasePrice",
+  "settlementPayout",
+  "roundTripCosts",
+  "eventsPerWeek",
+  "opportunityArrival",
+  "calibrationUncertaintyEnabled",
+  "calibrationEffectiveSampleSize",
+  "weeklyProbabilityLogitStdDev",
+  "executionCostCoefficientVariation",
+] as const satisfies readonly (keyof SimulationInput)[];
+
 export const App = () => {
-  const [input, setInput] = useState<SimulationInput>(DEFAULT_SIMULATION_INPUT);
+  const [scenarioSelection, setScenarioSelection] =
+    useState<EmpiricalScenarioSelection>(DEFAULT_EMPIRICAL_SCENARIO);
+  const [input, setInput] = useState<SimulationInput>(() => ({
+    ...DEFAULT_SIMULATION_INPUT,
+    ...resolveEmpiricalScenario(DEFAULT_EMPIRICAL_SCENARIO).simulationPatch,
+    positionFraction: 0,
+    pathCount: 1_000,
+  }));
   const lab = useLabData(input);
 
   return (
@@ -40,12 +69,19 @@ export const App = () => {
           <div className="hero-aside">
             <span>Model boundary</span>
             <p>
-              Uses observed acquisition cost, payout, fees/slippage, and whole
-              contracts. It does not infer an underlying path or price a barrier
-              or conventional equity option.
+              Candidate sizing uses the acquisition cost, payout, fees/slippage,
+              and whole contracts you supply. The composer&apos;s visibly
+              labelled proxy terms are research defaults, not a live quote.
             </p>
           </div>
         </section>
+
+        <EmpiricalScenarioBuilder
+          selection={scenarioSelection}
+          appliedManifest={input.researchScenarioManifest}
+          onSelectionChange={setScenarioSelection}
+          onApply={(patch) => setInput((current) => ({ ...current, ...patch }))}
+        />
 
         <MarketCapContext />
 
@@ -54,7 +90,19 @@ export const App = () => {
           className="lab-layout"
           aria-labelledby="lab-title"
         >
-          <ControlPanel input={input} onChange={setInput} />
+          <ControlPanel
+            input={input}
+            onChange={(next) =>
+              setInput((current) => ({
+                ...next,
+                researchScenarioManifest: SCENARIO_DERIVED_INPUTS.some(
+                  (key) => current[key] !== next[key],
+                )
+                  ? null
+                  : current.researchScenarioManifest,
+              }))
+            }
+          />
           <div className="results-column">
             <div className="results-header">
               <div>
@@ -174,10 +222,17 @@ export const App = () => {
                   lab.data.simulation.input.roundTripCosts
               }
               onSelectFraction={(positionFraction) =>
-                setInput((current) => ({ ...current, positionFraction }))
+                setInput((current) => ({
+                  ...current,
+                  positionFraction,
+                }))
               }
               onChangeProbability={(winProbability) =>
-                setInput((current) => ({ ...current, winProbability }))
+                setInput((current) => ({
+                  ...current,
+                  winProbability,
+                  researchScenarioManifest: null,
+                }))
               }
             />
           </div>

@@ -15,15 +15,24 @@ export const DEFAULT_SIMULATION_INPUT: SimulationInput = {
   ruinThresholdFraction: 0.01,
   annualRiskFreeRate: 0.04,
   severeDrawdownFraction: 0.5,
+  opportunityArrival: "fixed",
+  calibrationUncertaintyEnabled: false,
+  calibrationEffectiveSampleSize: 100_000,
+  weeklyProbabilityLogitStdDev: 0,
+  executionCostCoefficientVariation: 0,
+  researchScenarioManifest: null,
 };
 
 export const INPUT_LIMITS = {
-  contractPurchasePrice: { min: 0.01, max: 10_000 },
+  contractPurchasePrice: { min: 0.001, max: 10_000 },
   settlementPayout: { min: 0.02, max: 100_000 },
   roundTripCosts: { min: 0, max: 1_000 },
-  eventsPerWeek: { min: 1, max: 20 },
+  eventsPerWeek: { min: 0.1, max: 20 },
   probabilityHaircut: { min: 0, max: 0.25 },
   horizonWeeks: { min: 1, max: 104 },
   startingCapital: { min: 100, max: 1_000_000_000 },
   pathCount: { min: 100, max: 25_000 },
+  calibrationEffectiveSampleSize: { min: 4, max: 1_000_000 },
+  weeklyProbabilityLogitStdDev: { min: 0, max: 2 },
+  executionCostCoefficientVariation: { min: 0, max: 3 },
 } as const;

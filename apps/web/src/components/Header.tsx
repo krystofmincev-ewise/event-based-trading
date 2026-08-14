@@ -27,6 +27,7 @@ export const Header = ({ status, issueKind }: HeaderProps) => (
       </span>
     </a>
     <nav className="desktop-nav" aria-label="Page sections">
+      <a href="#scenario-builder">Scenario builder</a>
       <a href="#market-context">Market context</a>
       <a href="#custom-lab">Custom lab</a>
       <a href="#kelly">Kelly sizing</a>
@@ -35,6 +36,9 @@ export const Header = ({ status, issueKind }: HeaderProps) => (
     <details className="compact-nav">
       <summary>Sections</summary>
       <nav aria-label="Compact page sections">
+        <a href="#scenario-builder" onClick={closeCompactMenu}>
+          Scenario builder
+        </a>
         <a href="#market-context" onClick={closeCompactMenu}>
           Market context
         </a>

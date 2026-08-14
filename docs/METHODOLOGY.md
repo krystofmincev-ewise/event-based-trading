@@ -1,10 +1,10 @@
 # Methodology and sources
 
-This document defines Event Edge Lab v2. The implementation is educational scenario analysis, not an execution engine, forecast, option-pricing system, or recommendation.
+This document defines Event Edge Lab v3. The implementation is educational scenario analysis, not an execution engine, forecast, option-pricing system, or recommendation.
 
 ## 1. Held-to-settlement contract economics
 
-Inputs are observed purchase price `a > 0`, winning settlement payout `S > 0`, and round-trip costs `k ≥ 0`. Costs should include commissions, exchange fees, and a fill/slippage allowance. Valid contracts require `a + k < S`.
+Inputs are user-supplied purchase price `a > 0`, winning settlement payout `S > 0`, and modeled costs `k ≥ 0`. Candidate sizing should use a timestamped executable ask and every applicable commission, exchange, broker, settlement, and fill/slippage cost. Valid contracts require `a + k < S`.
 
 ```text
 maximum loss L       = a + k
@@ -39,9 +39,15 @@ conservative p = max(0, p − h)
 
 Estimated-p Kelly reports both the signed formula result and its actionable long-only value; conservative Kelly uses conservative `p`. The haircut is a judgmental stress bound, not a Normal standard deviation, confidence interval, Bayesian posterior, or proof of calibration. A production agent should source `h` from held-out calibration error, regime-specific backtests, or a stricter risk policy and record that provenance externally.
 
-## 3. Whole events and whole contracts
+## 3. Opportunity arrival, regimes, and whole contracts
 
-`eventsPerWeek` and `horizonWeeks` are positive integers. Total events equal their exact product; no event-count rounding and no partial trades occur.
+Fixed mode requires integer `eventsPerWeek` and produces its exact product with integer `horizonWeeks`. Poisson mode interprets `eventsPerWeek` as a mean arrival rate. Each realized weekly count is still a non-negative integer, including zero; a fractional mean never creates a partial trade.
+
+When calibration uncertainty is explicitly enabled, stochastic mode samples one Beta state per path with `α = pN_eff` and `β = (1−p)N_eff`. Its mean is the displayed probability and its variance is `p(1−p)/(N_eff+1)`. A Normal log-odds shock is then drawn per week; its intercept is numerically calibrated so the conditional path-week mean remains the path state. This creates clustered good and bad regimes without shifting the stated mean. Neither hidden draw enters the sizing rule.
+
+When enabled, per-opportunity costs use a lognormal multiplier parameterized by coefficient of variation. It is mean-preserving before feasibility screening. A draw that makes price plus cost meet or exceed payout is treated as unexecutable and skipped; metadata counts these skips, so the distribution among executed opportunities is conditional. This is a right-tail sensitivity model, not an empirical sector cost distribution. The visible mean cost remains the plug-in sizing reference.
+
+Every simulated opportunity is sequential and assumed resolved before its capital is reused. The 10-day scenario default reduces mean throughput to 0.5 opportunities per week, but the engine does not maintain an open-position ledger or model concurrent commitments. Real strategies with overlapping holding periods must pre-filter to non-overlapping resolved opportunities or use a future portfolio-timing engine.
 
 Before every event, a target fraction becomes an integer contract count:
 
@@ -63,11 +69,11 @@ For context, the engine returns:
 W_0 [1 + f(bp − (1 − p))]^N
 ```
 
-This is explicitly a **continuous-fraction, unstopped reference**. It is not the exact expected terminal wealth of the executable simulation because whole-contract flooring depends on each path's bankroll. It also ignores the practical-ruin stop. Tests and response metadata preserve this distinction.
+For Poisson mean event count `λT`, the central-input reference instead uses `W0 exp(λT(M−1))`, where `M` is the central per-event expected capital multiplier. Both references are explicitly continuous-fraction and unstopped. They ignore whole-contract flooring; the stochastic reference also ignores calibration, regime, and execution-cost draws.
 
 ## 5. Path generation and aggregation
 
-- Outcomes are IID Bernoulli draws using a deterministic counter-based pseudorandom function keyed by seed, path, and event.
+- Fixed mode uses IID Bernoulli draws. Stochastic mode uses a path calibration draw and a shared weekly regime shock before conditional Bernoulli outcomes.
 - Common path/event coordinates are reused across size comparisons.
 - Main runs accept 100–25,000 paths and 1–104 weeks.
 - At most 65 checkpoint columns and six sample paths are retained.
@@ -95,7 +101,7 @@ downside deviation = sqrt[Σ min(R_i − r_w, 0)² / n]
 Sortino = (mean(R) − r_w) / downside deviation × sqrt(52)
 ```
 
-Ratios are `null` when denominators are zero. These are ensemble scenario statistics, not a historical strategy return series. Square-root-of-time annualization assumes no serial correlation.
+Ratios are `null` when denominators are zero. These are ensemble scenario statistics, not a historical strategy return series. Square-root-of-time annualization is exact only under stronger independence assumptions. With regime stress enabled it is presented as a simple comparison approximation; a production empirical engine should use historical calendar returns and long-run/HAC variance.
 
 ## 7. Agent sizing decision
 
@@ -114,7 +120,13 @@ An automated caller should default to `conservative-kelly`, apply a separately g
 
 The returned whole-contract count must still be bounded externally by current quoted depth, the venue/product position limit, and remaining portfolio-wide open-risk capacity. The caller should attach venue, symbol, exact settlement rule, quote timestamp, probability provenance, and calibration version to its own auditable decision record.
 
-## 8. US market context and instrument boundaries
+## 8. Empirical composer, US market context, and instrument boundaries
+
+The empirical composer uses locally generated summaries of public Fama–French value-weighted industry and size portfolio returns from January 3, 2000 through December 31, 2025. It supplies 11 approximate sector labels plus a pharma/biotech overlay, one- and overlapping ten-trading-day summaries, and raw directional/absolute 2%, 5%, and 10% tail rates. Exact knots use Jeffreys smoothing `(count+0.5)/(N+1)` for the research proxy while preserving the raw rate; in-between values use log interpolation, and thresholds beyond 10% are rejected. These are diversified unconditional portfolio observations—not earnings-event moves, single-company distributions, or LLM forecast accuracy.
+
+Size conditioning rescales the selected threshold by the ratio of public NYSE-relative size-portfolio volatility to top-30% size volatility, then interpolates the selected industry tail in log-probability space. This assumes a common distributional shape with changed scale; it is a documented proxy, not a joint sector-by-size estimate. The model-skill lift defaults to zero.
+
+Exact methodology and sources are in [EMPIRICAL_CONTEXT.md](EMPIRICAL_CONTEXT.md).
 
 The visible small/mid/large-cap references are deliberately outside `SimulationInput`; changing context does not recompute or alter a financial result.
 
@@ -136,7 +148,7 @@ Product availability is not assumed. Cboe's June 23, 2026 Cboe Predicts launch d
 
 Log capital remains canonical for compounding, drawdown, and weekly returns. `log1p`, Welford variance, and finite display caps protect numerical integrity. Histograms use linear observed domains.
 
-The model omits probability calibration, serial dependence, cross-position correlation, regime changes, changing quotes/payouts, limited liquidity, market impact, early exits, taxes, assignment/exercise details, and tail model breaks. Only genuinely fixed, two-state contracts belong in this abstraction; ordinary stock options and path-dependent barrier products require separate payoff and pricing models.
+The stochastic model approximates calibration uncertainty, short regime clustering, opportunity-count variation, and right-skewed costs. Kelly markers remain plug-in central/manual-haircut calculations; they do not optimize over those distributions. The engine still omits empirical joint event/quote resampling, cross-position correlation and overlapping capital commitments, changing payouts and depth, market impact, early exits, taxes, assignment/exercise details, and structural breaks. Only genuinely fixed, two-state contracts belong in this abstraction; ordinary stock options and path-dependent barrier products require separate payoff and pricing models.
 
 The modeled benchmark panel is a configurable lognormal model, not historical S&P 500 data. It is not subtracted from strategy Sharpe. The separate market-cap context section is static reference data and never enters the simulator.
 
@@ -149,5 +161,8 @@ The modeled benchmark panel is a configurable lognormal model, not historical S&
 - BlackRock iShares fact sheets as of June 30, 2026: [IJR](https://www.ishares.com/us/literature/fact-sheet/ijr-ishares-core-s-p-small-cap-etf-fund-fact-sheet-en-us.pdf), [IJH](https://www.ishares.com/us/literature/fact-sheet/ijh-ishares-core-s-p-mid-cap-etf-fund-fact-sheet-en-us.pdf), and [IVV](https://www.ishares.com/us/literature/fact-sheet/ivv-ishares-core-s-p-500-etf-fund-fact-sheet-en-us.pdf).
 - OCC, “[Equity Options Product Specifications](https://www.theocc.com/clearance-and-settlement/clearing/equity-options-product-specifications).”
 - Cboe, “[Cboe Introduces Cboe Predicts](https://ir.cboe.com/news/news-details/2026/Cboe-Introduces-Cboe-Predicts-Launching-First-Products-in-New-Prediction-Markets-Suite/default.aspx),” June 23, 2026.
+- Kenneth R. French, [Data Library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html), 12/49 industry and market-equity portfolio daily returns.
+- Cboe, [XSP binary customer fee filing](https://cdn.cboe.com/resources/regulation/rule_filings/approved/2026/SR-CBOE-2026-056.pdf), effective June 15, 2026.
+- PLOS ONE, [biopharma news event study](https://journals.plos.org/plosone/article?id=10.1371%2Fjournal.pone.0296927) and [clinical-trial event study](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0272851).
 
 Whole-contract flooring, haircut semantics, weekly pooling, practical ruin, operation limits, and the agent DTO are project conventions encoded in tests.
