@@ -62,6 +62,8 @@ export const EmpiricalScenarioBuilder = ({
       source.applicableProfiles.includes(selection.profileId),
   );
   const minimumCompanyMoveScale = minimumMoveScale(selection);
+  const hasHypotheticalModelLift =
+    Math.abs(selection.modelProbabilityLift) > Number.EPSILON;
   const draftIsLoaded =
     appliedManifest !== null &&
     appliedManifest.profileId === selection.profileId &&
@@ -285,7 +287,11 @@ export const EmpiricalScenarioBuilder = ({
               </dd>
             </div>
             <div>
-              <dt>Scenario probability</dt>
+              <dt>
+                {hasHypotheticalModelLift
+                  ? "Hypothetical scenario probability"
+                  : "Scenario probability"}
+              </dt>
               <dd>{formatProbability(resolved.scenarioProbability)}</dd>
             </div>
             <div>
@@ -297,12 +303,18 @@ export const EmpiricalScenarioBuilder = ({
               <dd>{formatProbability(resolved.modeledBreakEvenProbability)}</dd>
             </div>
             <div>
-              <dt>Scenario p minus modeled break-even</dt>
+              <dt>
+                {hasHypotheticalModelLift
+                  ? "Hypothetical p minus modeled break-even"
+                  : "Scenario p minus modeled break-even"}
+              </dt>
               <dd
                 className={
-                  resolved.scenarioProbabilityMinusModeledBreakEven > 0
-                    ? "positive"
-                    : "negative"
+                  hasHypotheticalModelLift
+                    ? "hypothetical"
+                    : resolved.scenarioProbabilityMinusModeledBreakEven > 0
+                      ? "positive"
+                      : "negative"
                 }
               >
                 {resolved.scenarioProbabilityMinusModeledBreakEven >= 0
@@ -334,6 +346,14 @@ export const EmpiricalScenarioBuilder = ({
               </dd>
             </div>
           </dl>
+          {hasHypotheticalModelLift ? (
+            <p className="scenario-hypothesis-warning" role="note">
+              Hypothetical lift active. This app has no stored calibration
+              evidence for that lift, so the probability, break-even spread, and
+              plug-in Kelly outputs are sensitivity analysis—not validated
+              sizing signals.
+            </p>
+          ) : null}
           <div className="scenario-cost-ledger">
             <span>$100 binary research proxy</span>
             <p>
@@ -380,6 +400,9 @@ export const EmpiricalScenarioBuilder = ({
             out-of-sample forecasts can establish which sector deserves it.
           </p>
         </div>
+        <p className="sector-scroll-hint">
+          Scroll horizontally for every metric. The draft action stays visible.
+        </p>
         <div
           className="sector-table-scroll"
           role="region"
@@ -397,8 +420,16 @@ export const EmpiricalScenarioBuilder = ({
                 <th scope="col">Smoothed context frequency</th>
                 <th scope="col">Return volatility</th>
                 <th scope="col">Lift needed for proxy costs</th>
-                <th scope="col">Scenario p − break-even</th>
-                <th scope="col">Conservative Kelly</th>
+                <th scope="col">
+                  {hasHypotheticalModelLift
+                    ? "Hypothetical p − break-even"
+                    : "Scenario p − break-even"}
+                </th>
+                <th scope="col">
+                  {hasHypotheticalModelLift
+                    ? "Hypothetical plug-in Kelly"
+                    : "Conservative Kelly"}
+                </th>
                 <th scope="col">
                   <span className="sr-only">Select sector</span>
                 </th>
@@ -428,9 +459,12 @@ export const EmpiricalScenarioBuilder = ({
                       <td>+{(liftToCostBreakEven * 100).toFixed(2)} pp</td>
                       <td
                         className={
-                          scenario.scenarioProbabilityMinusModeledBreakEven > 0
-                            ? "positive"
-                            : "negative"
+                          hasHypotheticalModelLift
+                            ? "hypothetical"
+                            : scenario.scenarioProbabilityMinusModeledBreakEven >
+                                0
+                              ? "positive"
+                              : "negative"
                         }
                       >
                         {scenario.scenarioProbabilityMinusModeledBreakEven >= 0
@@ -450,7 +484,7 @@ export const EmpiricalScenarioBuilder = ({
                           disabled={selected}
                           onClick={() => set("profileId", scenario.profile.id)}
                         >
-                          {selected ? "Selected" : "Use"}
+                          {selected ? "In draft" : "Use in draft"}
                         </button>
                       </td>
                     </tr>

@@ -161,6 +161,11 @@ describe("App", () => {
       screen.getByLabelText("Model probability lift over prior"),
       { target: { value: "0.05" } },
     );
+    expect(screen.getByText(/Hypothetical lift active/i)).toBeInTheDocument();
+    expect(
+      screen.getByText("Hypothetical scenario probability"),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText(/Hypothetical plug-in Kelly/i)).toHaveLength(1);
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(
       screen.getByText(/Draft differs from the scenario currently loaded/i),
