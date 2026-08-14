@@ -1,4 +1,8 @@
-import { capitalFromLog, updateLogCapital } from "./bankroll.js";
+import {
+  capitalFromLog,
+  drawdownFromLogCapital,
+  updateLogCapital,
+} from "./bankroll.js";
 import { calculateKelly } from "./kelly.js";
 import { createWeeklyReturnAccumulator } from "./metrics.js";
 import { hashSeed, randomAt } from "./prng.js";
@@ -28,6 +32,8 @@ const DEFINITIONS: SimulationDefinitions = {
     "First post-trade capital at or below the configured fraction of starting capital; the crossed positive value is retained and the path is then frozen.",
   expectedTerminal:
     "Arithmetic mean across simulated terminal capitals. It can be unstable when rare right-tail outcomes dominate.",
+  analyticalExpectedTerminal:
+    "Closed-form B₀[1 + f(bp − (1 − p))]^N without the practical-ruin stopping rule; not directly comparable when the stop binds.",
   quantiles:
     "R-7 linear interpolation across paths at a common trade checkpoint.",
   maximumDrawdown:
@@ -52,14 +58,6 @@ const samplePathIndices = (pathCount: number): number[] => {
   return Array.from({ length: count }, (_, index) =>
     Math.round((index / Math.max(1, count - 1)) * (pathCount - 1)),
   );
-};
-
-const safePower = (
-  base: number,
-  exponent: number,
-): { capital: number; overflowed: boolean } => {
-  const logValue = exponent * Math.log(base);
-  return capitalFromLog(logValue);
 };
 
 const impliedCagr = (
@@ -110,15 +108,16 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   let practicalRuinCount = 0;
   let lossCount = 0;
   let severeDrawdownCount = 0;
-  let overflowedValueCount = 0;
+  let cappedPathCount = 0;
 
   for (let pathIndex = 0; pathIndex < input.pathCount; pathIndex += 1) {
     let logCapital = startLog;
     let capital = input.startingCapital;
-    let peakCapital = input.startingCapital;
+    let peakLogCapital = startLog;
     let maxDrawdown = 0;
     let stopped = false;
-    let previousWeekCapital = input.startingCapital;
+    let weeklyLogReturn = 0;
+    let pathCrossedDisplayRange = false;
 
     checkpointCapitals[0]![pathIndex] = capital;
     const sampleSlot = sampleSlotByPath.get(pathIndex);
@@ -130,6 +129,12 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       if (!stopped && input.positionFraction > 0) {
         const won =
           randomAt(seedHash, pathIndex, trade - 1) < input.winProbability;
+        const logReturn =
+          !won && input.positionFraction === 1
+            ? Number.NEGATIVE_INFINITY
+            : won
+              ? Math.log1p(input.positionFraction * input.netWinMultiple)
+              : Math.log1p(-input.positionFraction);
         const step = updateLogCapital(
           logCapital,
           won,
@@ -137,10 +142,14 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
           input.netWinMultiple,
         );
         logCapital = step.logCapital;
+        weeklyLogReturn += logReturn;
         capital = step.capital;
-        if (step.overflowed) overflowedValueCount += 1;
-        peakCapital = Math.max(peakCapital, capital);
-        maxDrawdown = Math.max(maxDrawdown, 1 - capital / peakCapital);
+        pathCrossedDisplayRange ||= step.overflowed || step.underflowed;
+        peakLogCapital = Math.max(peakLogCapital, logCapital);
+        maxDrawdown = Math.max(
+          maxDrawdown,
+          drawdownFromLogCapital(logCapital, peakLogCapital),
+        );
         if (logCapital <= ruinLog) {
           stopped = true;
           practicalRuinCount += 1;
@@ -150,9 +159,11 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       const weeksEndingHere = weeklyEndTrades.get(trade) ?? 0;
       for (let weekOffset = 0; weekOffset < weeksEndingHere; weekOffset += 1) {
         const weeklyReturn =
-          previousWeekCapital === 0 ? 0 : capital / previousWeekCapital - 1;
+          weeklyLogReturn === Number.NEGATIVE_INFINITY
+            ? -1
+            : Math.expm1(weeklyLogReturn);
         weeklyReturns.add(weeklyReturn);
-        previousWeekCapital = capital;
+        weeklyLogReturn = 0;
       }
 
       const checkpointIndex = checkpointIndexByTrade.get(trade);
@@ -161,7 +172,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
         if (sampleSlot !== undefined) {
           samplePaths[sampleSlot]!.points.push({
             trade,
-            week: trade / input.tradesPerWeek,
+            week: (trade / tradeCount) * input.horizonWeeks,
             capital,
           });
         }
@@ -173,6 +184,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     maxDrawdowns[pathIndex] = maxDrawdown;
     if (capital < input.startingCapital) lossCount += 1;
     if (maxDrawdown >= input.severeDrawdownFraction) severeDrawdownCount += 1;
+    if (pathCrossedDisplayRange) cappedPathCount += 1;
   }
 
   const terminalSummary = summarizeQuantiles(terminals);
@@ -183,26 +195,24 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     input.positionFraction *
       (input.netWinMultiple * input.winProbability -
         (1 - input.winProbability));
-  const analyticalTerminal = safePower(meanMultiplier, tradeCount);
-  if (analyticalTerminal.overflowed) overflowedValueCount += 1;
-  const analyticalExpectedTerminalCapital = Math.min(
-    Number.MAX_VALUE,
-    input.startingCapital * analyticalTerminal.capital,
+  const analyticalTerminal = capitalFromLog(
+    startLog + tradeCount * Math.log(meanMultiplier),
   );
-  if (!Number.isFinite(input.startingCapital * analyticalTerminal.capital)) {
-    overflowedValueCount += 1;
-  }
+  const analyticalExpectedTerminalCapitalWithoutPracticalRuinStop =
+    analyticalTerminal.capital;
+  const analyticalOutputCapped =
+    analyticalTerminal.overflowed || analyticalTerminal.underflowed;
 
   const fan: FanPoint[] = checkpointTradeValues.map((trade, index) => ({
     trade,
-    week: trade / input.tradesPerWeek,
+    week: (trade / tradeCount) * input.horizonWeeks,
     ...summarizeQuantiles(checkpointCapitals[index]!),
   }));
   const annualized = weeklyReturns.finish();
   const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
   const warnings: string[] = [
     "Outcomes are iid with stationary known probability and payout; probability error, clustering, correlation, slippage, liquidity, taxes, contract availability, market impact, and regime shifts are not modeled.",
-    "This accepts an abstract event/barrier-hit probability and net payout. A barrier option cannot be priced from win rate alone.",
+    "This v1 accepts an abstract user-supplied event or one-touch barrier-hit probability and net payout. A path-dependent barrier option cannot be priced from win rate alone.",
   ];
   if (kelly.edgePerUnitStaked <= 0 && input.positionFraction > 0) {
     warnings.push(
@@ -219,9 +229,19 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       "A zero return or downside denominator makes one or more risk-adjusted ratios undefined.",
     );
   }
-  if (overflowedValueCount > 0) {
+  if (cappedPathCount > 0) {
     warnings.push(
-      `${overflowedValueCount} extreme values exceeded finite display range and were capped at Number.MAX_VALUE.`,
+      `${cappedPathCount} simulated paths crossed finite capital display range; log wealth remained canonical for drawdown and weekly risk metrics.`,
+    );
+  }
+  if (analyticalOutputCapped) {
+    warnings.push(
+      "The unstopped analytical expected terminal capital exceeded finite display range and was capped.",
+    );
+  }
+  if (practicalRuinCount > 0) {
+    warnings.push(
+      "The analytical expected terminal value ignores the practical-ruin stop and is not directly comparable when that stop binds.",
     );
   }
 
@@ -230,7 +250,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     kelly,
     metrics: {
       expectedTerminalCapital,
-      analyticalExpectedTerminalCapital,
+      analyticalExpectedTerminalCapitalWithoutPracticalRuinStop,
       terminalCapital: terminalSummary,
       expectedTotalReturn: expectedTerminalCapital / input.startingCapital - 1,
       medianTotalReturn: terminalSummary.median / input.startingCapital - 1,
@@ -264,7 +284,8 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       retainedSamplePathCount: samplePaths.length,
       practicalRuinCapital: input.startingCapital * input.ruinThresholdFraction,
       severeDrawdownFraction: input.severeDrawdownFraction,
-      overflowedValueCount,
+      cappedPathCount,
+      analyticalOutputCapped,
       simulationModel: "iid binary fixed-fraction",
     },
     definitions: DEFINITIONS,

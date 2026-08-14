@@ -2,8 +2,8 @@ import type { AnnualizedMetrics } from "./types.js";
 
 interface WeeklyReturnAggregates {
   count: number;
-  sum: number;
-  sumSquares: number;
+  mean: number;
+  sumSquaredDeviations: number;
   downsideSquares: number;
 }
 
@@ -12,25 +12,21 @@ export const annualizedWeeklyMetrics = (
   annualRiskFreeRate: number,
 ): AnnualizedMetrics => {
   const weeklyRiskFreeReturn = Math.pow(1 + annualRiskFreeRate, 1 / 52) - 1;
-  const meanWeeklyReturn = aggregates.sum / aggregates.count;
-  const centeredSumSquares =
-    aggregates.sumSquares -
-    (aggregates.sum * aggregates.sum) / aggregates.count;
   const sampleVariance =
     aggregates.count > 1
-      ? Math.max(0, centeredSumSquares / (aggregates.count - 1))
+      ? Math.max(0, aggregates.sumSquaredDeviations / (aggregates.count - 1))
       : 0;
   const sampleVolatility = Math.sqrt(sampleVariance);
   const downsideDeviation = Math.sqrt(
     aggregates.downsideSquares / aggregates.count,
   );
-  const excessMean = meanWeeklyReturn - weeklyRiskFreeReturn;
+  const excessMean = aggregates.mean - weeklyRiskFreeReturn;
 
   return {
     observationFrequency: "weekly end-of-week (pooled simulated path-weeks)",
     observationsPerYear: 52,
     sampleObservationCount: aggregates.count,
-    meanPeriodicReturn: meanWeeklyReturn,
+    meanPeriodicReturn: aggregates.mean,
     periodicRiskFreeReturn: weeklyRiskFreeReturn,
     annualizedVolatility: sampleVolatility * Math.sqrt(52),
     sharpe:
@@ -48,8 +44,8 @@ export const createWeeklyReturnAccumulator = (annualRiskFreeRate: number) => {
   const weeklyRiskFreeReturn = Math.pow(1 + annualRiskFreeRate, 1 / 52) - 1;
   const aggregates: WeeklyReturnAggregates = {
     count: 0,
-    sum: 0,
-    sumSquares: 0,
+    mean: 0,
+    sumSquaredDeviations: 0,
     downsideSquares: 0,
   };
 
@@ -57,8 +53,10 @@ export const createWeeklyReturnAccumulator = (annualRiskFreeRate: number) => {
     add(periodReturn: number): void {
       const downside = Math.min(periodReturn - weeklyRiskFreeReturn, 0);
       aggregates.count += 1;
-      aggregates.sum += periodReturn;
-      aggregates.sumSquares += periodReturn * periodReturn;
+      const delta = periodReturn - aggregates.mean;
+      aggregates.mean += delta / aggregates.count;
+      const nextDelta = periodReturn - aggregates.mean;
+      aggregates.sumSquaredDeviations += delta * nextDelta;
       aggregates.downsideSquares += downside * downside;
     },
     finish(): AnnualizedMetrics {

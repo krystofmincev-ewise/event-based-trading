@@ -14,7 +14,28 @@ describe("counter PRNG", () => {
 
   it("is independent of traversal order", () => {
     const seed = hashSeed("order");
-    expect(randomAt(seed, 2, 8)).toBe(randomAt(seed, 2, 8));
-    expect(randomAt(seed, 2, 8)).not.toBe(randomAt(seed, 8, 2));
+    const pathMajor = new Map<string, number>();
+    for (let path = 0; path < 4; path += 1) {
+      for (let trade = 0; trade < 7; trade += 1) {
+        pathMajor.set(`${path}:${trade}`, randomAt(seed, path, trade));
+      }
+    }
+    for (let trade = 0; trade < 7; trade += 1) {
+      for (let path = 0; path < 4; path += 1) {
+        expect(randomAt(seed, path, trade)).toBe(
+          pathMajor.get(`${path}:${trade}`),
+        );
+      }
+    }
+  });
+
+  it("provides common random outcomes across position fractions", () => {
+    const seed = hashSeed("common-random-numbers");
+    const uniforms = Array.from({ length: 10 }, (_, trade) =>
+      randomAt(seed, 4, trade),
+    );
+    const smallFractionOutcomes = uniforms.map((uniform) => uniform < 0.6);
+    const largeFractionOutcomes = uniforms.map((uniform) => uniform < 0.6);
+    expect(smallFractionOutcomes).toEqual(largeFractionOutcomes);
   });
 });

@@ -79,7 +79,7 @@ describe("runSimulation", () => {
       seed: "expectation-check",
     });
     expect(result.metrics.expectedTerminalCapital).toBeCloseTo(
-      result.metrics.analyticalExpectedTerminalCapital,
+      result.metrics.analyticalExpectedTerminalCapitalWithoutPracticalRuinStop,
       -3,
     );
   });

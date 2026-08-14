@@ -34,7 +34,9 @@ describe("independent reviewer exact cases", () => {
 
   it("matches the requested win/loss recurrence", () => {
     const result = simulateOutcomeSequence(100, 0.25, 1.5, [true, false, true]);
-    expect(result.capitals).toEqual([100, 137.5, 103.125, 141.796875]);
+    [100, 137.5, 103.125, 141.796875].forEach((expected, index) => {
+      expect(result.capitals[index]).toBeCloseTo(expected, 12);
+    });
   });
 
   it("computes percentage and nominal drawdown from a path", () => {
@@ -74,12 +76,15 @@ describe("independent reviewer exact cases", () => {
       probability: scenario.probability,
       ...simulateOutcomeSequence(100, 0.2, 1, scenario.outcomes),
     }));
-    expect(results.map((result) => result.capitals.at(-1))).toEqual([
-      144, 96, 96, 64,
-    ]);
-    expect(results.map((result) => result.maximumDrawdown.fraction)).toEqual([
-      0, 0.19999999999999996, 0.19999999999999996, 0.36,
-    ]);
+    [144, 96, 96, 64].forEach((expected, index) => {
+      expect(results[index]?.capitals.at(-1)).toBeCloseTo(expected, 12);
+    });
+    [0, 0.2, 0.2, 0.36].forEach((expected, index) => {
+      expect(results[index]?.maximumDrawdown.fraction).toBeCloseTo(
+        expected,
+        12,
+      );
+    });
     expect(
       results.reduce(
         (sum, result) => sum + result.probability * result.capitals.at(-1)!,

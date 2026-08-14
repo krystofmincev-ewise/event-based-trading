@@ -64,7 +64,7 @@ export interface AnnualizedMetrics {
 
 export interface SimulationMetrics {
   expectedTerminalCapital: number;
-  analyticalExpectedTerminalCapital: number;
+  analyticalExpectedTerminalCapitalWithoutPracticalRuinStop: number;
   terminalCapital: QuantileSummary;
   expectedTotalReturn: number;
   medianTotalReturn: number;
@@ -83,6 +83,7 @@ export interface SimulationDefinitions {
   lossMultiplier: string;
   practicalRuin: string;
   expectedTerminal: string;
+  analyticalExpectedTerminal: string;
   quantiles: string;
   maximumDrawdown: string;
   sharpe: string;
@@ -98,7 +99,8 @@ export interface SimulationMetadata {
   retainedSamplePathCount: number;
   practicalRuinCapital: number;
   severeDrawdownFraction: number;
-  overflowedValueCount: number;
+  cappedPathCount: number;
+  analyticalOutputCapped: boolean;
   simulationModel: "iid binary fixed-fraction";
 }
 

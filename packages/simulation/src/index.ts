@@ -1,5 +1,7 @@
 export {
   calculateMaximumDrawdown,
+  drawdownFromLogCapital,
+  returnBetweenLogCapitals,
   simulateOutcomeSequence,
   updateLogCapital,
 } from "./bankroll.js";
