@@ -5,6 +5,7 @@ interface NumberDraftOptions {
   value: number;
   minimum: number;
   maximum: number;
+  isAllowed?: (value: number) => boolean;
   onValidChange: (value: number) => void;
 }
 
@@ -12,6 +13,7 @@ export const useNumberDraft = ({
   value,
   minimum,
   maximum,
+  isAllowed = () => true,
   onValidChange,
 }: NumberDraftOptions) => {
   const [draft, setDraft] = useState("");
@@ -23,7 +25,8 @@ export const useNumberDraft = ({
     (visibleValue.trim().length > 0 &&
       Number.isFinite(parsedDraft) &&
       parsedDraft >= minimum &&
-      parsedDraft <= maximum);
+      parsedDraft <= maximum &&
+      isAllowed(parsedDraft));
 
   const onFocus = () => {
     setDraft(String(value));
@@ -38,7 +41,8 @@ export const useNumberDraft = ({
       nextDraft.trim().length > 0 &&
       Number.isFinite(parsed) &&
       parsed >= minimum &&
-      parsed <= maximum
+      parsed <= maximum &&
+      isAllowed(parsed)
     ) {
       onValidChange(parsed);
     }

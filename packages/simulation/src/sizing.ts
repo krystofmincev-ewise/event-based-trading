@@ -51,12 +51,16 @@ export const calculatePositionSizing = (
     kelly.economics.allInCost,
   );
   const dollarRiskBudget = input.bankroll * targetFractionAfterPolicyCap;
-  const bindingConstraint =
-    targetFractionAfterPolicyCap < unconstrainedTargetFraction
-      ? "position-cap"
-      : position.capitalAtRisk < dollarRiskBudget
-        ? "whole-contract-rounding"
-        : "none";
+  const bindingReason =
+    unconstrainedTargetFraction === 0
+      ? input.sizingPolicy === "custom"
+        ? "custom-zero"
+        : "non-positive-edge"
+      : targetFractionAfterPolicyCap < unconstrainedTargetFraction
+        ? "position-cap"
+        : position.capitalAtRisk < dollarRiskBudget
+          ? "whole-contract-rounding"
+          : "none";
   return {
     input,
     economics: kelly.economics,
@@ -77,6 +81,6 @@ export const calculatePositionSizing = (
       position.contractCount * kelly.estimated.expectedProfitPerContract,
     conservativeExpectedProfit:
       position.contractCount * kelly.conservative.expectedProfitPerContract,
-    bindingConstraint,
+    bindingReason,
   };
 };

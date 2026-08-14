@@ -102,6 +102,12 @@ describe("App", () => {
         name: "Kelly, with contract costs and uncertainty.",
       }),
     ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Size changes the evidence you need.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("$1.2B–$8.0B")).toBeInTheDocument();
     expect(screen.getByText("Sections")).toBeInTheDocument();
     expect(
       screen.getByRole("group", {
@@ -207,6 +213,38 @@ describe("App", () => {
     expect(screen.queryByText("Expected terminal")).not.toBeInTheDocument();
   });
 
+  it("rejects stale Kelly comparison labels at the client boundary", async () => {
+    const staleKelly = JSON.parse(
+      JSON.stringify(responseBodies["/api/kelly"]),
+    ) as { comparison: Array<{ label: string }> };
+    staleKelly.comparison[3]!.label = "Raw Kelly";
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((resource: string | URL | Request) => {
+        const path =
+          typeof resource === "string"
+            ? resource
+            : resource instanceof URL
+              ? resource.pathname
+              : new URL(resource.url).pathname;
+        const body =
+          path === "/api/kelly"
+            ? staleKelly
+            : responseBodies[path as keyof typeof responseBodies];
+        return Promise.resolve(
+          new Response(JSON.stringify(body), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          }),
+        );
+      }),
+    );
+    render(<App />);
+    expect(
+      await screen.findByText(/returned a malformed result/i),
+    ).toBeInTheDocument();
+  });
+
   it("preserves server validation details without claiming the API is offline", async () => {
     vi.stubGlobal(
       "fetch",
@@ -258,7 +296,9 @@ describe("App", () => {
     render(<App />);
     await screen.findByRole("heading", { name: "Bankroll fan" });
 
-    await user.click(screen.getByRole("button", { name: "Use raw kelly" }));
+    await user.click(
+      screen.getByRole("button", { name: "Use estimated-p kelly" }),
+    );
     expect(
       await screen.findByText("Simulation refresh failed"),
     ).toBeInTheDocument();
@@ -287,7 +327,9 @@ describe("App", () => {
     render(<App />);
     const kellyResults = await screen.findByLabelText("Kelly fraction results");
     await user.click(
-      within(kellyResults).getByRole("button", { name: "Use raw kelly" }),
+      within(kellyResults).getByRole("button", {
+        name: "Use estimated-p kelly",
+      }),
     );
     expect(screen.getByLabelText("Target bankroll at risk")).toHaveValue(8);
     expect(
@@ -325,7 +367,9 @@ describe("App", () => {
     const conservative = within(results)
       .getByText("Conservative Kelly")
       .closest(".kelly-lane");
-    const raw = within(results).getByText("Raw Kelly").closest(".kelly-lane");
+    const raw = within(results)
+      .getByText("Estimated-p Kelly")
+      .closest(".kelly-lane");
     await waitFor(() => expect(conservative).toHaveTextContent("14.0%"));
     expect(raw).toHaveTextContent("20.0%");
     expect(screen.getByLabelText("Event hit probability")).toHaveValue(60);

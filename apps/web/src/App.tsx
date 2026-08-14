@@ -6,6 +6,7 @@ import { AnalyticsDashboard } from "./components/AnalyticsDashboard.js";
 import { ControlPanel } from "./components/ControlPanel.js";
 import { Header } from "./components/Header.js";
 import { KellySection } from "./components/KellySection.js";
+import { MarketCapContext } from "./components/MarketCapContext.js";
 import { MetricStrip } from "./components/MetricStrip.js";
 import { Overview } from "./components/Overview.js";
 import { useLabData } from "./hooks/useLabData.js";
@@ -41,10 +42,12 @@ export const App = () => {
             <p>
               Uses observed acquisition cost, payout, fees/slippage, and whole
               contracts. It does not infer an underlying path or price a barrier
-              option.
+              or conventional equity option.
             </p>
           </div>
         </section>
+
+        <MarketCapContext />
 
         <section
           id="custom-lab"

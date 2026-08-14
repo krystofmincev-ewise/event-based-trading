@@ -70,7 +70,12 @@ export interface PositionSizingDecision {
   maximumProfit: number;
   estimatedExpectedProfit: number;
   conservativeExpectedProfit: number;
-  bindingConstraint: "none" | "position-cap" | "whole-contract-rounding";
+  bindingReason:
+    | "none"
+    | "non-positive-edge"
+    | "custom-zero"
+    | "position-cap"
+    | "whole-contract-rounding";
 }
 
 export interface QuantileSummary {
@@ -160,6 +165,9 @@ export interface SimulationMetadata {
   initialWholeContractCount: number;
   initialCapitalAtRisk: number;
   initialExecutedFraction: number;
+  eligiblePositionAttemptCount: number;
+  meanExecutedFractionPerEligibleAttempt: number | null;
+  zeroContractRatePerEligibleAttempt: number | null;
   approximatedLargeContractExecutions: number;
   continuousFractionReferenceIgnoresWholeContractRounding: true;
   simulationModel: "iid binary whole-contract target-fraction";
@@ -205,7 +213,11 @@ export interface ExplorationResult {
 }
 
 export interface KellyComparisonPoint {
-  label: "No stake" | "Current size" | "Conservative Kelly" | "Raw Kelly";
+  label:
+    | "No stake"
+    | "Current size"
+    | "Conservative Kelly"
+    | "Estimated-p Kelly";
   fraction: number;
   pathCount: number;
   medianTerminalCapital: number;

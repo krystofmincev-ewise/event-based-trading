@@ -160,6 +160,9 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   let cappedPathCount = 0;
   let approximatedLargeContractExecutions = 0;
   let zeroExecutableTerminalCount = 0;
+  let executableOpportunityCount = 0;
+  let zeroContractOpportunityCount = 0;
+  let totalExecutedFraction = 0;
 
   for (let pathIndex = 0; pathIndex < input.pathCount; pathIndex += 1) {
     let logCapital = startLog;
@@ -186,6 +189,11 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
           input.positionFraction,
           economics.allInCost,
         );
+        executableOpportunityCount += 1;
+        totalExecutedFraction += execution.executedFraction;
+        if (execution.executedFraction === 0) {
+          zeroContractOpportunityCount += 1;
+        }
         if (execution.approximated) approximatedLargeContractExecutions += 1;
         const executedFraction = execution.executedFraction;
         const logReturn =
@@ -395,6 +403,15 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       initialWholeContractCount: initialPosition.contractCount,
       initialCapitalAtRisk: initialPosition.capitalAtRisk,
       initialExecutedFraction: initialPosition.executedFraction,
+      eligiblePositionAttemptCount: executableOpportunityCount,
+      meanExecutedFractionPerEligibleAttempt:
+        executableOpportunityCount === 0
+          ? null
+          : totalExecutedFraction / executableOpportunityCount,
+      zeroContractRatePerEligibleAttempt:
+        executableOpportunityCount === 0
+          ? null
+          : zeroContractOpportunityCount / executableOpportunityCount,
       approximatedLargeContractExecutions,
       continuousFractionReferenceIgnoresWholeContractRounding: true,
       simulationModel: "iid binary whole-contract target-fraction",

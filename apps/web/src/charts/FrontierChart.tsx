@@ -30,7 +30,7 @@ export const FrontierChart = ({
     HEIGHT - MARGIN.bottom,
     MARGIN.top,
   );
-  const rawKelly = simulation.kelly.estimated.actionableFraction;
+  const estimatedKelly = simulation.kelly.estimated.actionableFraction;
   const conservativeKelly = simulation.kelly.conservative.actionableFraction;
 
   return (
@@ -44,8 +44,8 @@ export const FrontierChart = ({
           <h3 id="frontier-title">Growth / fragility frontier</h3>
         </div>
         <p>
-          Common random numbers hold outcomes fixed across fractions. Analytic
-          Raw and probability-haircut Kelly markers frame model uncertainty.
+          Common random numbers hold outcomes fixed across fractions. Kelly
+          markers compare unadjusted and probability-haircut stress assumptions.
         </p>
       </div>
       <HorizontalScrollRegion
@@ -106,17 +106,17 @@ export const FrontierChart = ({
           })}
           <line
             className="kelly-line"
-            x1={x(rawKelly)}
-            x2={x(rawKelly)}
+            x1={x(estimatedKelly)}
+            x2={x(estimatedKelly)}
             y1={MARGIN.top}
             y2={HEIGHT - MARGIN.bottom}
           />
           <text
             className="kelly-label"
-            x={Math.min(x(rawKelly) + 6, WIDTH - 140)}
+            x={Math.min(x(estimatedKelly) + 6, WIDTH - 190)}
             y={MARGIN.top + 12}
           >
-            Raw Kelly {formatPercent(rawKelly)}
+            Estimated-p Kelly {formatPercent(estimatedKelly)}
           </text>
           <line
             className="kelly-line conservative-kelly-line"

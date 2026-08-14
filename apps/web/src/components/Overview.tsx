@@ -106,6 +106,28 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
             <dd>{formatPercent(metadata.initialExecutedFraction)}</dd>
           </div>
           <div>
+            <dt>Eligible pre-stop attempts</dt>
+            <dd>{metadata.eligiblePositionAttemptCount.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>Mean executed risk / attempt</dt>
+            <dd>
+              {metadata.meanExecutedFractionPerEligibleAttempt === null
+                ? "—"
+                : formatPercent(
+                    metadata.meanExecutedFractionPerEligibleAttempt,
+                  )}
+            </dd>
+          </div>
+          <div>
+            <dt>Zero-contract rate / attempt</dt>
+            <dd>
+              {metadata.zeroContractRatePerEligibleAttempt === null
+                ? "—"
+                : formatPercent(metadata.zeroContractRatePerEligibleAttempt)}
+            </dd>
+          </div>
+          <div>
             <dt>Seed</dt>
             <dd>{metadata.seed}</dd>
           </div>

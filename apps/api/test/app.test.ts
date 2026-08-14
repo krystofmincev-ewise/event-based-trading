@@ -8,6 +8,17 @@ import { handleRequest } from "../src/app.js";
 describe("HTTP API", () => {
   let server: ReturnType<typeof createServer>;
   let baseUrl: string;
+  const sizingInput = {
+    bankroll: 10_000,
+    winProbability: 0.55,
+    probabilityHaircut: 0.03,
+    contractPurchasePrice: 49,
+    settlementPayout: 100,
+    roundTripCosts: 1,
+    sizingPolicy: "conservative-kelly",
+    customFraction: 0,
+    maximumPositionFraction: 0.03,
+  };
 
   beforeEach(async () => {
     server = createServer((request, response) => {
@@ -90,26 +101,76 @@ describe("HTTP API", () => {
     const response = await fetch(`${baseUrl}/api/size`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        bankroll: 10_000,
-        winProbability: 0.55,
-        probabilityHaircut: 0.03,
-        contractPurchasePrice: 49,
-        settlementPayout: 100,
-        roundTripCosts: 1,
-        sizingPolicy: "conservative-kelly",
-        customFraction: 0,
-        maximumPositionFraction: 0.03,
-      }),
+      body: JSON.stringify(sizingInput),
     });
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toMatchObject({
       sizing: {
         wholeContractCount: 6,
         actualCapitalAtRisk: 300,
-        bindingConstraint: "position-cap",
+        bindingReason: "position-cap",
         economics: { breakEvenProbability: 0.5 },
       },
+    });
+  });
+
+  it("returns agent-safe no-edge and zero-contract decisions", async () => {
+    const postSizing = (input: object) =>
+      fetch(`${baseUrl}/api/size`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+    const noEdge = await postSizing({
+      ...sizingInput,
+      winProbability: 0.6,
+      probabilityHaircut: 0,
+      contractPurchasePrice: 70,
+      roundTripCosts: 0,
+      sizingPolicy: "estimated-kelly",
+      maximumPositionFraction: 1,
+    });
+    const roundedToZero = await postSizing({
+      ...sizingInput,
+      bankroll: 100,
+      sizingPolicy: "custom",
+      customFraction: 0.25,
+      maximumPositionFraction: 1,
+    });
+    expect(noEdge.status).toBe(200);
+    await expect(noEdge.json()).resolves.toMatchObject({
+      sizing: {
+        wholeContractCount: 0,
+        actualCapitalAtRisk: 0,
+        bindingReason: "non-positive-edge",
+      },
+    });
+    expect(roundedToZero.status).toBe(200);
+    await expect(roundedToZero.json()).resolves.toMatchObject({
+      sizing: {
+        wholeContractCount: 0,
+        bindingReason: "whole-contract-rounding",
+      },
+    });
+  });
+
+  it("rejects invalid sizing policies and impossible contract terms", async () => {
+    const response = await fetch(`${baseUrl}/api/size`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...sizingInput,
+        sizingPolicy: "auto-opposite",
+        contractPurchasePrice: 100,
+      }),
+    });
+    expect(response.status).toBe(422);
+    await expect(response.json()).resolves.toMatchObject({
+      error: "Position sizing input is invalid.",
+      details: expect.arrayContaining([
+        expect.stringContaining("sizingPolicy must be"),
+        expect.stringContaining("contractPurchasePrice + roundTripCosts"),
+      ]),
     });
   });
 

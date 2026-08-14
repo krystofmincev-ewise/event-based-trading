@@ -134,10 +134,61 @@ describe("runSimulation", () => {
     });
     expect(result.metadata.initialWholeContractCount).toBe(2);
     expect(result.metadata.initialCapitalAtRisk).toBe(18);
+    expect(result.metadata.eligiblePositionAttemptCount).toBe(
+      smallInput.pathCount,
+    );
+    expect(result.metadata.meanExecutedFractionPerEligibleAttempt).toBeCloseTo(
+      0.18,
+      12,
+    );
+    expect(result.metadata.zeroContractRatePerEligibleAttempt).toBe(0);
     expect(result.metrics.terminalCapital.median).toBeCloseTo(102, 12);
     expect(
       result.metadata.continuousFractionReferenceIgnoresWholeContractRounding,
     ).toBe(true);
     expect(result.warnings.join(" ")).toContain("not an exact expectation");
+  });
+
+  it("reports opportunities that cannot fund one whole contract", () => {
+    const result = runSimulation({
+      ...smallInput,
+      startingCapital: 100,
+      positionFraction: 0.25,
+      contractPurchasePrice: 49,
+      roundTripCosts: 1,
+      settlementPayout: 100,
+      eventsPerWeek: 1,
+      horizonWeeks: 1,
+    });
+    expect(result.metadata.initialWholeContractCount).toBe(0);
+    expect(result.metadata.eligiblePositionAttemptCount).toBe(
+      smallInput.pathCount,
+    );
+    expect(result.metadata.meanExecutedFractionPerEligibleAttempt).toBe(0);
+    expect(result.metadata.zeroContractRatePerEligibleAttempt).toBe(1);
+  });
+
+  it("uses null attempt rates for a no-stake run", () => {
+    const result = runSimulation({ ...smallInput, positionFraction: 0 });
+    expect(result.metadata.eligiblePositionAttemptCount).toBe(0);
+    expect(result.metadata.meanExecutedFractionPerEligibleAttempt).toBeNull();
+    expect(result.metadata.zeroContractRatePerEligibleAttempt).toBeNull();
+  });
+
+  it("excludes scheduled events after a path reaches practical ruin", () => {
+    const result = runSimulation({
+      ...smallInput,
+      pathCount: 100,
+      winProbability: 0,
+      positionFraction: 1,
+      contractPurchasePrice: 49,
+      roundTripCosts: 1,
+      settlementPayout: 100,
+      eventsPerWeek: 2,
+      horizonWeeks: 1,
+      ruinThresholdFraction: 0.99,
+    });
+    expect(result.metadata.tradeCount).toBe(2);
+    expect(result.metadata.eligiblePositionAttemptCount).toBe(100);
   });
 });

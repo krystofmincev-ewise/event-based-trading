@@ -116,7 +116,7 @@ describe("numeric control drafts", () => {
     const user = userEvent.setup();
     render(<StatefulControls />);
     const payoutInput = screen.getByLabelText(
-      "Observed contract purchase price",
+      "Executable contract purchase price",
     );
 
     await user.clear(payoutInput);
@@ -163,12 +163,39 @@ describe("numeric control drafts", () => {
     render(<StatefulControls />);
     expect(
       screen.queryByRole("slider", {
-        name: "Observed contract purchase price slider",
+        name: "Executable contract purchase price slider",
       }),
     ).not.toBeInTheDocument();
     expect(
-      screen.getByLabelText("Observed contract purchase price"),
+      screen.getByLabelText("Executable contract purchase price"),
     ).toHaveValue(0.49);
+  });
+
+  it("rejects fractional event counts before dispatching them", async () => {
+    const onChange = vi.fn();
+    const user = userEvent.setup();
+    render(<ControlPanel input={input} onChange={onChange} />);
+    const events = screen.getByLabelText("Whole events per week");
+
+    await user.clear(events);
+    await user.type(events, "2.5");
+    expect(events).toHaveAttribute("aria-invalid", "true");
+    expect(
+      screen.getByText("Enter a whole number from 1 to 20."),
+    ).toBeInTheDocument();
+    expect(onChange).not.toHaveBeenCalledWith({
+      ...input,
+      eventsPerWeek: 2.5,
+    });
+
+    const paths = screen.getByLabelText("Monte Carlo paths");
+    await user.clear(paths);
+    await user.type(paths, "100.5");
+    expect(paths).toHaveAttribute("aria-invalid", "true");
+    expect(onChange).not.toHaveBeenCalledWith({
+      ...input,
+      pathCount: 100.5,
+    });
   });
 });
 

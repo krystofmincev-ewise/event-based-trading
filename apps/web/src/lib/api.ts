@@ -168,8 +168,11 @@ const isSimulationMetadata = (value: unknown): boolean =>
     "initialWholeContractCount",
     "initialCapitalAtRisk",
     "initialExecutedFraction",
+    "eligiblePositionAttemptCount",
     "approximatedLargeContractExecutions",
   ]) &&
+  isNullableFinite(value.meanExecutedFractionPerEligibleAttempt) &&
+  isNullableFinite(value.zeroContractRatePerEligibleAttempt) &&
   hasStringFields(value, ["seed", "simulationModel"]) &&
   typeof value.continuousFractionReferenceCapped === "boolean" &&
   typeof value.cagrOutputCapped === "boolean" &&
@@ -300,15 +303,30 @@ const isExplorationResponse = (
     );
   })();
 
+const KELLY_COMPARISON_LABELS = new Set<string>([
+  "No stake",
+  "Current size",
+  "Conservative Kelly",
+  "Estimated-p Kelly",
+]);
+
 const isKellyResponse = (
   body: unknown,
-): body is { comparison: KellyComparisonPoint[] } =>
-  isRecord(body) &&
-  Array.isArray(body.comparison) &&
-  body.comparison.length === 4 &&
-  body.comparison.every(
-    (point) =>
-      isRecord(point) &&
+): body is { comparison: KellyComparisonPoint[] } => {
+  if (
+    !isRecord(body) ||
+    !Array.isArray(body.comparison) ||
+    body.comparison.length !== KELLY_COMPARISON_LABELS.size
+  ) {
+    return false;
+  }
+  const labels = new Set<unknown>();
+  const validPoints = body.comparison.every((point) => {
+    if (!isRecord(point)) return false;
+    labels.add(point.label);
+    return (
+      typeof point.label === "string" &&
+      KELLY_COMPARISON_LABELS.has(point.label) &&
       hasFiniteFields(point, [
         "fraction",
         "pathCount",
@@ -317,9 +335,15 @@ const isKellyResponse = (
         "p95TerminalCapital",
         "probabilityOfPracticalRuin",
         "medianMaxDrawdown",
-      ]),
-  ) &&
-  containsOnlyFiniteNumbers(body);
+      ])
+    );
+  });
+  return (
+    validPoints &&
+    labels.size === KELLY_COMPARISON_LABELS.size &&
+    containsOnlyFiniteNumbers(body)
+  );
+};
 
 const request = async <ResponseBody>(
   path: string,

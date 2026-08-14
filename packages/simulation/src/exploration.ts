@@ -101,7 +101,10 @@ export const runKellyComparison = (
       label: "Conservative Kelly",
       fraction: kelly.conservative.actionableFraction,
     },
-    { label: "Raw Kelly", fraction: kelly.estimated.actionableFraction },
+    {
+      label: "Estimated-p Kelly",
+      fraction: kelly.estimated.actionableFraction,
+    },
   ];
   return variants.map(({ label, fraction }) => {
     if (label === "No stake") {

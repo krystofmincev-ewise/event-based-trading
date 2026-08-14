@@ -22,6 +22,7 @@ interface NumericControlProps {
   prefix?: string;
   displayFactor?: number;
   hideRange?: boolean;
+  integerOnly?: boolean;
   formatSummary?: (value: number) => string;
   onChange: (key: keyof SimulationInput, value: number) => void;
 }
@@ -38,6 +39,7 @@ const NumericControl = ({
   prefix,
   displayFactor = 1,
   hideRange = false,
+  integerOnly = false,
   formatSummary,
   onChange,
 }: NumericControlProps) => {
@@ -48,6 +50,7 @@ const NumericControl = ({
     value: displayValue,
     minimum,
     maximum,
+    isAllowed: integerOnly ? Number.isInteger : () => true,
     onValidChange: (next) => onChange(id, next / displayFactor),
   });
   const updateRange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +113,8 @@ const NumericControl = ({
       </div>
       {!numberDraft.isValid ? (
         <small className="input-error" id={`${id}-error`} role="alert">
-          Enter a value from {minimum} to {maximum}.
+          Enter {integerOnly ? "a whole number" : "a value"} from {minimum} to{" "}
+          {maximum}.
         </small>
       ) : null}
     </div>
@@ -165,7 +169,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
     <aside className="control-panel" aria-label="Simulation controls">
       <div className="panel-kicker">
         <span>Input console</span>
-        <span>v2 · whole-contract binary</span>
+        <span>v2 · illustrative defaults</span>
       </div>
       <Group title="Contract assumptions">
         <NumericControl
@@ -194,7 +198,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
         />
         <NumericControl
           id="contractPurchasePrice"
-          label="Observed contract purchase price"
+          label="Executable contract purchase price"
           value={input.contractPurchasePrice}
           min={0.01}
           max={10_000}
@@ -273,7 +277,8 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           </strong>
           <p>
             Edge means estimated probability exceeds the all-in break-even—not
-            that hit rate exceeds 50%. The opposite side needs its own quote.
+            that hit rate exceeds 50%. For example, 49% can have edge against a
+            40% break-even. The opposite side needs its own quote.
           </p>
         </div>
       </Group>
@@ -285,6 +290,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={1}
           max={20}
           step={1}
+          integerOnly
           description="Integer executed opportunities only; the model never creates half a trade."
           onChange={setNumeric}
         />
@@ -295,6 +301,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={1}
           max={104}
           step={1}
+          integerOnly
           unit=" wk"
           description="One week to two years. CAGR uses this calendar horizon."
           onChange={setNumeric}
@@ -306,6 +313,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={100}
           max={1_000_000_000}
           step={100}
+          integerOnly
           prefix="$"
           hideRange
           formatSummary={(capital) =>
@@ -321,6 +329,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={100}
           max={25_000}
           step={100}
+          integerOnly
           description="More paths reduce sampling noise but take longer to recompute."
           onChange={setNumeric}
         />

@@ -5,6 +5,7 @@ import {
   estimateLabWork,
   runExploration,
   runKellyComparison,
+  validatePositionSizingInput,
   validateSimulationInput,
 } from "../src/index.js";
 
@@ -75,5 +76,46 @@ describe("validateSimulationInput", () => {
         .filter((point) => point.label !== "No stake")
         .every((point) => point.pathCount === input.pathCount),
     ).toBe(true);
+  });
+});
+
+describe("validatePositionSizingInput", () => {
+  const valid = {
+    bankroll: 10_000,
+    winProbability: 0.49,
+    probabilityHaircut: 0.02,
+    contractPurchasePrice: 39,
+    settlementPayout: 100,
+    roundTripCosts: 1,
+    sizingPolicy: "conservative-kelly",
+    customFraction: 0,
+    maximumPositionFraction: 0.02,
+  };
+
+  it("accepts a below-50% estimate when the observed price supports it", () => {
+    expect(validatePositionSizingInput(valid)).toEqual({
+      success: true,
+      data: valid,
+    });
+  });
+
+  it("rejects malformed values, invalid policies, and impossible economics", () => {
+    const result = validatePositionSizingInput({
+      ...valid,
+      bankroll: Number.NaN,
+      sizingPolicy: "auto-opposite",
+      contractPurchasePrice: 99,
+      roundTripCosts: 1,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.errors.join(" ")).toContain(
+        "bankroll must be a finite number",
+      );
+      expect(result.errors.join(" ")).toContain("sizingPolicy must be");
+      expect(result.errors.join(" ")).toContain(
+        "contractPurchasePrice + roundTripCosts",
+      );
+    }
   });
 });

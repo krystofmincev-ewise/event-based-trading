@@ -28,7 +28,8 @@ const variantDescription: Record<KellyComparisonPoint["label"], string> = {
   "No stake": "Capital preservation baseline",
   "Current size": "Your selected target risk budget",
   "Conservative Kelly": "Kelly after the probability haircut",
-  "Raw Kelly": "Kelly using the unadjusted probability estimate",
+  "Estimated-p Kelly":
+    "Long-only Kelly allocation using the unadjusted probability estimate",
 };
 
 export const KellySection = ({
@@ -52,7 +53,11 @@ export const KellySection = ({
       label: "Conservative Kelly",
       value: kelly.conservative.actionableFraction,
     },
-    { label: "Raw Kelly", value: kelly.estimated.actionableFraction },
+    {
+      label: "Estimated-p Kelly",
+      value: kelly.estimated.actionableFraction,
+      signedRawValue: kelly.estimated.rawFraction,
+    },
   ];
   const isApplied = (fraction: number) =>
     Math.abs(currentAssumptions.positionFraction - fraction) < 0.000001;
@@ -73,7 +78,8 @@ export const KellySection = ({
           <span className="eyebrow">Synchronized sizing study</span>
           <h2 id="kelly-title">Kelly, with contract costs and uncertainty.</h2>
           <p>
-            Raw Kelly uses your probability estimate. Conservative Kelly first
+            Estimated-p Kelly uses your probability estimate and clamps a
+            negative result to no long allocation. Conservative Kelly first
             subtracts the explicit probability haircut. Both produce a dollar
             risk budget that is executed as whole contracts—not fractional
             trades.
@@ -159,6 +165,11 @@ export const KellySection = ({
             >
               <span>{lane.label}</span>
               <strong>{formatPercent(lane.value)}</strong>
+              {"signedRawValue" in lane ? (
+                <small>
+                  Signed formula result {formatPercent(lane.signedRawValue)}
+                </small>
+              ) : null}
               <button
                 type="button"
                 aria-pressed={applied}
