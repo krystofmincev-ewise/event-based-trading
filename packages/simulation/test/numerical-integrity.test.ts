@@ -85,4 +85,24 @@ describe("log-space numerical integrity", () => {
     expect(result.fan.at(-1)?.week).toBe(1);
     expect(result.samplePaths[0]?.points.at(-1)?.week).toBe(1);
   });
+
+  it("caps annualized growth overflow without violating numeric result types", () => {
+    const result = runSimulation({
+      ...DEFAULT_SIMULATION_INPUT,
+      winProbability: 1,
+      positionFraction: 1,
+      netWinMultiple: 20,
+      tradesPerWeek: 20,
+      horizonWeeks: 1,
+      startingCapital: 100,
+      pathCount: 100,
+    });
+    expect(Number.isFinite(result.metrics.terminalCapital.median)).toBe(true);
+    expect(result.metrics.impliedCagrFromExpectedTerminal).toBe(
+      Number.MAX_VALUE,
+    );
+    expect(result.metrics.impliedCagrFromMedianTerminal).toBe(Number.MAX_VALUE);
+    expect(result.metadata.cagrOutputCapped).toBe(true);
+    expect(result.warnings.join(" ")).toContain("CAGR outputs exceeded");
+  });
 });

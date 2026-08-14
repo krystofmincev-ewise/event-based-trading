@@ -1,4 +1,9 @@
-import { expectedLogGrowth } from "./kelly.js";
+import { calculateKelly, expectedLogGrowth } from "./kelly.js";
+import {
+  buildHeatmapFractions,
+  buildHeatmapProbabilities,
+  buildSweepFractions,
+} from "./explorationGrid.js";
 import { runSimulation } from "./simulation.js";
 import type {
   ExplorationResult,
@@ -7,56 +12,18 @@ import type {
   SimulationInput,
   SweepPoint,
 } from "./types.js";
-
-const uniqueSorted = (values: number[]): number[] =>
-  [...new Set(values.map((value) => Number(value.toFixed(6))))].sort(
-    (left, right) => left - right,
-  );
-
-const fractionGrid = (
-  userFraction: number,
-  kellyFraction: number,
-): number[] => {
-  const regular = Array.from({ length: 16 }, (_, index) => index / 15);
-  return uniqueSorted([
-    ...regular,
-    userFraction,
-    kellyFraction,
-    kellyFraction * 0.5,
-    kellyFraction * 0.25,
-  ]);
-};
+import { HEATMAP_PATH_CAP, SWEEP_PATH_CAP } from "./workload.js";
 
 export const runExploration = (input: SimulationInput): ExplorationResult => {
-  const baseline = runSimulation({
-    ...input,
-    pathCount: Math.min(input.pathCount, 800),
-  });
-  const fractions = fractionGrid(
+  const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
+  const fractions = buildSweepFractions(
     input.positionFraction,
-    baseline.kelly.fullFraction,
+    kelly.fullFraction,
   );
-  const sweepPathCount = Math.min(input.pathCount, 800);
-  const heatmapPathCount = Math.min(input.pathCount, 300);
-  const heatmapProbabilities = uniqueSorted([
-    0.35,
-    0.45,
-    0.5,
-    input.winProbability,
-    0.6,
-    0.7,
-    0.8,
-  ]);
-  const heatmapFractions = uniqueSorted([
-    0,
-    0.03,
-    0.06,
-    input.positionFraction,
-    0.12,
-    0.2,
-    0.35,
-    0.5,
-  ]);
+  const sweepPathCount = Math.min(input.pathCount, SWEEP_PATH_CAP);
+  const heatmapPathCount = Math.min(input.pathCount, HEATMAP_PATH_CAP);
+  const heatmapProbabilities = buildHeatmapProbabilities(input.winProbability);
+  const heatmapFractions = buildHeatmapFractions(input.positionFraction);
 
   const sweep: SweepPoint[] = fractions.map((fraction) => {
     const result = runSimulation({
@@ -110,10 +77,7 @@ export const runExploration = (input: SimulationInput): ExplorationResult => {
 export const runKellyComparison = (
   input: SimulationInput,
 ): KellyComparisonPoint[] => {
-  const { kelly } = runSimulation({
-    ...input,
-    pathCount: Math.min(input.pathCount, 500),
-  });
+  const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
   const variants: Array<{
     label: KellyComparisonPoint["label"];
     fraction: number;
@@ -124,14 +88,27 @@ export const runKellyComparison = (
     { label: "Full Kelly", fraction: kelly.fullFraction },
   ];
   return variants.map(({ label, fraction }) => {
+    if (label === "No stake") {
+      return {
+        label,
+        fraction,
+        pathCount: 0,
+        medianTerminalCapital: input.startingCapital,
+        p05TerminalCapital: input.startingCapital,
+        p95TerminalCapital: input.startingCapital,
+        probabilityOfPracticalRuin: 0,
+        medianMaxDrawdown: 0,
+      };
+    }
     const result = runSimulation({
       ...input,
       positionFraction: fraction,
-      pathCount: Math.min(input.pathCount, 1_000),
+      pathCount: input.pathCount,
     });
     return {
       label,
       fraction,
+      pathCount: result.metadata.pathCount,
       medianTerminalCapital: result.metrics.terminalCapital.median,
       p05TerminalCapital: result.metrics.terminalCapital.p05,
       p95TerminalCapital: result.metrics.terminalCapital.p95,

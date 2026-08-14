@@ -1,10 +1,14 @@
 import {
   contractPriceToNetWinMultiple,
+  estimateLabWork,
+  LAB_OPERATION_BUDGET,
   netWinMultipleToContractPrice,
   payoutNotionalFraction,
 } from "@event-lab/simulation";
 import type { SimulationInput } from "@event-lab/simulation";
 import type { ChangeEvent, ReactNode } from "react";
+
+import { useNumberDraft } from "../hooks/useNumberDraft.js";
 
 interface NumericControlProps {
   id: keyof SimulationInput;
@@ -15,7 +19,10 @@ interface NumericControlProps {
   step: number;
   description: string;
   unit?: string;
+  prefix?: string;
   displayFactor?: number;
+  hideRange?: boolean;
+  formatSummary?: (value: number) => string;
   onChange: (key: keyof SimulationInput, value: number) => void;
 }
 
@@ -28,50 +35,84 @@ const NumericControl = ({
   step,
   description,
   unit,
+  prefix,
   displayFactor = 1,
+  hideRange = false,
+  formatSummary,
   onChange,
 }: NumericControlProps) => {
   const displayValue = Number((value * displayFactor).toFixed(4));
-  const update = (event: ChangeEvent<HTMLInputElement>) => {
+  const minimum = min * displayFactor;
+  const maximum = max * displayFactor;
+  const numberDraft = useNumberDraft({
+    value: displayValue,
+    minimum,
+    maximum,
+    onValidChange: (next) => onChange(id, next / displayFactor),
+  });
+  const updateRange = (event: ChangeEvent<HTMLInputElement>) => {
     const next = Number(event.target.value) / displayFactor;
-    if (Number.isFinite(next)) onChange(id, next);
+    if (Number.isFinite(next)) {
+      onChange(id, next);
+    }
   };
   return (
-    <div className="control-row">
+    <div className={`control-row${hideRange ? " number-only" : ""}`}>
       <div className="control-heading">
         <label htmlFor={`${id}-number`}>{label}</label>
         <span>
-          {displayValue}
-          {unit}
+          {formatSummary
+            ? formatSummary(displayValue)
+            : `${prefix ?? ""}${displayValue}${unit ?? ""}`}
         </span>
       </div>
       <p id={`${id}-hint`}>{description}</p>
       <div className="paired-inputs">
-        <input
-          id={`${id}-range`}
-          type="range"
-          min={min * displayFactor}
-          max={max * displayFactor}
-          step={step * displayFactor}
-          value={displayValue}
-          aria-label={`${label} slider`}
-          aria-describedby={`${id}-hint`}
-          onChange={update}
-        />
-        <div className="number-wrap">
+        {hideRange ? null : (
+          <input
+            id={`${id}-range`}
+            type="range"
+            min={min * displayFactor}
+            max={max * displayFactor}
+            step={step * displayFactor}
+            value={displayValue}
+            aria-label={`${label} slider`}
+            aria-describedby={`${id}-hint`}
+            onChange={updateRange}
+          />
+        )}
+        <div className={`number-wrap${prefix ? " has-prefix" : ""}`}>
+          {prefix ? (
+            <span className="input-prefix" aria-hidden="true">
+              {prefix}
+            </span>
+          ) : null}
           <input
             id={`${id}-number`}
             type="number"
             min={min * displayFactor}
             max={max * displayFactor}
             step={step * displayFactor}
-            value={displayValue}
-            aria-describedby={`${id}-hint`}
-            onChange={update}
+            value={numberDraft.visibleValue}
+            aria-describedby={`${id}-hint${numberDraft.isValid ? "" : ` ${id}-error`}`}
+            aria-invalid={!numberDraft.isValid || undefined}
+            onFocus={numberDraft.onFocus}
+            onBlur={numberDraft.onBlur}
+            onChange={numberDraft.onChange}
+            onKeyDown={numberDraft.onKeyDown}
           />
-          {unit ? <span aria-hidden="true">{unit}</span> : null}
+          {unit ? (
+            <span className="input-suffix" aria-hidden="true">
+              {unit}
+            </span>
+          ) : null}
         </div>
       </div>
+      {!numberDraft.isValid ? (
+        <small className="input-error" id={`${id}-error`} role="alert">
+          Enter a value from {minimum} to {maximum}.
+        </small>
+      ) : null}
     </div>
   );
 };
@@ -97,6 +138,8 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
     input.positionFraction,
     allInPrice,
   );
+  const work = estimateLabWork(input);
+  const exceedsWorkBudget = work.totalPathTrades > LAB_OPERATION_BUDGET;
 
   return (
     <aside className="control-panel" aria-label="Simulation controls">
@@ -135,7 +178,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           value={input.netWinMultiple}
           min={0.01}
           max={20}
-          step={0.05}
+          step={0.01}
           unit="×"
           description="Net profit b per $1 staked; the original stake is returned separately."
           onChange={setNumeric}
@@ -156,7 +199,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={0.25}
           max={20}
           step={0.25}
-          description="Sequential opportunities; each stake uses then-current bankroll."
+          description="Sequential opportunities; total trades round to a whole number and the realized rate is reported."
           onChange={setNumeric}
         />
         <NumericControl
@@ -177,7 +220,11 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           min={100}
           max={1_000_000_000}
           step={100}
-          unit="$"
+          prefix="$"
+          hideRange
+          formatSummary={(capital) =>
+            `$${capital.toLocaleString("en-US", { maximumFractionDigits: 0 })}`
+          }
           description="Nominal scale only; percentage risk behavior is unchanged."
           onChange={setNumeric}
         />
@@ -204,6 +251,23 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           <small>Same inputs + seed produce the same result.</small>
         </label>
       </Group>
+      <div
+        className={
+          exceedsWorkBudget ? "workload-budget over-budget" : "workload-budget"
+        }
+        role="status"
+      >
+        <span>Estimated local workload</span>
+        <strong>
+          {work.totalPathTrades.toLocaleString()} /{" "}
+          {LAB_OPERATION_BUDGET.toLocaleString()} path-trades
+        </strong>
+        <p>
+          {exceedsWorkBudget
+            ? "Above the local safety limit. Reduce paths, trade frequency, or horizon before results can refresh."
+            : "Includes the main run and labeled preview grids; reported sample counts are never downscaled silently."}
+        </p>
+      </div>
       <Group title="Risk definitions">
         <NumericControl
           id="ruinThresholdFraction"

@@ -9,10 +9,17 @@ export const linearScale = (
   rangeMinimum: number,
   rangeMaximum: number,
 ) => {
-  const span = domainMaximum - domainMinimum || 1;
+  const domainScale = Math.max(
+    Math.abs(domainMinimum),
+    Math.abs(domainMaximum),
+    1,
+  );
+  const normalizedMinimum = domainMinimum / domainScale;
+  const normalizedSpan = domainMaximum / domainScale - normalizedMinimum || 1;
   return (value: number): number =>
     rangeMinimum +
-    ((value - domainMinimum) / span) * (rangeMaximum - rangeMinimum);
+    ((value / domainScale - normalizedMinimum) / normalizedSpan) *
+      (rangeMaximum - rangeMinimum);
 };
 
 export const pathFromPoints = (points: Point[]): string =>
@@ -34,10 +41,22 @@ export const finiteDomain = (values: number[]): [number, number] => {
   if (finite.length === 0) return [0, 1];
   const minimum = Math.min(...finite);
   const maximum = Math.max(...finite);
+  const scale = Math.max(Math.abs(minimum), Math.abs(maximum), 1);
   if (minimum === maximum) {
     const padding = Math.max(Math.abs(minimum) * 0.05, 1);
-    return [minimum - padding, maximum + padding];
+    const lower = minimum - padding;
+    const upper = maximum + padding;
+    return [
+      Number.isFinite(lower) ? lower : -Number.MAX_VALUE,
+      Number.isFinite(upper) ? upper : Number.MAX_VALUE,
+    ];
   }
-  const padding = (maximum - minimum) * 0.08;
-  return [minimum - padding, maximum + padding];
+  const normalizedSpan = maximum / scale - minimum / scale;
+  const padding = scale * normalizedSpan * 0.08;
+  const lower = minimum - padding;
+  const upper = maximum + padding;
+  return [
+    Number.isFinite(lower) ? lower : -Number.MAX_VALUE,
+    Number.isFinite(upper) ? upper : Number.MAX_VALUE,
+  ];
 };

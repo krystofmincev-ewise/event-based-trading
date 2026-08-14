@@ -1,7 +1,61 @@
 import type { SimulationResult } from "@event-lab/simulation";
 import { useState } from "react";
 
+import { useNumberDraft } from "../hooks/useNumberDraft.js";
 import { formatCurrency, formatPercent } from "../lib/format.js";
+
+interface BenchmarkInputProps {
+  id: string;
+  label: string;
+  value: number;
+  minimum: number;
+  maximum: number;
+  onChange: (value: number) => void;
+}
+
+const BenchmarkInput = ({
+  id,
+  label,
+  value,
+  minimum,
+  maximum,
+  onChange,
+}: BenchmarkInputProps) => {
+  const draft = useNumberDraft({
+    value: Number((value * 100).toFixed(4)),
+    minimum,
+    maximum,
+    onValidChange: (next) => onChange(next / 100),
+  });
+  return (
+    <label htmlFor={id}>
+      {label}
+      <span className="benchmark-input-wrap">
+        <input
+          id={id}
+          type="number"
+          aria-label={label}
+          min={minimum}
+          max={maximum}
+          step={0.5}
+          value={draft.visibleValue}
+          aria-describedby={draft.isValid ? undefined : `${id}-error`}
+          aria-invalid={!draft.isValid || undefined}
+          onFocus={draft.onFocus}
+          onBlur={draft.onBlur}
+          onChange={draft.onChange}
+          onKeyDown={draft.onKeyDown}
+        />
+        <span aria-hidden="true">%</span>
+      </span>
+      {!draft.isValid ? (
+        <small className="input-error" id={`${id}-error`} role="alert">
+          Enter a value from {minimum}% to {maximum}%.
+        </small>
+      ) : null}
+    </label>
+  );
+};
 
 export const BenchmarkPanel = ({ result }: { result: SimulationResult }) => {
   const [annualReturn, setAnnualReturn] = useState(0.08);
@@ -29,38 +83,22 @@ export const BenchmarkPanel = ({ result }: { result: SimulationResult }) => {
         </p>
       </div>
       <div className="benchmark-controls">
-        <label>
-          Annual arithmetic drift
-          <span>
-            <input
-              type="number"
-              min={-50}
-              max={50}
-              step={0.5}
-              value={annualReturn * 100}
-              onChange={(event) =>
-                setAnnualReturn(Number(event.target.value) / 100)
-              }
-            />
-            %
-          </span>
-        </label>
-        <label>
-          Annual volatility
-          <span>
-            <input
-              type="number"
-              min={0}
-              max={100}
-              step={0.5}
-              value={annualVolatility * 100}
-              onChange={(event) =>
-                setAnnualVolatility(Number(event.target.value) / 100)
-              }
-            />
-            %
-          </span>
-        </label>
+        <BenchmarkInput
+          id="benchmark-drift"
+          label="Annual arithmetic drift"
+          value={annualReturn}
+          minimum={-50}
+          maximum={50}
+          onChange={setAnnualReturn}
+        />
+        <BenchmarkInput
+          id="benchmark-volatility"
+          label="Annual volatility"
+          value={annualVolatility}
+          minimum={0}
+          maximum={100}
+          onChange={setAnnualVolatility}
+        />
       </div>
       <dl className="benchmark-outcomes">
         <div>
@@ -78,12 +116,16 @@ export const BenchmarkPanel = ({ result }: { result: SimulationResult }) => {
           </dd>
         </div>
         <div>
-          <dt>Strategy median advantage</dt>
+          <dt>Strategy median vs modeled median</dt>
           <dd>
             {formatPercent(result.metrics.terminalCapital.median / median - 1)}
           </dd>
         </div>
       </dl>
+      <p className="benchmark-comparison-note">
+        Relative difference between two independently modeled distribution
+        medians—not paired outperformance.
+      </p>
     </section>
   );
 };

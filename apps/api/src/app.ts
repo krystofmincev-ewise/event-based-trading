@@ -6,9 +6,16 @@ import {
 } from "@event-lab/simulation";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
-import { HttpError, readJsonBody, sendJson } from "./http.js";
+import {
+  assertJsonContentType,
+  assertLocalRequest,
+  HttpError,
+  readJsonBody,
+  sendJson,
+} from "./http.js";
 
 const parseInput = async (request: IncomingMessage) => {
+  assertJsonContentType(request);
   const body = await readJsonBody(request);
   const parsed = validateSimulationInput(body);
   if (!parsed.success) {
@@ -45,6 +52,7 @@ export const handleRequest = async (
   response: ServerResponse,
 ): Promise<void> => {
   try {
+    assertLocalRequest(request);
     const url = new URL(request.url ?? "/", "http://localhost");
     if (request.method === "GET" && url.pathname === "/api/health") {
       sendJson(response, 200, {

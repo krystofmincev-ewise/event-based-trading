@@ -1,6 +1,7 @@
 import { spawn } from "node:child_process";
 
 const commands = [
+  ["npm", ["run", "dev", "-w", "@event-lab/simulation"]],
   ["npm", ["run", "dev:api"]],
   ["npm", ["run", "dev:web"]],
 ];

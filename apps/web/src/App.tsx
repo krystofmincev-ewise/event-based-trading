@@ -17,9 +17,9 @@ export const App = () => {
   return (
     <div id="top" className="app-shell">
       <a className="skip-link" href="#main-content">
-        Skip to results
+        Skip to main content
       </a>
-      <Header status={lab.status} />
+      <Header status={lab.status} issueKind={lab.error?.kind} />
       <main id="main-content">
         <section className="hero" aria-labelledby="hero-title">
           <div className="hero-copy">
@@ -64,19 +64,54 @@ export const App = () => {
             </div>
 
             {lab.error ? (
-              <div className="error-state" role="alert">
-                <strong>Local simulation unavailable</strong>
+              <div
+                className={
+                  lab.data ? "error-state has-stale-data" : "error-state"
+                }
+                role="alert"
+              >
+                <strong>Simulation refresh failed</strong>
                 <p>
-                  {lab.error} Start the API on port 8787, then try the control
-                  again.
+                  {lab.error.message}{" "}
+                  {lab.data
+                    ? "The last successful result remains below as stale context."
+                    : lab.error.kind === "input"
+                      ? "Adjust the highlighted experiment inputs to continue."
+                      : lab.error.kind === "unavailable"
+                        ? "Start the local API on port 8787, then retry."
+                        : lab.error.kind === "malformed"
+                          ? "Restart the local app stack so the API and client share the same contract, then retry."
+                          : "Review the inputs and retry."}
                 </p>
+                {lab.error.details.length > 0 ? (
+                  <ul className="error-details">
+                    {lab.error.details.map((detail) => (
+                      <li key={detail}>{detail}</li>
+                    ))}
+                  </ul>
+                ) : null}
+                {lab.error.kind === "input" ? null : (
+                  <button type="button" onClick={lab.retry}>
+                    Retry simulation
+                  </button>
+                )}
               </div>
             ) : null}
 
             {lab.data ? (
               <div
                 className={
-                  lab.status === "loading" ? "results-stale" : undefined
+                  lab.status === "loading" || lab.status === "error"
+                    ? "results-stale"
+                    : undefined
+                }
+                aria-busy={lab.status === "loading"}
+                aria-label={
+                  lab.status === "error"
+                    ? "Stale results from the last successful simulation"
+                    : lab.status === "loading"
+                      ? "Results updating"
+                      : undefined
                 }
               >
                 <MetricStrip result={lab.data.simulation} />
@@ -94,24 +129,48 @@ export const App = () => {
                   </ul>
                 </aside>
               </div>
-            ) : (
+            ) : !lab.error ? (
               <div className="loading-state" role="status">
                 <span className="loading-line" />
                 <span className="loading-line short" />
                 <p>Building seeded paths and pathwise risk statistics…</p>
               </div>
-            )}
+            ) : null}
           </div>
         </section>
 
         {lab.data ? (
-          <KellySection
-            simulation={lab.data.simulation}
-            comparison={lab.data.comparison}
-            onSelectFraction={(positionFraction) =>
-              setInput((current) => ({ ...current, positionFraction }))
+          <div
+            className={lab.status === "ready" ? undefined : "kelly-stale"}
+            aria-label={
+              lab.status === "error"
+                ? "Stale Kelly comparison from the last successful simulation"
+                : lab.status === "loading"
+                  ? "Kelly comparison updating"
+                  : undefined
             }
-          />
+          >
+            <KellySection
+              simulation={lab.data.simulation}
+              comparison={lab.data.comparison}
+              currentAssumptions={input}
+              isRefreshing={
+                lab.status === "loading" ||
+                input.positionFraction !==
+                  lab.data.simulation.input.positionFraction ||
+                input.winProbability !==
+                  lab.data.simulation.input.winProbability ||
+                input.netWinMultiple !==
+                  lab.data.simulation.input.netWinMultiple
+              }
+              onSelectFraction={(positionFraction) =>
+                setInput((current) => ({ ...current, positionFraction }))
+              }
+              onChangeProbability={(winProbability) =>
+                setInput((current) => ({ ...current, winProbability }))
+              }
+            />
+          </div>
         ) : null}
 
         <section id="methodology" className="disclaimer">

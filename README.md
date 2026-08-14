@@ -29,6 +29,8 @@ Open [http://127.0.0.1:5173](http://127.0.0.1:5173). The local API listens on [h
 
 The default experiment uses 5,000 paths, a one-year horizon, 1.5 trades/week, a 58% hit probability, 1× net payout, 8% of current bankroll at risk, and seed `event-edge-2026`. Controls are recomputed after a short debounce.
 
+The input console shows a conservative total path-trade estimate. Combinations above the local four-million-operation budget are rejected before simulation with guidance to reduce paths, frequency, or horizon. This protects the single-process API from extreme multi-surface work and never silently lowers the main or staked Kelly sample count; the no-stake Kelly baseline is exact and requires no sampling.
+
 ## Model in one page
 
 For bankroll `W`, current-bankroll fraction at risk `f`, net win multiple `b > 0`, and binary outcome `X ∈ {0,1}`:
@@ -70,7 +72,7 @@ See [Methodology](docs/METHODOLOGY.md) for exact aggregation, ratio, quantile, d
 - Pointwise fan quantiles with six deterministic sample paths
 - Terminal-return and maximum-drawdown histograms
 - Common-random-number position-size sweep with the analytical Kelly marker
-- Keyboard-focusable hit-probability × size heatmap
+- Scrollable semantic hit-probability × size heatmap table
 - Same-path no-stake, quarter-, half-, and full-Kelly comparison
 - Configurable lognormal market-like context over the same horizon
 
@@ -97,7 +99,7 @@ The simulation package has no React or server dependency. The API owns runtime v
 | `/api/explore`  | Position-size sweep and hit-rate × size heatmap                     |
 | `/api/kelly`    | No-stake, quarter-, half-, and full-Kelly finite-horizon comparison |
 
-All three accept the same complete `SimulationInput` JSON object. Invalid input returns HTTP 422 with field-level details; malformed JSON returns 400; request bodies above 64 KiB return 413.
+All three accept the same complete `SimulationInput` JSON object. Invalid input returns HTTP 422 with field-level details; malformed JSON returns 400; non-JSON POSTs return 415; request bodies above 64 KiB return 413. The local API accepts loopback Host/Origin values only and verifies that response DTOs contain no non-finite numbers before serialization.
 
 ## Quality commands
 
@@ -121,3 +123,7 @@ The inputs can describe an abstract event or one-touch binary contract only afte
 Fan-chart bands are pointwise cross-path quantiles; they are not realizable individual trajectories. Expected wealth can be dominated by rare right-tail paths and should be read beside the median and risk distributions. Reproducible seeds make comparisons auditable but do not eliminate Monte Carlo sampling error.
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) before proposing changes.
+
+## License status
+
+No software license is granted in this repository yet. The owner should make an explicit license choice before public redistribution; absence of a `LICENSE` file means the default copyright restrictions apply.

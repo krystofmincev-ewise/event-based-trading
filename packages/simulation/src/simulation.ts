@@ -23,6 +23,7 @@ import type {
 
 const FAN_POINT_LIMIT = 65;
 const SAMPLE_PATH_LIMIT = 6;
+const MAX_FINITE_LOG = Math.log(Number.MAX_VALUE);
 
 const DEFINITIONS: SimulationDefinitions = {
   winMultiplier: "Capital × (1 + f × b), where b is NET profit per unit stake.",
@@ -64,9 +65,17 @@ const impliedCagr = (
   terminalCapital: number,
   startingCapital: number,
   years: number,
-): number => {
-  if (terminalCapital === 0) return -1;
-  return Math.exp(Math.log(terminalCapital / startingCapital) / years) - 1;
+): { value: number; capped: boolean } => {
+  if (terminalCapital === 0) return { value: -1, capped: false };
+  const annualLogGrowth =
+    (Math.log(terminalCapital) - Math.log(startingCapital)) / years;
+  if (annualLogGrowth >= MAX_FINITE_LOG) {
+    return { value: Number.MAX_VALUE, capped: true };
+  }
+  const value = Math.expm1(annualLogGrowth);
+  return Number.isFinite(value)
+    ? { value, capped: false }
+    : { value: Number.MAX_VALUE, capped: true };
 };
 
 export const runSimulation = (input: SimulationInput): SimulationResult => {
@@ -75,6 +84,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     Math.round(input.tradesPerWeek * input.horizonWeeks),
   );
   const horizonYears = input.horizonWeeks / 52;
+  const effectiveTradesPerWeek = tradeCount / input.horizonWeeks;
   const checkpointTradeValues = checkpointTrades(tradeCount);
   const checkpointIndexByTrade = new Map(
     checkpointTradeValues.map((trade, index) => [trade, index]),
@@ -210,6 +220,18 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   }));
   const annualized = weeklyReturns.finish();
   const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
+  const expectedTerminalCagr = impliedCagr(
+    expectedTerminalCapital,
+    input.startingCapital,
+    horizonYears,
+  );
+  const medianTerminalCagr = impliedCagr(
+    terminalSummary.median,
+    input.startingCapital,
+    horizonYears,
+  );
+  const cagrOutputCapped =
+    expectedTerminalCagr.capped || medianTerminalCagr.capped;
   const warnings: string[] = [
     "Outcomes are iid with stationary known probability and payout; probability error, clustering, correlation, slippage, liquidity, taxes, contract availability, market impact, and regime shifts are not modeled.",
     "This v1 accepts an abstract user-supplied event or one-touch barrier-hit probability and net payout. A path-dependent barrier option cannot be priced from win rate alone.",
@@ -217,6 +239,11 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   if (kelly.edgePerUnitStaked <= 0 && input.positionFraction > 0) {
     warnings.push(
       "The assumed edge is non-positive; Kelly allocates zero under these inputs.",
+    );
+  }
+  if (Math.abs(effectiveTradesPerWeek - input.tradesPerWeek) > 1e-12) {
+    warnings.push(
+      `Whole-trade rounding produces ${tradeCount} trades, an effective ${effectiveTradesPerWeek.toFixed(4)} trades/week versus ${input.tradesPerWeek.toFixed(4)} requested.`,
     );
   }
   if (input.positionFraction === 1) {
@@ -239,6 +266,11 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       "The unstopped analytical expected terminal capital exceeded finite display range and was capped.",
     );
   }
+  if (cagrOutputCapped) {
+    warnings.push(
+      "One or more implied CAGR outputs exceeded finite numeric range and were capped at Number.MAX_VALUE; interpret this as overflow, not a forecast.",
+    );
+  }
   if (practicalRuinCount > 0) {
     warnings.push(
       "The analytical expected terminal value ignores the practical-ruin stop and is not directly comparable when that stop binds.",
@@ -254,16 +286,8 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       terminalCapital: terminalSummary,
       expectedTotalReturn: expectedTerminalCapital / input.startingCapital - 1,
       medianTotalReturn: terminalSummary.median / input.startingCapital - 1,
-      impliedCagrFromExpectedTerminal: impliedCagr(
-        expectedTerminalCapital,
-        input.startingCapital,
-        horizonYears,
-      ),
-      impliedCagrFromMedianTerminal: impliedCagr(
-        terminalSummary.median,
-        input.startingCapital,
-        horizonYears,
-      ),
+      impliedCagrFromExpectedTerminal: expectedTerminalCagr.value,
+      impliedCagrFromMedianTerminal: medianTerminalCagr.value,
       probabilityOfLoss: lossCount / input.pathCount,
       probabilityOfPracticalRuin: practicalRuinCount / input.pathCount,
       medianMaxDrawdown: quantileSorted(sortedDrawdowns, 0.5),
@@ -277,6 +301,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     maxDrawdownHistogram: createHistogram(maxDrawdowns),
     metadata: {
       tradeCount,
+      effectiveTradesPerWeek,
       horizonYears,
       pathCount: input.pathCount,
       seed: input.seed,
@@ -286,6 +311,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       severeDrawdownFraction: input.severeDrawdownFraction,
       cappedPathCount,
       analyticalOutputCapped,
+      cagrOutputCapped,
       simulationModel: "iid binary fixed-fraction",
     },
     definitions: DEFINITIONS,

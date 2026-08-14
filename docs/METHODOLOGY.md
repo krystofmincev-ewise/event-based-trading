@@ -55,12 +55,13 @@ This is why the UI places expected wealth beside median outcomes and drawdown/ru
 
 ## 3. Time and path generation
 
-- Trade count is `round(tradesPerWeek × horizonWeeks)`, with at least one trade.
+- Trade count is `round(tradesPerWeek × horizonWeeks)`, with at least one trade. Metadata and the run manifest report both that whole-trade count and its realized rate `tradeCount / horizonWeeks`; a warning appears when it differs from the requested rate.
 - Outcomes use a deterministic counter-based pseudorandom function keyed by seed, path index, and trade index.
 - The same seed and inputs return identical results.
 - Sweep, heatmap, and Kelly comparisons reuse path/trade random coordinates. This common-random-number design reduces visual comparison noise.
 - The main run accepts 100–25,000 paths and a 1–104 week horizon.
 - At most 65 checkpoint columns and six deterministic sample paths are retained. Terminal values, drawdowns, histograms, and metrics are aggregated without retaining every full path.
+- Before any API route computes, validation applies a conservative four-million path-trade budget across the requested main run, upper-bound exploratory grids, and three simulated Kelly stakes. The no-stake baseline is exact. Over-budget combinations return HTTP 422 with guidance; displayed estimates and returned sample counts are not silently reduced.
 
 Fan quantiles are computed independently across paths at each shared checkpoint. They are pointwise summaries and do not describe a single realizable path.
 
@@ -83,6 +84,12 @@ The starting bankroll and threshold-crossing observation are included. Maximum d
 - Expected and median total returns divide their corresponding terminal measure by starting capital and subtract one.
 - Implied CAGR is `(terminal / starting)^(1 / horizonYears) − 1`.
 - Probability of loss is the share of paths finishing below starting capital.
+
+Histograms use linear-width bins over the observed finite domain. With highly
+skewed terminal outcomes, far-right tail values can compress the central mass
+visually. The chart exposes full-precision bin bounds and counts for inspection;
+v1 does not apply a logarithmic transform or an overflow-bin policy.
+
 - Histogram domains and counts include the complete path sample.
 
 The engine also returns the closed-form **unstopped** arithmetic expectation:
@@ -92,6 +99,8 @@ E[W_N] = W_0 [1 + f(bp − (1 − p))]^N
 ```
 
 It is labeled separately because it is not directly comparable with the stopped simulation when practical ruin binds. Rare right-tail paths can dominate both simulated and analytical expected wealth.
+
+CAGR is calculated from log capital and calendar years. If annualization of an allowed finite short-horizon terminal value exceeds JavaScript's finite numeric range, the result is capped at `Number.MAX_VALUE`, metadata sets `cagrOutputCapped`, and a warning identifies overflow. The client renders that finite cap in scientific notation rather than interpreting JSON `null` as zero.
 
 ## 6. Weekly risk-adjusted metrics
 
@@ -120,7 +129,7 @@ Metadata counts paths that crossed finite display range and warnings distinguish
 
 The sizing sweep includes a regular grid plus the current, quarter-, half-, and full-Kelly fractions. Each point returns median CAGR, median terminal capital, practical-ruin probability, severe-drawdown probability, p90 maximum drawdown, and analytical expected log growth.
 
-The heatmap evaluates selected hit probabilities and position fractions with a reduced path count for responsiveness. Both views disclose their path counts. The analytical Kelly marker is authoritative; visual peaks can differ because finite samples, a finite horizon, practical-ruin stopping, and grid resolution affect plotted Monte Carlo summaries.
+The sweep uses at most 250 paths per fraction and the heatmap uses at most 100 paths per cell so controls remain responsive; both views disclose their exact path counts and are qualitative sensitivity previews. The analytical Kelly marker is authoritative; visual peaks can differ because finite samples, a finite horizon, practical-ruin stopping, and grid resolution affect plotted Monte Carlo summaries. The main simulation and every staked Kelly variant retain the user-selected path count; the exact no-stake baseline uses zero simulated paths. The total-operation budget constrains unsafe combinations before any run starts.
 
 ## 9. Modeled benchmark
 
@@ -133,6 +142,8 @@ p05/p95 = W_0 exp[(μ − σ²/2)T ± z_0.95 σ sqrt(T)]
 ```
 
 where `z_0.95 ≈ 1.64485`. It is explicitly labeled modeled, configurable, and not historical S&P 500 data. No historical-series claim or data license is involved.
+
+The displayed strategy-median-versus-modeled-median percentage is a relative difference between two independently modeled marginal medians. It is context, not paired pathwise outperformance.
 
 ## 10. Omissions
 

@@ -104,4 +104,15 @@ describe("runSimulation", () => {
       12,
     );
   });
+
+  it("reports realized frequency when whole-trade rounding changes the rate", () => {
+    const result = runSimulation({
+      ...smallInput,
+      tradesPerWeek: 0.25,
+      horizonWeeks: 1,
+    });
+    expect(result.metadata.tradeCount).toBe(1);
+    expect(result.metadata.effectiveTradesPerWeek).toBe(1);
+    expect(result.warnings.join(" ")).toContain("Whole-trade rounding");
+  });
 });

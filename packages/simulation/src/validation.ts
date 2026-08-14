@@ -1,5 +1,6 @@
 import { INPUT_LIMITS } from "./defaults.js";
 import type { SimulationInput } from "./types.js";
+import { estimateLabWork, LAB_OPERATION_BUDGET } from "./workload.js";
 
 export type ValidationResult =
   | { success: true; data: SimulationInput }
@@ -136,20 +137,28 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
 
   if (errors.length > 0) return { success: false, errors };
 
-  return {
-    success: true,
-    data: {
-      winProbability: winProbability!,
-      positionFraction: positionFraction!,
-      netWinMultiple: netWinMultiple!,
-      tradesPerWeek: tradesPerWeek!,
-      horizonWeeks: horizonWeeks!,
-      startingCapital: startingCapital!,
-      pathCount: pathCount!,
-      seed: (seed as string).trim(),
-      ruinThresholdFraction: ruinThresholdFraction!,
-      annualRiskFreeRate: annualRiskFreeRate!,
-      severeDrawdownFraction: severeDrawdownFraction!,
-    },
+  const data: SimulationInput = {
+    winProbability: winProbability!,
+    positionFraction: positionFraction!,
+    netWinMultiple: netWinMultiple!,
+    tradesPerWeek: tradesPerWeek!,
+    horizonWeeks: horizonWeeks!,
+    startingCapital: startingCapital!,
+    pathCount: pathCount!,
+    seed: (seed as string).trim(),
+    ruinThresholdFraction: ruinThresholdFraction!,
+    annualRiskFreeRate: annualRiskFreeRate!,
+    severeDrawdownFraction: severeDrawdownFraction!,
   };
+  const work = estimateLabWork(data);
+  if (work.totalPathTrades > LAB_OPERATION_BUDGET) {
+    return {
+      success: false,
+      errors: [
+        `Estimated lab workload ${work.totalPathTrades.toLocaleString("en-US")} path-trades exceeds the local limit of ${LAB_OPERATION_BUDGET.toLocaleString("en-US")}; reduce pathCount, tradesPerWeek, or horizonWeeks.`,
+      ],
+    };
+  }
+
+  return { success: true, data };
 };

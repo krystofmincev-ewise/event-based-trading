@@ -41,6 +41,38 @@ const installFetchMock = () => {
   return fetchMock;
 };
 
+const installDynamicFetchMock = () => {
+  const fetchMock = vi.fn(
+    (resource: string | URL | Request, options?: RequestInit) => {
+      const path =
+        typeof resource === "string"
+          ? resource
+          : resource instanceof URL
+            ? resource.pathname
+            : new URL(resource.url).pathname;
+      if (typeof options?.body !== "string") {
+        throw new Error("Expected a serialized request body.");
+      }
+      const requested = JSON.parse(options.body) as typeof testInput;
+      const input = { ...requested, pathCount: 100, horizonWeeks: 2 };
+      const body =
+        path === "/api/simulate"
+          ? { simulation: runSimulation(input) }
+          : path === "/api/explore"
+            ? { exploration: runExploration(input) }
+            : { comparison: runKellyComparison(input) };
+      return Promise.resolve(
+        new Response(JSON.stringify(body), {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    },
+  );
+  vi.stubGlobal("fetch", fetchMock);
+  return fetchMock;
+};
+
 afterEach(() => {
   vi.unstubAllGlobals();
   vi.restoreAllMocks();
@@ -68,6 +100,12 @@ describe("App", () => {
     expect(
       screen.getByRole("heading", {
         name: "Kelly, with the confidence dial exposed.",
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText("Sections")).toBeInTheDocument();
+    expect(
+      screen.getByRole("group", {
+        name: "Bankroll and terminal value scale",
       }),
     ).toBeInTheDocument();
   });
@@ -107,9 +145,140 @@ describe("App", () => {
     );
     render(<App />);
     expect(
-      await screen.findByText("Local simulation unavailable"),
+      await screen.findByText("Simulation refresh failed"),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Event hit probability")).toBeEnabled();
+  });
+
+  it("rejects malformed successful API payloads", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve(
+          new Response(JSON.stringify({ unexpected: true }), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          }),
+        ),
+      ),
+    );
+    render(<App />);
+    expect(
+      await screen.findByText("Simulation refresh failed"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/returned a malformed result/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Expected terminal")).not.toBeInTheDocument();
+  });
+
+  it("rejects a superficially valid but incomplete simulation envelope", async () => {
+    const incomplete = JSON.parse(
+      JSON.stringify(responseBodies["/api/simulate"]),
+    ) as Record<string, unknown>;
+    const simulation = incomplete.simulation as Record<string, unknown>;
+    const metrics = simulation.metrics as Record<string, unknown>;
+    delete metrics.terminalCapital;
+    vi.stubGlobal(
+      "fetch",
+      vi.fn((resource: string | URL | Request) => {
+        const path =
+          typeof resource === "string"
+            ? resource
+            : resource instanceof URL
+              ? resource.pathname
+              : new URL(resource.url).pathname;
+        const body =
+          path === "/api/simulate"
+            ? incomplete
+            : responseBodies[path as keyof typeof responseBodies];
+        return Promise.resolve(
+          new Response(JSON.stringify(body), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          }),
+        );
+      }),
+    );
+    render(<App />);
+    expect(
+      await screen.findByText(/returned a malformed result/i),
+    ).toBeInTheDocument();
+    expect(screen.queryByText("Expected terminal")).not.toBeInTheDocument();
+  });
+
+  it("preserves server validation details without claiming the API is offline", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(() =>
+        Promise.resolve(
+          new Response(
+            JSON.stringify({
+              error: "Simulation input is invalid.",
+              details: ["workload path-trades exceeds the local limit"],
+            }),
+            { status: 422, headers: { "Content-Type": "application/json" } },
+          ),
+        ),
+      ),
+    );
+    render(<App />);
+    expect(
+      await screen.findByText("workload path-trades exceeds the local limit"),
+    ).toBeInTheDocument();
+    expect(screen.queryByText(/Start the local API/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Review the inputs and retry/i),
+    ).toBeInTheDocument();
+  });
+
+  it("retains explicitly stale results and recovers through Retry", async () => {
+    let callCount = 0;
+    const fetchMock = vi.fn((resource: string | URL | Request) => {
+      callCount += 1;
+      if (callCount >= 4 && callCount <= 6) {
+        return Promise.reject(new Error("offline"));
+      }
+      const path =
+        typeof resource === "string"
+          ? resource
+          : resource instanceof URL
+            ? resource.pathname
+            : new URL(resource.url).pathname;
+      const body = responseBodies[path as keyof typeof responseBodies];
+      return Promise.resolve(
+        new Response(JSON.stringify(body), {
+          status: body ? 200 : 404,
+          headers: { "Content-Type": "application/json" },
+        }),
+      );
+    });
+    vi.stubGlobal("fetch", fetchMock);
+    const user = userEvent.setup();
+    render(<App />);
+    await screen.findByRole("heading", { name: "Bankroll fan" });
+
+    await user.click(screen.getByRole("button", { name: "Use quarter kelly" }));
+    expect(
+      await screen.findByText("Simulation refresh failed"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/last successful result remains/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByLabelText(
+        "Stale results from the last successful simulation",
+      ),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Expected terminal").length).toBeGreaterThan(0);
+
+    await user.click(screen.getByRole("button", { name: "Retry simulation" }));
+    await waitFor(() =>
+      expect(
+        screen.queryByText("Simulation refresh failed"),
+      ).not.toBeInTheDocument(),
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(9);
   });
 
   it("applies a synchronized fractional Kelly control", async () => {
@@ -121,5 +290,46 @@ describe("App", () => {
       within(kellyResults).getByRole("button", { name: "Use quarter kelly" }),
     );
     expect(screen.getByLabelText("Current bankroll at risk")).toHaveValue(4);
+    expect(
+      within(kellyResults).getByRole("button", { name: "Applied" }),
+    ).toHaveAttribute("aria-pressed", "true");
+    expect(screen.getByText("Applied · recomputing…")).toBeInTheDocument();
+  });
+
+  it("closes the compact section menu after navigation", async () => {
+    installFetchMock();
+    const user = userEvent.setup();
+    render(<App />);
+    const summary = screen.getByText("Sections");
+    const menu = summary.closest("details");
+    expect(menu).not.toBeNull();
+    await user.click(summary);
+    expect(menu).toHaveAttribute("open");
+    await user.click(
+      within(menu as HTMLElement).getByRole("link", { name: "Kelly sizing" }),
+    );
+    expect(menu).not.toHaveAttribute("open");
+  });
+
+  it("recomputes Kelly fractions from its synchronized probability control", async () => {
+    installDynamicFetchMock();
+    const user = userEvent.setup();
+    render(<App />);
+    const probability = await screen.findByLabelText(
+      "Kelly success probability",
+    );
+    await user.clear(probability);
+    await user.type(probability, "60");
+
+    const results = screen.getByLabelText("Kelly fraction results");
+    const quarter = within(results)
+      .getByText("Quarter Kelly")
+      .closest(".kelly-lane");
+    const half = within(results).getByText("Half Kelly").closest(".kelly-lane");
+    const full = within(results).getByText("Full Kelly").closest(".kelly-lane");
+    await waitFor(() => expect(quarter).toHaveTextContent("5.0%"));
+    expect(half).toHaveTextContent("10.0%");
+    expect(full).toHaveTextContent("20.0%");
+    expect(screen.getByLabelText("Event hit probability")).toHaveValue(60);
   });
 });

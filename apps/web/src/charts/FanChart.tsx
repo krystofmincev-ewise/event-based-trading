@@ -8,6 +8,7 @@ import {
   pathFromPoints,
   polygonFromBands,
 } from "./chartUtils.js";
+import { HorizontalScrollRegion } from "./HorizontalScrollRegion.js";
 
 interface FanChartProps {
   result: SimulationResult;
@@ -71,7 +72,7 @@ export const FanChart = ({ result, view }: FanChartProps) => {
           p95 <strong>{formatter(convert(active.p95))}</strong>
         </span>
       </div>
-      <div className="svg-wrap">
+      <HorizontalScrollRegion label="Bankroll fan chart" className="svg-wrap">
         <svg
           className="analytics-svg"
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -154,7 +155,7 @@ export const FanChart = ({ result, view }: FanChartProps) => {
             ),
           )}
         </svg>
-      </div>
+      </HorizontalScrollRegion>
       <label className="chart-scrubber">
         <span>Inspect week</span>
         <input
@@ -164,6 +165,9 @@ export const FanChart = ({ result, view }: FanChartProps) => {
           step={1}
           value={activeIndex}
           aria-label="Fan chart week"
+          aria-valuetext={`Week ${active.week.toFixed(1)} of ${result.input.horizonWeeks}; median ${formatter(
+            convert(active.median),
+          )}`}
           onChange={(event) => setSelectedIndex(Number(event.target.value))}
         />
       </label>

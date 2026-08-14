@@ -6,7 +6,7 @@
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "predev": "npm run build -w @event-lab/simulation",
-    "dev": "tsx watch src/server.ts",
+    "dev": "tsx watch --include ../../packages/simulation/dist src/server.ts",
     "start": "node dist/server.js",
     "pretypecheck": "npm run build -w @event-lab/simulation",
     "typecheck": "tsc -p tsconfig.json --noEmit"

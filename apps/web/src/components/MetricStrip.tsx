@@ -4,36 +4,54 @@ import { formatCurrency, formatPercent, formatRatio } from "../lib/format.js";
 
 export const MetricStrip = ({ result }: { result: SimulationResult }) => {
   const { metrics } = result;
+  const returnTone = (value: number) =>
+    value > 0 ? "positive" : value < 0 ? "danger" : "neutral";
+  const ruinTone =
+    metrics.probabilityOfPracticalRuin === 0
+      ? "neutral"
+      : metrics.probabilityOfPracticalRuin >= 0.05
+        ? "danger"
+        : "warning";
+  const drawdownTone =
+    metrics.medianMaxDrawdown >= result.input.severeDrawdownFraction
+      ? "danger"
+      : metrics.medianMaxDrawdown >= 0.2
+        ? "warning"
+        : "neutral";
+  const sharpeTone =
+    metrics.annualized.sharpe === null
+      ? "neutral"
+      : returnTone(metrics.annualized.sharpe);
   const metricsList = [
     {
       label: "Expected terminal",
       value: formatCurrency(metrics.expectedTerminalCapital),
       detail: `${formatPercent(metrics.expectedTotalReturn)} total`,
-      tone: "positive",
+      tone: returnTone(metrics.expectedTotalReturn),
     },
     {
       label: "Median terminal",
       value: formatCurrency(metrics.terminalCapital.median),
       detail: `${formatPercent(metrics.medianTotalReturn)} total`,
-      tone: metrics.medianTotalReturn < 0 ? "danger" : "neutral",
+      tone: returnTone(metrics.medianTotalReturn),
     },
     {
       label: "Practical ruin",
       value: formatPercent(metrics.probabilityOfPracticalRuin),
       detail: `≤ ${formatCurrency(result.metadata.practicalRuinCapital)}`,
-      tone: "danger",
+      tone: ruinTone,
     },
     {
       label: "Median max drawdown",
       value: formatPercent(metrics.medianMaxDrawdown),
       detail: `p90 ${formatPercent(metrics.p90MaxDrawdown)}`,
-      tone: "warning",
+      tone: drawdownTone,
     },
     {
-      label: "Weekly Sharpe",
+      label: "Annualized Sharpe",
       value: formatRatio(metrics.annualized.sharpe),
-      detail: `${formatPercent(metrics.annualized.annualizedVolatility)} ann. vol`,
-      tone: "neutral",
+      detail: "Pooled weekly observations",
+      tone: sharpeTone,
     },
   ];
 

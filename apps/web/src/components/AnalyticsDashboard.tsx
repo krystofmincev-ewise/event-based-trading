@@ -22,8 +22,12 @@ export const AnalyticsDashboard = ({
   const [view, setView] = useState<"nominal" | "percentage">("nominal");
   return (
     <div className="analytics-dashboard">
-      <div className="view-toggle" role="group" aria-label="Chart value view">
-        <span>Display</span>
+      <div
+        className="view-toggle"
+        role="group"
+        aria-label="Bankroll and terminal value scale"
+      >
+        <span>Bankroll &amp; terminal scale</span>
         <button
           type="button"
           className={view === "nominal" ? "active" : undefined}

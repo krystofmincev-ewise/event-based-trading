@@ -5,6 +5,7 @@ import type {
 
 import { formatPercent } from "../lib/format.js";
 import { finiteDomain, linearScale } from "./chartUtils.js";
+import { HorizontalScrollRegion } from "./HorizontalScrollRegion.js";
 
 const WIDTH = 920;
 const HEIGHT = 370;
@@ -46,7 +47,10 @@ export const FrontierChart = ({
           Kelly is the authoritative log-growth optimum.
         </p>
       </div>
-      <div className="svg-wrap">
+      <HorizontalScrollRegion
+        label="Position-size frontier chart"
+        className="svg-wrap"
+      >
         <svg
           className="analytics-svg"
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -143,7 +147,7 @@ export const FrontierChart = ({
             );
           })}
         </svg>
-      </div>
+      </HorizontalScrollRegion>
       <div className="chart-legend">
         <span className="legend-selected">Current size</span>
         <span className="legend-safe">Lower fragility</span>
@@ -152,6 +156,36 @@ export const FrontierChart = ({
           n = {exploration.sweepPathCount.toLocaleString()} paths / fraction
         </span>
       </div>
+      <details className="chart-data">
+        <summary>View exact frontier data</summary>
+        <div className="chart-data-scroll">
+          <table>
+            <caption className="sr-only">
+              Position-size frontier exact values
+            </caption>
+            <thead>
+              <tr>
+                <th scope="col">Position</th>
+                <th scope="col">Median CAGR</th>
+                <th scope="col">Practical ruin</th>
+                <th scope="col">Severe drawdown</th>
+                <th scope="col">p90 max drawdown</th>
+              </tr>
+            </thead>
+            <tbody>
+              {exploration.sweep.map((point) => (
+                <tr key={point.fraction}>
+                  <td>{formatPercent(point.fraction)}</td>
+                  <td>{formatPercent(point.medianCagr)}</td>
+                  <td>{formatPercent(point.probabilityOfPracticalRuin)}</td>
+                  <td>{formatPercent(point.probabilityOfSevereDrawdown)}</td>
+                  <td>{formatPercent(point.p90MaxDrawdown)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   );
 };

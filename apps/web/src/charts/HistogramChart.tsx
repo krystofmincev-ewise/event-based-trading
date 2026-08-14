@@ -1,7 +1,8 @@
 import type { Histogram } from "@event-lab/simulation";
 
-import { formatCurrency, formatPercent } from "../lib/format.js";
+import { formatCurrencyPrecise, formatPercent } from "../lib/format.js";
 import { linearScale } from "./chartUtils.js";
+import { HorizontalScrollRegion } from "./HorizontalScrollRegion.js";
 
 interface HistogramChartProps {
   id: string;
@@ -35,9 +36,9 @@ export const HistogramChart = ({
     kind === "terminal-return" && view === "nominal"
       ? startingCapital * (1 + value)
       : value;
-  const format =
+  const formatExact =
     kind === "terminal-return" && view === "nominal"
-      ? formatCurrency
+      ? formatCurrencyPrecise
       : formatPercent;
   const [minimum, maximum] = histogram.domain;
 
@@ -50,7 +51,10 @@ export const HistogramChart = ({
         </div>
       </div>
       <p className="chart-description">{description}</p>
-      <div className="svg-wrap">
+      <HorizontalScrollRegion
+        label={`${title} chart`}
+        className="svg-wrap histogram-scroll"
+      >
         <svg
           className="analytics-svg"
           viewBox={`0 0 ${WIDTH} ${HEIGHT}`}
@@ -78,7 +82,8 @@ export const HistogramChart = ({
                 key={`${bin.lower}:${bin.upper}`}
               >
                 <title>
-                  {format(convert(bin.lower))} to {format(convert(bin.upper))}:{" "}
+                  {formatExact(convert(bin.lower))} to{" "}
+                  {formatExact(convert(bin.upper))}:{" "}
                   {bin.count.toLocaleString()} paths
                 </title>
               </rect>
@@ -96,15 +101,39 @@ export const HistogramChart = ({
               textAnchor="middle"
               key={tick}
             >
-              {format(convert(tick))}
+              {formatExact(convert(tick))}
             </text>
           ))}
         </svg>
-      </div>
+      </HorizontalScrollRegion>
       <span className="sample-caption">
-        n = {histogram.sampleCount.toLocaleString()} paths · hover bars for
-        counts
+        n = {histogram.sampleCount.toLocaleString()} paths · exact counts below
+        {kind === "terminal-return" ? " · linear bins" : ""}
       </span>
+      <details className="chart-data">
+        <summary>View exact bin counts</summary>
+        <div className="chart-data-scroll">
+          <table>
+            <caption className="sr-only">{title} exact bin counts</caption>
+            <thead>
+              <tr>
+                <th scope="col">From</th>
+                <th scope="col">To</th>
+                <th scope="col">Paths</th>
+              </tr>
+            </thead>
+            <tbody>
+              {histogram.bins.map((bin) => (
+                <tr key={`${bin.lower}:${bin.upper}`}>
+                  <td>{formatExact(convert(bin.lower))}</td>
+                  <td>{formatExact(convert(bin.upper))}</td>
+                  <td>{bin.count.toLocaleString()}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </details>
     </section>
   );
 };

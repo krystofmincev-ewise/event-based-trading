@@ -32,6 +32,7 @@ Use `npm run dev` for the combined local app, or `npm run dev:api` and `npm run 
 - Compute maximum drawdown per path before aggregating.
 - Keep risk metrics and drawdown numerically valid when displayed capital overflows or underflows.
 - Preserve deterministic common random numbers for sizing comparisons when possible.
+- Preserve the explicit operation-budget validation; do not silently downscale requested main or Kelly samples.
 - Clearly distinguish modeled benchmarks from licensed historical total-return data.
 - Do not add execution, broker, credential, telemetry, or personalized-advice features.
 

@@ -75,15 +75,74 @@ describe("HTTP API", () => {
     const exploration = (await exploreResponse.json()) as {
       exploration: { sweep: unknown[]; heatmap: unknown[] };
     };
-    const kelly = (await kellyResponse.json()) as { comparison: unknown[] };
+    const kelly = (await kellyResponse.json()) as {
+      comparison: Array<{ pathCount: number }>;
+    };
     expect(exploration.exploration.sweep.length).toBeGreaterThan(15);
     expect(exploration.exploration.heatmap.length).toBeGreaterThan(30);
     expect(kelly.comparison).toHaveLength(4);
+    expect(kelly.comparison.map((point) => point.pathCount)).toEqual([
+      0, 100, 100, 100,
+    ]);
+  });
+
+  it("keeps extreme short-horizon CAGR values finite across JSON", async () => {
+    const input = {
+      ...DEFAULT_SIMULATION_INPUT,
+      winProbability: 1,
+      positionFraction: 1,
+      netWinMultiple: 20,
+      tradesPerWeek: 20,
+      horizonWeeks: 1,
+      startingCapital: 100,
+      pathCount: 100,
+    };
+    const post = (path: string) =>
+      fetch(`${baseUrl}${path}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(input),
+      });
+
+    const simulationResponse = await post("/api/simulate");
+    const simulationBody = (await simulationResponse.json()) as {
+      simulation: {
+        metrics: {
+          impliedCagrFromExpectedTerminal: number;
+          impliedCagrFromMedianTerminal: number;
+        };
+        metadata: { cagrOutputCapped: boolean };
+      };
+    };
+    expect(simulationResponse.status).toBe(200);
+    expect(
+      Number.isFinite(
+        simulationBody.simulation.metrics.impliedCagrFromExpectedTerminal,
+      ),
+    ).toBe(true);
+    expect(
+      Number.isFinite(
+        simulationBody.simulation.metrics.impliedCagrFromMedianTerminal,
+      ),
+    ).toBe(true);
+    expect(simulationBody.simulation.metadata.cagrOutputCapped).toBe(true);
+
+    const explorationResponse = await post("/api/explore");
+    const explorationBody = (await explorationResponse.json()) as {
+      exploration: { sweep: Array<{ medianCagr: number }> };
+    };
+    expect(explorationResponse.status).toBe(200);
+    expect(
+      explorationBody.exploration.sweep.every((point) =>
+        Number.isFinite(point.medianCagr),
+      ),
+    ).toBe(true);
   });
 
   it("rejects malformed and invalid inputs without leaking internals", async () => {
     const malformed = await fetch(`${baseUrl}/api/simulate`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
       body: "{",
     });
     expect(malformed.status).toBe(400);
@@ -103,6 +162,42 @@ describe("HTTP API", () => {
         expect.stringContaining("netWinMultiple"),
       ]),
     });
+
+    const excessive = await fetch(`${baseUrl}/api/simulate`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...DEFAULT_SIMULATION_INPUT,
+        pathCount: 25_000,
+        tradesPerWeek: 20,
+        horizonWeeks: 104,
+      }),
+    });
+    expect(excessive.status).toBe(422);
+    await expect(excessive.json()).resolves.toMatchObject({
+      details: expect.arrayContaining([
+        expect.stringContaining("path-trades exceeds"),
+      ]),
+    });
+  });
+
+  it("rejects cross-origin and non-JSON compute requests before simulation", async () => {
+    const unsupported = await fetch(`${baseUrl}/api/simulate`, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(DEFAULT_SIMULATION_INPUT),
+    });
+    expect(unsupported.status).toBe(415);
+
+    const crossOrigin = await fetch(`${baseUrl}/api/simulate`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Origin: "https://example.com",
+      },
+      body: JSON.stringify(DEFAULT_SIMULATION_INPUT),
+    });
+    expect(crossOrigin.status).toBe(403);
   });
 
   it("returns 404 for unknown routes", async () => {

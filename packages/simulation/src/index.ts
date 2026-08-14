@@ -25,5 +25,12 @@ export {
   summarizeQuantiles,
 } from "./statistics.js";
 export { validateSimulationInput } from "./validation.js";
+export {
+  estimateLabWork,
+  HEATMAP_PATH_CAP,
+  LAB_OPERATION_BUDGET,
+  SWEEP_PATH_CAP,
+} from "./workload.js";
 export type * from "./types.js";
 export type { ValidationResult } from "./validation.js";
+export type { LabWorkEstimate } from "./workload.js";

@@ -2,6 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_SIMULATION_INPUT,
+  estimateLabWork,
+  runExploration,
+  runKellyComparison,
   validateSimulationInput,
 } from "../src/index.js";
 
@@ -31,5 +34,43 @@ describe("validateSimulationInput", () => {
       expect(joined).toContain("ruinThresholdFraction");
       expect(joined).toContain("seed");
     }
+  });
+
+  it("rejects combinations that exceed the local operation budget", () => {
+    const result = validateSimulationInput({
+      ...DEFAULT_SIMULATION_INPUT,
+      pathCount: 25_000,
+      tradesPerWeek: 20,
+      horizonWeeks: 104,
+    });
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.errors.join(" ")).toContain("path-trades exceeds");
+      expect(result.errors.join(" ")).toContain(
+        "reduce pathCount, tradesPerWeek, or horizonWeeks",
+      );
+    }
+  });
+
+  it("conservatively covers the generated grids and preserves Kelly samples", () => {
+    const input = { ...DEFAULT_SIMULATION_INPUT, pathCount: 100 };
+    const work = estimateLabWork(input);
+    const exploration = runExploration(input);
+    const comparison = runKellyComparison(input);
+    const actualExplorationPathTrades =
+      (exploration.sweep.length * exploration.sweepPathCount +
+        exploration.heatmap.length * exploration.heatmapPathCount) *
+      work.tradeCount;
+    expect(work.explorationPathTrades).toBeGreaterThanOrEqual(
+      actualExplorationPathTrades,
+    );
+    expect(
+      comparison.find((point) => point.label === "No stake")?.pathCount,
+    ).toBe(0);
+    expect(
+      comparison
+        .filter((point) => point.label !== "No stake")
+        .every((point) => point.pathCount === input.pathCount),
+    ).toBe(true);
   });
 });

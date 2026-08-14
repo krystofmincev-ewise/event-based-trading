@@ -92,6 +92,7 @@ export interface SimulationDefinitions {
 
 export interface SimulationMetadata {
   tradeCount: number;
+  effectiveTradesPerWeek: number;
   horizonYears: number;
   pathCount: number;
   seed: string;
@@ -101,6 +102,7 @@ export interface SimulationMetadata {
   severeDrawdownFraction: number;
   cappedPathCount: number;
   analyticalOutputCapped: boolean;
+  cagrOutputCapped: boolean;
   simulationModel: "iid binary fixed-fraction";
 }
 
@@ -146,6 +148,7 @@ export interface ExplorationResult {
 export interface KellyComparisonPoint {
   label: "No stake" | "Quarter Kelly" | "Half Kelly" | "Full Kelly";
   fraction: number;
+  pathCount: number;
   medianTerminalCapital: number;
   p05TerminalCapital: number;
   p95TerminalCapital: number;

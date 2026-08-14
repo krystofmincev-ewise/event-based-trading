@@ -4,6 +4,9 @@ import { formatCurrency, formatPercent, formatRatio } from "../lib/format.js";
 
 export const Overview = ({ result }: { result: SimulationResult }) => {
   const { metrics, metadata } = result;
+  const effectiveTradeRate = Number.isFinite(metadata.effectiveTradesPerWeek)
+    ? `${metadata.effectiveTradesPerWeek.toFixed(2)}/wk`
+    : "—";
   return (
     <div className="overview-grid">
       <section className="result-table" aria-labelledby="return-title">
@@ -54,7 +57,7 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
             <dd>{formatPercent(metrics.annualized.annualizedVolatility)}</dd>
           </div>
           <div>
-            <dt>Weekly Sortino</dt>
+            <dt>Annualized pooled Sortino</dt>
             <dd>{formatRatio(metrics.annualized.sortino)}</dd>
           </div>
           <div>
@@ -65,6 +68,11 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
             </dd>
           </div>
         </dl>
+        <p className="metric-method-note">
+          Sharpe, Sortino, and volatility pool simulated end-of-week path
+          observations and annualize by √52. IID scaling assumes no serial
+          correlation.
+        </p>
       </section>
       <aside className="run-tape" aria-label="Simulation metadata">
         <span>Run manifest</span>
@@ -75,7 +83,13 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
           </div>
           <div>
             <dt>Trades</dt>
-            <dd>{metadata.tradeCount.toLocaleString()}</dd>
+            <dd>
+              {metadata.tradeCount.toLocaleString()} · {effectiveTradeRate}
+            </dd>
+          </div>
+          <div>
+            <dt>Requested rate</dt>
+            <dd>{result.input.tradesPerWeek.toFixed(2)}/wk</dd>
           </div>
           <div>
             <dt>Seed</dt>

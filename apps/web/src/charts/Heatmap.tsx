@@ -1,6 +1,7 @@
 import type { ExplorationResult } from "@event-lab/simulation";
 
 import { formatPercent } from "../lib/format.js";
+import { HorizontalScrollRegion } from "./HorizontalScrollRegion.js";
 
 export const Heatmap = ({
   exploration,
@@ -28,71 +29,66 @@ export const Heatmap = ({
           shares payout, horizon, threshold, and seed.
         </p>
       </div>
-      <div
+      <HorizontalScrollRegion
+        label="Hit rate by position size table"
         className="heatmap-scroll"
-        tabIndex={0}
-        aria-label="Scrollable heatmap"
       >
-        <div
-          className="heatmap-grid"
-          style={{
-            gridTemplateColumns: `80px repeat(${exploration.heatmapFractions.length}, minmax(66px, 1fr))`,
-          }}
-          role="grid"
-          aria-labelledby="heatmap-title"
-        >
-          <div className="heatmap-corner" />
-          {exploration.heatmapFractions.map((fraction) => (
-            <div
-              className="heatmap-axis-label"
-              role="columnheader"
-              key={fraction}
-            >
-              {formatPercent(fraction, 0)} size
-            </div>
-          ))}
-          {exploration.heatmapProbabilities.flatMap((probability) => [
-            <div
-              className="heatmap-axis-label row"
-              role="rowheader"
-              key={`label-${probability}`}
-            >
-              {formatPercent(probability, 0)} hit
-            </div>,
-            ...exploration.heatmapFractions.map((fraction) => {
-              const cell = cellByCoordinate.get(`${probability}:${fraction}`)!;
-              const danger = cell.probabilityOfPracticalRuin;
-              const positive = Math.max(
-                0,
-                Math.min(1, (cell.medianCagr + 0.5) / 1.5),
-              );
-              const red = 35 + danger * 210;
-              const green = 58 + positive * 155 - danger * 85;
-              return (
-                <button
-                  className="heatmap-cell"
-                  type="button"
-                  role="gridcell"
-                  style={{
-                    background: `rgb(${red.toFixed(0)} ${green.toFixed(0)} 108 / 0.72)`,
-                  }}
-                  aria-label={`${formatPercent(probability)} hit rate, ${formatPercent(
-                    fraction,
-                  )} position: median CAGR ${formatPercent(
-                    cell.medianCagr,
-                  )}, practical ruin ${formatPercent(cell.probabilityOfPracticalRuin)}`}
-                  key={`${probability}:${fraction}`}
-                >
-                  <strong>{formatPercent(cell.medianCagr, 0)}</strong>
-                  <span>
-                    {formatPercent(cell.probabilityOfPracticalRuin, 0)} ruin
-                  </span>
-                </button>
-              );
-            }),
-          ])}
-        </div>
-      </div>
+        <table className="heatmap-table">
+          <caption className="sr-only">
+            Hit rate by position size scenario results
+          </caption>
+          <thead>
+            <tr>
+              <th className="heatmap-axis-label" scope="col">
+                Hit rate
+              </th>
+              {exploration.heatmapFractions.map((fraction) => (
+                <th className="heatmap-axis-label" scope="col" key={fraction}>
+                  {formatPercent(fraction, 0)} size
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {exploration.heatmapProbabilities.map((probability) => (
+              <tr key={probability}>
+                <th className="heatmap-axis-label row" scope="row">
+                  {formatPercent(probability, 0)} hit
+                </th>
+                {exploration.heatmapFractions.map((fraction) => {
+                  const cell = cellByCoordinate.get(
+                    `${probability}:${fraction}`,
+                  )!;
+                  const danger = cell.probabilityOfPracticalRuin;
+                  const positive = Math.max(
+                    0,
+                    Math.min(1, (cell.medianCagr + 0.5) / 1.5),
+                  );
+                  const red = 28 + danger * 105;
+                  const green = 44 + positive * 85 - danger * 25;
+                  return (
+                    <td
+                      className="heatmap-cell"
+                      style={{
+                        background: `rgb(${red.toFixed(0)} ${green.toFixed(0)} 64)`,
+                      }}
+                      aria-label={`Median CAGR ${formatPercent(
+                        cell.medianCagr,
+                      )}; practical ruin ${formatPercent(cell.probabilityOfPracticalRuin)}`}
+                      key={`${probability}:${fraction}`}
+                    >
+                      <strong>{formatPercent(cell.medianCagr, 0)}</strong>
+                      <span>
+                        {formatPercent(cell.probabilityOfPracticalRuin, 0)} ruin
+                      </span>
+                    </td>
+                  );
+                })}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </HorizontalScrollRegion>
       <span className="sample-caption">
         Median CAGR shown · {exploration.heatmapPathCount.toLocaleString()}{" "}
         paths/cell · cells are finite-sample estimates
