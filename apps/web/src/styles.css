@@ -1125,6 +1125,15 @@ input[type="range"]::-webkit-slider-thumb {
   vector-effect: non-scaling-stroke;
 }
 
+.conservative-kelly-line {
+  stroke: var(--mint);
+  stroke-dasharray: 3 5;
+}
+
+.conservative-kelly-label {
+  fill: var(--mint);
+}
+
 .kelly-label {
   fill: var(--amber);
 }

@@ -30,7 +30,8 @@ export const FrontierChart = ({
     HEIGHT - MARGIN.bottom,
     MARGIN.top,
   );
-  const kelly = simulation.kelly.fullFraction;
+  const rawKelly = simulation.kelly.estimated.actionableFraction;
+  const conservativeKelly = simulation.kelly.conservative.actionableFraction;
 
   return (
     <section
@@ -44,7 +45,7 @@ export const FrontierChart = ({
         </div>
         <p>
           Common random numbers hold outcomes fixed across fractions. Analytic
-          Kelly is the authoritative log-growth optimum.
+          Raw and probability-haircut Kelly markers frame model uncertainty.
         </p>
       </div>
       <HorizontalScrollRegion
@@ -105,17 +106,31 @@ export const FrontierChart = ({
           })}
           <line
             className="kelly-line"
-            x1={x(kelly)}
-            x2={x(kelly)}
+            x1={x(rawKelly)}
+            x2={x(rawKelly)}
             y1={MARGIN.top}
             y2={HEIGHT - MARGIN.bottom}
           />
           <text
             className="kelly-label"
-            x={Math.min(x(kelly) + 6, WIDTH - 110)}
+            x={Math.min(x(rawKelly) + 6, WIDTH - 140)}
             y={MARGIN.top + 12}
           >
-            Full Kelly {formatPercent(kelly)}
+            Raw Kelly {formatPercent(rawKelly)}
+          </text>
+          <line
+            className="kelly-line conservative-kelly-line"
+            x1={x(conservativeKelly)}
+            x2={x(conservativeKelly)}
+            y1={MARGIN.top}
+            y2={HEIGHT - MARGIN.bottom}
+          />
+          <text
+            className="kelly-label conservative-kelly-label"
+            x={Math.min(x(conservativeKelly) + 6, WIDTH - 190)}
+            y={MARGIN.top + 29}
+          >
+            Conservative Kelly {formatPercent(conservativeKelly)}
           </text>
           {exploration.sweep.map((point) => {
             const danger = Math.max(

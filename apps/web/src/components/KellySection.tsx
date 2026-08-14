@@ -12,7 +12,12 @@ interface KellySectionProps {
   comparison: KellyComparisonPoint[];
   currentAssumptions: Pick<
     SimulationInput,
-    "winProbability" | "netWinMultiple" | "positionFraction"
+    | "winProbability"
+    | "probabilityHaircut"
+    | "contractPurchasePrice"
+    | "settlementPayout"
+    | "roundTripCosts"
+    | "positionFraction"
   >;
   isRefreshing: boolean;
   onSelectFraction: (fraction: number) => void;
@@ -21,9 +26,9 @@ interface KellySectionProps {
 
 const variantDescription: Record<KellyComparisonPoint["label"], string> = {
   "No stake": "Capital preservation baseline",
-  "Quarter Kelly": "25% of the full-Kelly stake",
-  "Half Kelly": "50% of the full-Kelly stake",
-  "Full Kelly": "Analytic log-growth optimum",
+  "Current size": "Your selected target risk budget",
+  "Conservative Kelly": "Kelly after the probability haircut",
+  "Raw Kelly": "Kelly using the unadjusted probability estimate",
 };
 
 export const KellySection = ({
@@ -35,7 +40,7 @@ export const KellySection = ({
   onChangeProbability,
 }: KellySectionProps) => {
   const { kelly } = simulation;
-  const allInPrice = 1 / (simulation.input.netWinMultiple + 1);
+  const { economics } = kelly;
   const maximumTerminal = Math.max(
     ...comparison.map((point) => point.p95TerminalCapital),
     simulation.input.startingCapital,
@@ -43,11 +48,12 @@ export const KellySection = ({
   const normalized = (capital: number) =>
     Math.max(0, Math.min(100, (capital / maximumTerminal) * 100));
   const kellyLanes = [
-    { label: "Quarter Kelly", value: kelly.quarterFraction },
-    { label: "Half Kelly", value: kelly.halfFraction },
-    { label: "Full Kelly", value: kelly.fullFraction },
+    {
+      label: "Conservative Kelly",
+      value: kelly.conservative.actionableFraction,
+    },
+    { label: "Raw Kelly", value: kelly.estimated.actionableFraction },
   ];
-  const currentPrice = 1 / (currentAssumptions.netWinMultiple + 1);
   const isApplied = (fraction: number) =>
     Math.abs(currentAssumptions.positionFraction - fraction) < 0.000001;
   const comparisonPathCount = comparison.find(
@@ -65,21 +71,23 @@ export const KellySection = ({
       <div className="kelly-intro">
         <div>
           <span className="eyebrow">Synchronized sizing study</span>
-          <h2 id="kelly-title">Kelly, with the confidence dial exposed.</h2>
+          <h2 id="kelly-title">Kelly, with contract costs and uncertainty.</h2>
           <p>
-            Kelly maximizes expected logarithmic growth only when probability
-            and payout are stationary and known. In practice, estimation error
-            and clustered outcomes make full Kelly dangerously brittle.
+            Raw Kelly uses your probability estimate. Conservative Kelly first
+            subtracts the explicit probability haircut. Both produce a dollar
+            risk budget that is executed as whole contracts—not fractional
+            trades.
           </p>
         </div>
         <aside>
           <span>Analytic identity</span>
           <code>f* = (bp − (1 − p)) / b</code>
-          <code>price form: (p − c) / (1 − c)</code>
+          <code>break-even p = all-in cost / payout</code>
           <p>
-            Here c = {allInPrice.toFixed(3)}. A negative raw result means no
-            long allocation; it does not automatically authorize shorting the
-            opposite contract.
+            Here break-even is{" "}
+            {(economics.breakEvenProbability * 100).toFixed(1)}%. A negative
+            result means no long allocation; it does not automatically authorize
+            the opposite contract.
           </p>
         </aside>
       </div>
@@ -124,10 +132,11 @@ export const KellySection = ({
           ) : null}
         </div>
         <div className="kelly-current-payout">
-          <span>Current payout assumption</span>
+          <span>Current held-to-settlement economics</span>
           <strong>
-            +{currentAssumptions.netWinMultiple.toFixed(2)}× net · $
-            {currentPrice.toFixed(3)} price ·{" "}
+            ${currentAssumptions.contractPurchasePrice.toFixed(3)} purchase + $
+            {currentAssumptions.roundTripCosts.toFixed(3)} costs → $
+            {currentAssumptions.settlementPayout.toFixed(2)} payout ·{" "}
             {formatPercent(currentAssumptions.positionFraction)} bankroll at
             risk
           </strong>
@@ -137,9 +146,9 @@ export const KellySection = ({
 
       <div className="kelly-readout" aria-label="Kelly fraction results">
         <div>
-          <span>Raw Kelly</span>
-          <strong>{formatPercent(kelly.rawFraction)}</strong>
-          <small>Before [0%, 100%] action bounds</small>
+          <span>All-in break-even</span>
+          <strong>{formatPercent(economics.breakEvenProbability)}</strong>
+          <small>Price + costs, divided by settlement payout</small>
         </div>
         {kellyLanes.map((lane) => {
           const applied = isApplied(lane.value);
@@ -169,10 +178,11 @@ export const KellySection = ({
         })}
       </div>
 
-      {kelly.edgePerUnitStaked <= 0 ? (
+      {kelly.conservative.expectedProfitPerContract <= 0 ? (
         <div className="no-edge-note" role="note">
-          Under the synchronized assumptions, expected profit per unit staked is
-          non-positive. The clamped actionable Kelly fraction is 0%.
+          After the probability haircut, expected profit per contract is
+          non-positive. Conservative Kelly therefore allocates 0%, even if the
+          unadjusted estimate has an edge.
         </div>
       ) : null}
 
@@ -182,12 +192,14 @@ export const KellySection = ({
       >
         <div className="chart-heading">
           <div>
-            <span className="eyebrow">Same paths, fractional Kelly stakes</span>
+            <span className="eyebrow">
+              Same paths, whole-contract execution
+            </span>
             <h3 id="kelly-comparison-title">Finite-horizon outcome range</h3>
           </div>
           <p>
-            The comparison visualizes risk around analytic fractions. It does
-            not estimate or replace the Kelly optimum.
+            Fractions set risk budgets; every event floors that budget to whole
+            contracts. The Monte Carlo does not estimate Kelly.
           </p>
         </div>
         <div
@@ -265,15 +277,15 @@ export const KellySection = ({
       </div>
 
       <div className="kelly-caution">
-        <span>Why greed can lose with a positive edge</span>
+        <span>Why 50% is not the edge threshold</span>
         <p>
-          At p = 60%, c = $0.50, and f = 80%, expected simple return is +16% per
-          trade—yet expected log growth is about −0.291 per trade. Large losses
-          damage the compounding base nonlinearly.
+          A 45% hit estimate can be positive-EV if an all-in contract costs 40%
+          of its payout. Simply “doing the opposite” is not free: that side has
+          its own executable quote, costs, payout rules, and probability.
         </p>
         <strong>
-          Fractional Kelly is a robustness control for model uncertainty. It is
-          not a recommendation.
+          The haircut is a transparent stress assumption, not statistical
+          certainty or a recommendation.
         </strong>
       </div>
     </section>

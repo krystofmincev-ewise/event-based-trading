@@ -112,26 +112,28 @@ describe("accessible analytics contracts", () => {
 });
 
 describe("numeric control drafts", () => {
-  it("keeps net payout render-safe while clearing, typing, and blurring", async () => {
+  it("keeps contract price render-safe while clearing, typing, and blurring", async () => {
     const user = userEvent.setup();
     render(<StatefulControls />);
-    const payoutInput = screen.getByLabelText("Net win profit multiple");
+    const payoutInput = screen.getByLabelText(
+      "Observed contract purchase price",
+    );
 
     await user.clear(payoutInput);
     expect(payoutInput).toHaveAttribute("aria-invalid", "true");
     expect(screen.getByText("$0.500")).toBeInTheDocument();
 
-    await user.type(payoutInput, "2");
+    await user.type(payoutInput, "0.2");
     await user.tab();
-    expect(payoutInput).toHaveValue(2);
-    expect(screen.getByText("$0.333")).toBeInTheDocument();
+    expect(payoutInput).toHaveValue(0.2);
+    expect(screen.getByText("$0.210")).toBeInTheDocument();
   });
 
   it("does not dispatch an empty intermediate value", async () => {
     const onChange = vi.fn();
     const user = userEvent.setup();
     render(<ControlPanel input={input} onChange={onChange} />);
-    const positionInput = screen.getByLabelText("Current bankroll at risk");
+    const positionInput = screen.getByLabelText("Target bankroll at risk");
 
     await user.clear(positionInput);
     expect(onChange).not.toHaveBeenCalled();
@@ -157,12 +159,16 @@ describe("numeric control drafts", () => {
     ).not.toBeInTheDocument();
   });
 
-  it("keeps the payout range on the exact modeled value", () => {
+  it("uses explicit price inputs without a misleading large linear slider", () => {
     render(<StatefulControls />);
     expect(
-      screen.getByRole("slider", { name: "Net win profit multiple slider" }),
-    ).toHaveValue("1");
-    expect(screen.getByLabelText("Net win profit multiple")).toHaveValue(1);
+      screen.queryByRole("slider", {
+        name: "Observed contract purchase price slider",
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByLabelText("Observed contract purchase price"),
+    ).toHaveValue(0.49);
   });
 });
 

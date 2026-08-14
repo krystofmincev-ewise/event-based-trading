@@ -67,6 +67,12 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
               path-weeks
             </dd>
           </div>
+          <div>
+            <dt>No executable contract at end</dt>
+            <dd>
+              {formatPercent(metrics.probabilityOfZeroExecutablePositionAtEnd)}
+            </dd>
+          </div>
         </dl>
         <p className="metric-method-note">
           Sharpe, Sortino, and volatility pool simulated end-of-week path
@@ -88,8 +94,16 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
             </dd>
           </div>
           <div>
-            <dt>Requested rate</dt>
-            <dd>{result.input.tradesPerWeek.toFixed(2)}/wk</dd>
+            <dt>Whole events / week</dt>
+            <dd>{result.input.eventsPerWeek}/wk</dd>
+          </div>
+          <div>
+            <dt>Initial contracts</dt>
+            <dd>{metadata.initialWholeContractCount.toLocaleString()}</dd>
+          </div>
+          <div>
+            <dt>Initial deployed risk</dt>
+            <dd>{formatPercent(metadata.initialExecutedFraction)}</dd>
           </div>
           <div>
             <dt>Seed</dt>

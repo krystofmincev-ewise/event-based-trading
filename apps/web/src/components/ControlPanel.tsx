@@ -1,9 +1,9 @@
 import {
-  contractPriceToNetWinMultiple,
+  calculateKelly,
+  deriveContractEconomics,
   estimateLabWork,
   LAB_OPERATION_BUDGET,
-  netWinMultipleToContractPrice,
-  payoutNotionalFraction,
+  wholeContractPosition,
 } from "@event-lab/simulation";
 import type { SimulationInput } from "@event-lab/simulation";
 import type { ChangeEvent, ReactNode } from "react";
@@ -133,11 +133,31 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
   const setNumeric = (key: keyof SimulationInput, value: number) => {
     onChange({ ...input, [key]: value });
   };
-  const allInPrice = netWinMultipleToContractPrice(input.netWinMultiple);
-  const notionalFraction = payoutNotionalFraction(
-    input.positionFraction,
-    allInPrice,
-  );
+  const hasValidContract =
+    input.contractPurchasePrice + input.roundTripCosts < input.settlementPayout;
+  const economics = hasValidContract
+    ? deriveContractEconomics(
+        input.contractPurchasePrice,
+        input.settlementPayout,
+        input.roundTripCosts,
+      )
+    : null;
+  const sizing = economics
+    ? wholeContractPosition(
+        input.startingCapital,
+        input.positionFraction,
+        economics.allInCost,
+      )
+    : null;
+  const kelly = economics
+    ? calculateKelly(
+        input.winProbability,
+        input.probabilityHaircut,
+        input.contractPurchasePrice,
+        input.settlementPayout,
+        input.roundTripCosts,
+      )
+    : null;
   const work = estimateLabWork(input);
   const exceedsWorkBudget = work.totalPathTrades > LAB_OPERATION_BUDGET;
 
@@ -145,7 +165,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
     <aside className="control-panel" aria-label="Simulation controls">
       <div className="panel-kicker">
         <span>Input console</span>
-        <span>v1 · IID binary</span>
+        <span>v2 · whole-contract binary</span>
       </div>
       <Group title="Contract assumptions">
         <NumericControl
@@ -161,45 +181,111 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           onChange={setNumeric}
         />
         <NumericControl
-          id="positionFraction"
-          label="Current bankroll at risk"
-          value={input.positionFraction}
+          id="probabilityHaircut"
+          label="Probability uncertainty haircut"
+          value={input.probabilityHaircut}
           min={0}
-          max={1}
-          step={0.01}
+          max={0.25}
+          step={0.005}
           displayFactor={100}
           unit="%"
-          description="Premium/capital at risk on every trade, as a fraction of current bankroll."
+          description="Subtracted from your estimate before conservative Kelly sizing; this is an explicit judgment, not a confidence interval."
           onChange={setNumeric}
         />
         <NumericControl
-          id="netWinMultiple"
-          label="Net win profit multiple"
-          value={input.netWinMultiple}
+          id="contractPurchasePrice"
+          label="Observed contract purchase price"
+          value={input.contractPurchasePrice}
           min={0.01}
-          max={20}
+          max={10_000}
           step={0.01}
-          unit="×"
-          description="Net profit b per $1 staked; the original stake is returned separately."
+          prefix="$"
+          hideRange
+          description="Executable ask or acquisition price per contract—not a midpoint."
           onChange={setNumeric}
         />
+        <NumericControl
+          id="settlementPayout"
+          label="Settlement payout on a hit"
+          value={input.settlementPayout}
+          min={0.02}
+          max={100_000}
+          step={0.01}
+          prefix="$"
+          hideRange
+          description="Total cash received per winning contract, including return of premium economics."
+          onChange={setNumeric}
+        />
+        <NumericControl
+          id="roundTripCosts"
+          label="Fees + slippage per contract"
+          value={input.roundTripCosts}
+          min={0}
+          max={1_000}
+          step={0.001}
+          prefix="$"
+          hideRange
+          description="Round-trip commissions, exchange fees, and a conservative fill/slippage allowance."
+          onChange={setNumeric}
+        />
+        <NumericControl
+          id="positionFraction"
+          label="Target bankroll at risk"
+          value={input.positionFraction}
+          min={0}
+          max={1}
+          step={0.005}
+          displayFactor={100}
+          unit="%"
+          description="Dollar risk budget per event. Execution floors it to a whole number of contracts."
+          onChange={setNumeric}
+        />
+        {!hasValidContract ? (
+          <p className="input-error" role="alert">
+            Purchase price plus costs must be below the winning settlement
+            payout.
+          </p>
+        ) : null}
         <div className="price-helper" aria-label="Contract price conversion">
-          <span>Equivalent $1 all-in price</span>
-          <strong>${allInPrice.toFixed(3)}</strong>
-          <span>Payout notional / bankroll</span>
-          <strong>{(notionalFraction * 100).toFixed(1)}%</strong>
-          <p>Notional f/c is distinct from the premium fraction f at risk.</p>
+          <span>All-in maximum loss</span>
+          <strong>${economics?.allInCost.toFixed(3) ?? "—"}</strong>
+          <span>Net win odds</span>
+          <strong>
+            {economics ? `${economics.netWinMultiple.toFixed(2)}×` : "—"}
+          </strong>
+          <span>All-in break-even</span>
+          <strong>
+            {economics
+              ? `${(economics.breakEvenProbability * 100).toFixed(1)}%`
+              : "—"}
+          </strong>
+          <span>EV / contract (estimate)</span>
+          <strong>
+            {kelly
+              ? `$${kelly.estimated.expectedProfitPerContract.toFixed(3)}`
+              : "—"}
+          </strong>
+          <span>Initial whole contracts</span>
+          <strong>{sizing?.contractCount.toLocaleString() ?? "—"}</strong>
+          <span>Initial deployed risk</span>
+          <strong>
+            {sizing ? `${(sizing.executedFraction * 100).toFixed(2)}%` : "—"}
+          </strong>
+          <p>
+            Edge means estimated probability exceeds the all-in break-even—not
+            that hit rate exceeds 50%. The opposite side needs its own quote.
+          </p>
         </div>
       </Group>
       <Group title="Experiment design">
         <NumericControl
-          id="tradesPerWeek"
-          label="Trades per week"
-          value={input.tradesPerWeek}
-          min={0.25}
+          id="eventsPerWeek"
+          label="Whole events per week"
+          value={input.eventsPerWeek}
+          min={1}
           max={20}
-          step={0.25}
-          description="Sequential opportunities; total trades round to a whole number and the realized rate is reported."
+          step={1}
+          description="Integer executed opportunities only; the model never creates half a trade."
           onChange={setNumeric}
         />
         <NumericControl
@@ -260,11 +346,11 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
         <span>Estimated local workload</span>
         <strong>
           {work.totalPathTrades.toLocaleString()} /{" "}
-          {LAB_OPERATION_BUDGET.toLocaleString()} path-trades
+          {LAB_OPERATION_BUDGET.toLocaleString()} path-events
         </strong>
         <p>
           {exceedsWorkBudget
-            ? "Above the local safety limit. Reduce paths, trade frequency, or horizon before results can refresh."
+            ? "Above the local safety limit. Reduce paths, event frequency, or horizon before results can refresh."
             : "Includes the main run and labeled preview grids; reported sample counts are never downscaled silently."}
         </p>
       </div>
@@ -308,8 +394,9 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
       </Group>
       <div className="formula-block">
         <span>Capital recurrence</span>
-        <code>win: W′ = W(1 + fb)</code>
-        <code>loss: W′ = W(1 − f)</code>
+        <code>n = floor(W × target f / all-in cost)</code>
+        <code>win: W′ = W + n × net win profit</code>
+        <code>loss: W′ = W − n × all-in cost</code>
       </div>
       <button
         className="reset-button"
@@ -317,9 +404,12 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
         onClick={() =>
           onChange({
             ...input,
-            netWinMultiple: contractPriceToNetWinMultiple(0.5),
-            winProbability: 0.58,
-            positionFraction: 0.08,
+            winProbability: 0.54,
+            probabilityHaircut: 0.03,
+            positionFraction: 0.02,
+            contractPurchasePrice: 0.49,
+            settlementPayout: 1,
+            roundTripCosts: 0.01,
           })
         }
       >

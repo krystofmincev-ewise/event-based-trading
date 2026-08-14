@@ -51,7 +51,7 @@ const OverBudgetHarness = () => {
   const lab = useLabData({
     ...DEFAULT_SIMULATION_INPUT,
     pathCount: 25_000,
-    tradesPerWeek: 20,
+    eventsPerWeek: 20,
     horizonWeeks: 104,
   });
   return <output>{lab.error?.kind ?? lab.status}</output>;

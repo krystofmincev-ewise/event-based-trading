@@ -77,9 +77,12 @@ const isSimulationInput = (value: unknown): boolean =>
   typeof value.seed === "string" &&
   hasFiniteFields(value, [
     "winProbability",
+    "probabilityHaircut",
     "positionFraction",
-    "netWinMultiple",
-    "tradesPerWeek",
+    "contractPurchasePrice",
+    "settlementPayout",
+    "roundTripCosts",
+    "eventsPerWeek",
     "horizonWeeks",
     "startingCapital",
     "pathCount",
@@ -88,16 +91,35 @@ const isSimulationInput = (value: unknown): boolean =>
     "severeDrawdownFraction",
   ]);
 
-const isKelly = (value: unknown): boolean =>
+const isContractEconomics = (value: unknown): boolean =>
   isRecord(value) &&
   hasFiniteFields(value, [
+    "purchasePrice",
+    "settlementPayout",
+    "roundTripCosts",
+    "allInCost",
+    "netWinProfit",
+    "netWinMultiple",
+    "breakEvenProbability",
+  ]);
+
+const isKellyScenario = (value: unknown): boolean =>
+  isRecord(value) &&
+  hasFiniteFields(value, [
+    "probability",
     "rawFraction",
-    "fullFraction",
-    "halfFraction",
-    "quarterFraction",
-    "edgePerUnitStaked",
+    "actionableFraction",
+    "expectedProfitPerContract",
+    "expectedReturnOnCapitalAtRisk",
   ]) &&
-  isNullableFinite(value.expectedLogGrowthPerTrade);
+  isNullableFinite(value.expectedLogGrowthPerEvent);
+
+const isKelly = (value: unknown): boolean =>
+  isRecord(value) &&
+  Number.isFinite(value.probabilityHaircut) &&
+  isContractEconomics(value.economics) &&
+  isKellyScenario(value.estimated) &&
+  isKellyScenario(value.conservative);
 
 const isAnnualizedMetrics = (value: unknown): boolean =>
   isRecord(value) &&
@@ -116,7 +138,7 @@ const isSimulationMetrics = (value: unknown): boolean =>
   isRecord(value) &&
   hasFiniteFields(value, [
     "expectedTerminalCapital",
-    "analyticalExpectedTerminalCapitalWithoutPracticalRuinStop",
+    "continuousFractionExpectedTerminalCapitalReference",
     "expectedTotalReturn",
     "medianTotalReturn",
     "impliedCagrFromExpectedTerminal",
@@ -126,6 +148,7 @@ const isSimulationMetrics = (value: unknown): boolean =>
     "medianMaxDrawdown",
     "p90MaxDrawdown",
     "probabilityOfSevereDrawdown",
+    "probabilityOfZeroExecutablePositionAtEnd",
   ]) &&
   isQuantiles(value.terminalCapital) &&
   isAnnualizedMetrics(value.annualized);
@@ -142,10 +165,15 @@ const isSimulationMetadata = (value: unknown): boolean =>
     "practicalRuinCapital",
     "severeDrawdownFraction",
     "cappedPathCount",
+    "initialWholeContractCount",
+    "initialCapitalAtRisk",
+    "initialExecutedFraction",
+    "approximatedLargeContractExecutions",
   ]) &&
   hasStringFields(value, ["seed", "simulationModel"]) &&
-  typeof value.analyticalOutputCapped === "boolean" &&
-  typeof value.cagrOutputCapped === "boolean";
+  typeof value.continuousFractionReferenceCapped === "boolean" &&
+  typeof value.cagrOutputCapped === "boolean" &&
+  value.continuousFractionReferenceIgnoresWholeContractRounding === true;
 
 const isFan = (value: unknown): boolean =>
   Array.isArray(value) &&
@@ -198,11 +226,12 @@ const isSimulationResponse = (
       "lossMultiplier",
       "practicalRuin",
       "expectedTerminal",
-      "analyticalExpectedTerminal",
+      "continuousFractionExpectedTerminal",
       "quantiles",
       "maximumDrawdown",
       "sharpe",
       "sortino",
+      "wholeContractExecution",
     ]) &&
     Array.isArray(simulation.warnings) &&
     simulation.warnings.every((warning) => typeof warning === "string") &&

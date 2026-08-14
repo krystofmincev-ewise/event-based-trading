@@ -39,8 +39,9 @@ export const App = () => {
           <div className="hero-aside">
             <span>Model boundary</span>
             <p>
-              This is an abstract hit-probability + net-payout model. It does
-              not infer an underlying asset path or price a barrier option.
+              Uses observed acquisition cost, payout, fees/slippage, and whole
+              contracts. It does not infer an underlying path or price a barrier
+              option.
             </p>
           </div>
         </section>
@@ -160,8 +161,14 @@ export const App = () => {
                   lab.data.simulation.input.positionFraction ||
                 input.winProbability !==
                   lab.data.simulation.input.winProbability ||
-                input.netWinMultiple !==
-                  lab.data.simulation.input.netWinMultiple
+                input.probabilityHaircut !==
+                  lab.data.simulation.input.probabilityHaircut ||
+                input.contractPurchasePrice !==
+                  lab.data.simulation.input.contractPurchasePrice ||
+                input.settlementPayout !==
+                  lab.data.simulation.input.settlementPayout ||
+                input.roundTripCosts !==
+                  lab.data.simulation.input.roundTripCosts
               }
               onSelectFraction={(positionFraction) =>
                 setInput((current) => ({ ...current, positionFraction }))

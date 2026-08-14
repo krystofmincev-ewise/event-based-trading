@@ -99,7 +99,7 @@ describe("App", () => {
     ).toBeInTheDocument();
     expect(
       screen.getByRole("heading", {
-        name: "Kelly, with the confidence dial exposed.",
+        name: "Kelly, with contract costs and uncertainty.",
       }),
     ).toBeInTheDocument();
     expect(screen.getByText("Sections")).toBeInTheDocument();
@@ -119,7 +119,7 @@ describe("App", () => {
       { name: "Bankroll fan" },
       { timeout: 5_000 },
     );
-    const positionInput = screen.getByLabelText("Current bankroll at risk");
+    const positionInput = screen.getByLabelText("Target bankroll at risk");
     await user.clear(positionInput);
     await user.type(positionInput, "12");
     await waitFor(
@@ -215,7 +215,7 @@ describe("App", () => {
           new Response(
             JSON.stringify({
               error: "Simulation input is invalid.",
-              details: ["workload path-trades exceeds the local limit"],
+              details: ["workload path-events exceeds the local limit"],
             }),
             { status: 422, headers: { "Content-Type": "application/json" } },
           ),
@@ -224,7 +224,7 @@ describe("App", () => {
     );
     render(<App />);
     expect(
-      await screen.findByText("workload path-trades exceeds the local limit"),
+      await screen.findByText("workload path-events exceeds the local limit"),
     ).toBeInTheDocument();
     expect(screen.queryByText(/Start the local API/i)).not.toBeInTheDocument();
     expect(
@@ -258,7 +258,7 @@ describe("App", () => {
     render(<App />);
     await screen.findByRole("heading", { name: "Bankroll fan" });
 
-    await user.click(screen.getByRole("button", { name: "Use quarter kelly" }));
+    await user.click(screen.getByRole("button", { name: "Use raw kelly" }));
     expect(
       await screen.findByText("Simulation refresh failed"),
     ).toBeInTheDocument();
@@ -281,15 +281,15 @@ describe("App", () => {
     expect(fetchMock).toHaveBeenCalledTimes(9);
   });
 
-  it("applies a synchronized fractional Kelly control", async () => {
+  it("applies a synchronized Kelly risk budget", async () => {
     installFetchMock();
     const user = userEvent.setup();
     render(<App />);
     const kellyResults = await screen.findByLabelText("Kelly fraction results");
     await user.click(
-      within(kellyResults).getByRole("button", { name: "Use quarter kelly" }),
+      within(kellyResults).getByRole("button", { name: "Use raw kelly" }),
     );
-    expect(screen.getByLabelText("Current bankroll at risk")).toHaveValue(4);
+    expect(screen.getByLabelText("Target bankroll at risk")).toHaveValue(8);
     expect(
       within(kellyResults).getByRole("button", { name: "Applied" }),
     ).toHaveAttribute("aria-pressed", "true");
@@ -322,14 +322,12 @@ describe("App", () => {
     await user.type(probability, "60");
 
     const results = screen.getByLabelText("Kelly fraction results");
-    const quarter = within(results)
-      .getByText("Quarter Kelly")
+    const conservative = within(results)
+      .getByText("Conservative Kelly")
       .closest(".kelly-lane");
-    const half = within(results).getByText("Half Kelly").closest(".kelly-lane");
-    const full = within(results).getByText("Full Kelly").closest(".kelly-lane");
-    await waitFor(() => expect(quarter).toHaveTextContent("5.0%"));
-    expect(half).toHaveTextContent("10.0%");
-    expect(full).toHaveTextContent("20.0%");
+    const raw = within(results).getByText("Raw Kelly").closest(".kelly-lane");
+    await waitFor(() => expect(conservative).toHaveTextContent("14.0%"));
+    expect(raw).toHaveTextContent("20.0%");
     expect(screen.getByLabelText("Event hit probability")).toHaveValue(60);
   });
 });

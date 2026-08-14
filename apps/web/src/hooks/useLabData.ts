@@ -36,7 +36,7 @@ export const useLabData = (input: SimulationInput): LabState => {
             message: "This experiment exceeds the local compute budget.",
             kind: "input",
             details: [
-              `${work.totalPathTrades.toLocaleString()} path-trades requested; limit ${LAB_OPERATION_BUDGET.toLocaleString()}.`,
+              `${work.totalPathTrades.toLocaleString()} path-events requested; limit ${LAB_OPERATION_BUDGET.toLocaleString()}.`,
               "Reduce paths, trades per week, or horizon.",
             ],
           },
