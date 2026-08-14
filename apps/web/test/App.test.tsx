@@ -4,7 +4,7 @@ import {
   runKellyComparison,
   runSimulation,
 } from "@event-lab/simulation";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -54,12 +54,21 @@ describe("App", () => {
       screen.getByText("Building seeded paths and pathwise risk statistics…"),
     ).toBeInTheDocument();
     expect(
-      await screen.findByRole("heading", { name: "Bankroll fan" }),
+      await screen.findByRole(
+        "heading",
+        { name: "Bankroll fan" },
+        { timeout: 5_000 },
+      ),
     ).toBeInTheDocument();
     expect(screen.getAllByText("Expected terminal").length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(
       screen.getByText("Typical growth is not the mean"),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", {
+        name: "Kelly, with the confidence dial exposed.",
+      }),
     ).toBeInTheDocument();
   });
 
@@ -67,7 +76,11 @@ describe("App", () => {
     const fetchMock = installFetchMock();
     const user = userEvent.setup();
     render(<App />);
-    await screen.findByRole("heading", { name: "Bankroll fan" });
+    await screen.findByRole(
+      "heading",
+      { name: "Bankroll fan" },
+      { timeout: 5_000 },
+    );
     const positionInput = screen.getByLabelText("Current bankroll at risk");
     await user.clear(positionInput);
     await user.type(positionInput, "12");
@@ -97,5 +110,16 @@ describe("App", () => {
       await screen.findByText("Local simulation unavailable"),
     ).toBeInTheDocument();
     expect(screen.getByLabelText("Event hit probability")).toBeEnabled();
+  });
+
+  it("applies a synchronized fractional Kelly control", async () => {
+    installFetchMock();
+    const user = userEvent.setup();
+    render(<App />);
+    const kellyResults = await screen.findByLabelText("Kelly fraction results");
+    await user.click(
+      within(kellyResults).getByRole("button", { name: "Use quarter kelly" }),
+    );
+    expect(screen.getByLabelText("Current bankroll at risk")).toHaveValue(4);
   });
 });

@@ -5,6 +5,7 @@ import { useState } from "react";
 import { AnalyticsDashboard } from "./components/AnalyticsDashboard.js";
 import { ControlPanel } from "./components/ControlPanel.js";
 import { Header } from "./components/Header.js";
+import { KellySection } from "./components/KellySection.js";
 import { MetricStrip } from "./components/MetricStrip.js";
 import { Overview } from "./components/Overview.js";
 import { useLabData } from "./hooks/useLabData.js";
@@ -103,18 +104,15 @@ export const App = () => {
           </div>
         </section>
 
-        <section
-          id="kelly"
-          className="coming-section"
-          aria-labelledby="kelly-title"
-        >
-          <span className="eyebrow">Growth-optimal sizing</span>
-          <h2 id="kelly-title">Kelly comparison follows the risk surface.</h2>
-          <p>
-            Full, half, and quarter Kelly use the synchronized probability and
-            payout assumptions above.
-          </p>
-        </section>
+        {lab.data ? (
+          <KellySection
+            simulation={lab.data.simulation}
+            comparison={lab.data.comparison}
+            onSelectFraction={(positionFraction) =>
+              setInput((current) => ({ ...current, positionFraction }))
+            }
+          />
+        ) : null}
 
         <section id="methodology" className="disclaimer">
           <strong>Research context, not a recommendation.</strong>
