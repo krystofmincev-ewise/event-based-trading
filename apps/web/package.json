@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "build": "tsc -b && vite build",
+    "predev": "npm run build -w @event-lab/simulation",
     "dev": "vite",
     "preview": "vite preview",
+    "pretypecheck": "npm run build -w @event-lab/simulation",
     "typecheck": "tsc -p tsconfig.app.json --noEmit"
   },
   "dependencies": {
