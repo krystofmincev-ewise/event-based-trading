@@ -53,7 +53,10 @@ describe("App", () => {
     expect(
       screen.getByText("Building seeded paths and pathwise risk statistics…"),
     ).toBeInTheDocument();
-    expect(await screen.findByText("Expected terminal")).toBeInTheDocument();
+    expect(
+      await screen.findByRole("heading", { name: "Bankroll fan" }),
+    ).toBeInTheDocument();
+    expect(screen.getAllByText("Expected terminal").length).toBeGreaterThan(0);
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(
       screen.getByText("Typical growth is not the mean"),
@@ -64,7 +67,7 @@ describe("App", () => {
     const fetchMock = installFetchMock();
     const user = userEvent.setup();
     render(<App />);
-    await screen.findByText("Expected terminal");
+    await screen.findByRole("heading", { name: "Bankroll fan" });
     const positionInput = screen.getByLabelText("Current bankroll at risk");
     await user.clear(positionInput);
     await user.type(positionInput, "12");

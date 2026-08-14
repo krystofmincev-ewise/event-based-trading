@@ -2,6 +2,7 @@ import { DEFAULT_SIMULATION_INPUT } from "@event-lab/simulation";
 import type { SimulationInput } from "@event-lab/simulation";
 import { useState } from "react";
 
+import { AnalyticsDashboard } from "./components/AnalyticsDashboard.js";
 import { ControlPanel } from "./components/ControlPanel.js";
 import { Header } from "./components/Header.js";
 import { MetricStrip } from "./components/MetricStrip.js";
@@ -79,16 +80,10 @@ export const App = () => {
               >
                 <MetricStrip result={lab.data.simulation} />
                 <Overview result={lab.data.simulation} />
-                <section
-                  className="chart-placeholder"
-                  aria-label="Analytics loading area"
-                >
-                  <span>Interactive analytics surface</span>
-                  <p>
-                    Fan, distribution, drawdown, frontier, and heatmap views are
-                    connected next.
-                  </p>
-                </section>
+                <AnalyticsDashboard
+                  simulation={lab.data.simulation}
+                  exploration={lab.data.exploration}
+                />
                 <aside className="warning-ledger" aria-label="Model warnings">
                   <span>Known omissions</span>
                   <ul>
