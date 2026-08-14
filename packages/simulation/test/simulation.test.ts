@@ -24,8 +24,10 @@ describe("runSimulation", () => {
       ...smallInput,
       winProbability: 1,
       positionFraction: 0.1,
-      netWinMultiple: 2,
-      tradesPerWeek: 1,
+      contractPurchasePrice: 25,
+      settlementPayout: 75,
+      roundTripCosts: 0,
+      eventsPerWeek: 1,
       horizonWeeks: 3,
     });
     expect(allWins.metrics.terminalCapital.median).toBeCloseTo(
@@ -45,7 +47,7 @@ describe("runSimulation", () => {
       ...smallInput,
       winProbability: 0,
       positionFraction: 0.5,
-      tradesPerWeek: 1,
+      eventsPerWeek: 1,
       horizonWeeks: 10,
       ruinThresholdFraction: 0.1,
     });
@@ -63,11 +65,11 @@ describe("runSimulation", () => {
       ...smallInput,
       winProbability: 0,
       positionFraction: 0.2,
-      tradesPerWeek: 1,
+      eventsPerWeek: 1,
       horizonWeeks: 2,
       severeDrawdownFraction: 0.3,
     });
-    expect(result.metrics.medianMaxDrawdown).toBeCloseTo(0.36, 12);
+    expect(result.metrics.medianMaxDrawdown).toBeCloseTo(0.36, 4);
     expect(result.metrics.probabilityOfSevereDrawdown).toBe(1);
   });
 
@@ -79,7 +81,7 @@ describe("runSimulation", () => {
       seed: "expectation-check",
     });
     expect(result.metrics.expectedTerminalCapital).toBeCloseTo(
-      result.metrics.analyticalExpectedTerminalCapitalWithoutPracticalRuinStop,
+      result.metrics.continuousFractionExpectedTerminalCapitalReference,
       -3,
     );
   });
@@ -87,32 +89,55 @@ describe("runSimulation", () => {
   it("scales nominal outputs without changing percentage risk outputs", () => {
     const base = runSimulation({ ...smallInput, startingCapital: 10_000 });
     const scaled = runSimulation({ ...smallInput, startingCapital: 100_000 });
-    expect(scaled.metrics.terminalCapital.median).toBeCloseTo(
-      base.metrics.terminalCapital.median * 10,
-      8,
-    );
+    expect(
+      Math.abs(
+        scaled.metrics.terminalCapital.median -
+          base.metrics.terminalCapital.median * 10,
+      ),
+    ).toBeLessThan(10);
     expect(scaled.metrics.medianTotalReturn).toBeCloseTo(
       base.metrics.medianTotalReturn,
-      12,
+      4,
     );
     expect(scaled.metrics.medianMaxDrawdown).toBeCloseTo(
       base.metrics.medianMaxDrawdown,
-      12,
+      3,
     );
     expect(scaled.metrics.annualized.annualizedVolatility).toBeCloseTo(
       base.metrics.annualized.annualizedVolatility,
-      12,
+      3,
     );
   });
 
-  it("reports realized frequency when whole-trade rounding changes the rate", () => {
+  it("uses an exact integer event schedule", () => {
     const result = runSimulation({
       ...smallInput,
-      tradesPerWeek: 0.25,
+      eventsPerWeek: 3,
+      horizonWeeks: 2,
+    });
+    expect(result.metadata.tradeCount).toBe(6);
+    expect(result.metadata.effectiveTradesPerWeek).toBe(3);
+    expect(result.fan.at(-1)?.week).toBe(2);
+  });
+
+  it("executes whole contracts and retains unused risk budget as cash", () => {
+    const result = runSimulation({
+      ...smallInput,
+      startingCapital: 100,
+      winProbability: 1,
+      positionFraction: 0.25,
+      contractPurchasePrice: 8,
+      roundTripCosts: 1,
+      settlementPayout: 10,
+      eventsPerWeek: 1,
       horizonWeeks: 1,
     });
-    expect(result.metadata.tradeCount).toBe(1);
-    expect(result.metadata.effectiveTradesPerWeek).toBe(1);
-    expect(result.warnings.join(" ")).toContain("Whole-trade rounding");
+    expect(result.metadata.initialWholeContractCount).toBe(2);
+    expect(result.metadata.initialCapitalAtRisk).toBe(18);
+    expect(result.metrics.terminalCapital.median).toBeCloseTo(102, 12);
+    expect(
+      result.metadata.continuousFractionReferenceIgnoresWholeContractRounding,
+    ).toBe(true);
+    expect(result.warnings.join(" ")).toContain("not an exact expectation");
   });
 });

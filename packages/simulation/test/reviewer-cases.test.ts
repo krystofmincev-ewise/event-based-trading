@@ -3,28 +3,30 @@ import { describe, expect, it } from "vitest";
 import {
   calculateKelly,
   calculateMaximumDrawdown,
-  contractPriceToNetWinMultiple,
+  deriveContractEconomics,
   expectedLogGrowth,
-  payoutNotionalFraction,
   simulateOutcomeSequence,
+  wholeContractPosition,
 } from "../src/index.js";
 
 describe("independent reviewer exact cases", () => {
-  it("maps price to net odds and keeps risk fraction distinct from payout notional", () => {
-    expect(contractPriceToNetWinMultiple(0.5)).toBe(1);
+  it("maps price and costs to net odds and keeps risk budget executable", () => {
+    expect(deriveContractEconomics(0.49, 1, 0.01).netWinMultiple).toBe(1);
     expect(
-      calculateKelly(0.5, contractPriceToNetWinMultiple(0.5)).fullFraction,
+      calculateKelly(0.5, 0, 0.49, 1, 0.01).estimated.actionableFraction,
     ).toBe(0);
     expect(
-      calculateKelly(0.6, contractPriceToNetWinMultiple(0.5)).fullFraction,
+      calculateKelly(0.6, 0, 0.49, 1, 0.01).estimated.actionableFraction,
     ).toBeCloseTo(0.2, 12);
     expect(expectedLogGrowth(0.6, 1, 0.2)).toBeCloseTo(0.0201355136, 10);
 
-    const odds = contractPriceToNetWinMultiple(0.4);
+    const odds = deriveContractEconomics(0.4, 1, 0).netWinMultiple;
     expect(odds).toBeCloseTo(1.5, 12);
-    expect(calculateKelly(0.6, odds).fullFraction).toBeCloseTo(1 / 3, 12);
+    expect(
+      calculateKelly(0.6, 0, 0.4, 1, 0).estimated.actionableFraction,
+    ).toBeCloseTo(1 / 3, 12);
     expect(expectedLogGrowth(0.6, odds, 1 / 3)).toBeCloseTo(0.0810930216, 10);
-    expect(payoutNotionalFraction(1 / 3, 0.4)).toBeCloseTo(5 / 6, 12);
+    expect(wholeContractPosition(100, 1 / 3, 0.4).contractCount).toBe(83);
   });
 
   it("shows positive arithmetic edge can coexist with destructive typical growth", () => {
@@ -46,8 +48,8 @@ describe("independent reviewer exact cases", () => {
   });
 
   it("keeps Kelly independent of event frequency", () => {
-    const onceWeekly = calculateKelly(0.6, 1);
-    const conceptuallyDaily = calculateKelly(0.6, 1);
+    const onceWeekly = calculateKelly(0.6, 0.02, 0.49, 1, 0.01);
+    const conceptuallyDaily = calculateKelly(0.6, 0.02, 0.49, 1, 0.01);
     expect(onceWeekly).toEqual(conceptuallyDaily);
   });
 

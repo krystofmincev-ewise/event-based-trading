@@ -12,14 +12,14 @@ export const BASE_HEATMAP_FRACTIONS = [0, 0.03, 0.06, 0.12, 0.2, 0.35, 0.5];
 
 export const buildSweepFractions = (
   userFraction: number,
-  kellyFraction: number,
+  estimatedKellyFraction: number,
+  conservativeKellyFraction: number,
 ): number[] =>
   uniqueSorted([
     ...REGULAR_SWEEP_FRACTIONS,
     userFraction,
-    kellyFraction,
-    kellyFraction * 0.5,
-    kellyFraction * 0.25,
+    estimatedKellyFraction,
+    conservativeKellyFraction,
   ]);
 
 export const buildHeatmapProbabilities = (userProbability: number): number[] =>

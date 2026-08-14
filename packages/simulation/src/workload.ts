@@ -23,10 +23,7 @@ export interface LabWorkEstimate {
 }
 
 export const estimateLabWork = (input: SimulationInput): LabWorkEstimate => {
-  const tradeCount = Math.max(
-    1,
-    Math.round(input.tradesPerWeek * input.horizonWeeks),
-  );
+  const tradeCount = input.eventsPerWeek * input.horizonWeeks;
   const simulationPathTrades = input.pathCount * tradeCount;
   const explorationPathTrades =
     (MAX_SWEEP_FRACTION_COUNT * Math.min(input.pathCount, SWEEP_PATH_CAP) +

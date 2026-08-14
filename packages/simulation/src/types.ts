@@ -1,8 +1,11 @@
 export interface SimulationInput {
   winProbability: number;
+  probabilityHaircut: number;
   positionFraction: number;
-  netWinMultiple: number;
-  tradesPerWeek: number;
+  contractPurchasePrice: number;
+  settlementPayout: number;
+  roundTripCosts: number;
+  eventsPerWeek: number;
   horizonWeeks: number;
   startingCapital: number;
   pathCount: number;
@@ -12,13 +15,62 @@ export interface SimulationInput {
   severeDrawdownFraction: number;
 }
 
-export interface KellyResult {
+export interface ContractEconomics {
+  purchasePrice: number;
+  settlementPayout: number;
+  roundTripCosts: number;
+  allInCost: number;
+  netWinProfit: number;
+  netWinMultiple: number;
+  breakEvenProbability: number;
+}
+
+export interface KellyScenario {
+  probability: number;
   rawFraction: number;
-  fullFraction: number;
-  halfFraction: number;
-  quarterFraction: number;
-  edgePerUnitStaked: number;
-  expectedLogGrowthPerTrade: number | null;
+  actionableFraction: number;
+  expectedProfitPerContract: number;
+  expectedReturnOnCapitalAtRisk: number;
+  expectedLogGrowthPerEvent: number | null;
+}
+
+export interface KellyResult {
+  economics: ContractEconomics;
+  estimated: KellyScenario;
+  conservative: KellyScenario;
+  probabilityHaircut: number;
+}
+
+export type SizingPolicy = "conservative-kelly" | "estimated-kelly" | "custom";
+
+export interface PositionSizingInput {
+  bankroll: number;
+  winProbability: number;
+  probabilityHaircut: number;
+  contractPurchasePrice: number;
+  settlementPayout: number;
+  roundTripCosts: number;
+  sizingPolicy: SizingPolicy;
+  customFraction: number;
+  maximumPositionFraction: number;
+}
+
+export interface PositionSizingDecision {
+  input: PositionSizingInput;
+  economics: ContractEconomics;
+  kelly: KellyResult;
+  selectedProbability: number;
+  unconstrainedTargetFraction: number;
+  targetFractionAfterPolicyCap: number;
+  dollarRiskBudget: number;
+  wholeContractCount: number;
+  actualCapitalAtRisk: number;
+  actualDeployedRiskFraction: number;
+  maximumLoss: number;
+  maximumProfit: number;
+  estimatedExpectedProfit: number;
+  conservativeExpectedProfit: number;
+  bindingConstraint: "none" | "position-cap" | "whole-contract-rounding";
 }
 
 export interface QuantileSummary {
@@ -64,7 +116,7 @@ export interface AnnualizedMetrics {
 
 export interface SimulationMetrics {
   expectedTerminalCapital: number;
-  analyticalExpectedTerminalCapitalWithoutPracticalRuinStop: number;
+  continuousFractionExpectedTerminalCapitalReference: number;
   terminalCapital: QuantileSummary;
   expectedTotalReturn: number;
   medianTotalReturn: number;
@@ -75,6 +127,7 @@ export interface SimulationMetrics {
   medianMaxDrawdown: number;
   p90MaxDrawdown: number;
   probabilityOfSevereDrawdown: number;
+  probabilityOfZeroExecutablePositionAtEnd: number;
   annualized: AnnualizedMetrics;
 }
 
@@ -83,11 +136,12 @@ export interface SimulationDefinitions {
   lossMultiplier: string;
   practicalRuin: string;
   expectedTerminal: string;
-  analyticalExpectedTerminal: string;
+  continuousFractionExpectedTerminal: string;
   quantiles: string;
   maximumDrawdown: string;
   sharpe: string;
   sortino: string;
+  wholeContractExecution: string;
 }
 
 export interface SimulationMetadata {
@@ -101,9 +155,14 @@ export interface SimulationMetadata {
   practicalRuinCapital: number;
   severeDrawdownFraction: number;
   cappedPathCount: number;
-  analyticalOutputCapped: boolean;
+  continuousFractionReferenceCapped: boolean;
   cagrOutputCapped: boolean;
-  simulationModel: "iid binary fixed-fraction";
+  initialWholeContractCount: number;
+  initialCapitalAtRisk: number;
+  initialExecutedFraction: number;
+  approximatedLargeContractExecutions: number;
+  continuousFractionReferenceIgnoresWholeContractRounding: true;
+  simulationModel: "iid binary whole-contract target-fraction";
 }
 
 export interface SimulationResult {
@@ -146,7 +205,7 @@ export interface ExplorationResult {
 }
 
 export interface KellyComparisonPoint {
-  label: "No stake" | "Quarter Kelly" | "Half Kelly" | "Full Kelly";
+  label: "No stake" | "Current size" | "Conservative Kelly" | "Raw Kelly";
   fraction: number;
   pathCount: number;
   medianTerminalCapital: number;

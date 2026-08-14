@@ -9,14 +9,14 @@ export { DEFAULT_SIMULATION_INPUT, INPUT_LIMITS } from "./defaults.js";
 export { runExploration, runKellyComparison } from "./exploration.js";
 export {
   calculateKelly,
-  contractPriceToNetWinMultiple,
+  deriveContractEconomics,
   expectedLogGrowth,
-  netWinMultipleToContractPrice,
-  payoutNotionalFraction,
+  wholeContractPosition,
 } from "./kelly.js";
 export { annualizedWeeklyMetrics } from "./metrics.js";
 export { hashSeed, randomAt } from "./prng.js";
 export { runSimulation } from "./simulation.js";
+export { calculatePositionSizing } from "./sizing.js";
 export {
   createHistogram,
   mean,
@@ -24,7 +24,10 @@ export {
   sortedCopy,
   summarizeQuantiles,
 } from "./statistics.js";
-export { validateSimulationInput } from "./validation.js";
+export {
+  validatePositionSizingInput,
+  validateSimulationInput,
+} from "./validation.js";
 export {
   estimateLabWork,
   HEATMAP_PATH_CAP,
@@ -33,4 +36,5 @@ export {
 } from "./workload.js";
 export type * from "./types.js";
 export type { ValidationResult } from "./validation.js";
+export type { PositionSizingValidationResult } from "./validation.js";
 export type { LabWorkEstimate } from "./workload.js";

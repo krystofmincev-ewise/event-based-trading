@@ -14,15 +14,20 @@ describe("log-space numerical integrity", () => {
       ...DEFAULT_SIMULATION_INPUT,
       winProbability: 1,
       positionFraction: 1,
-      netWinMultiple: 20,
-      tradesPerWeek: 20,
+      contractPurchasePrice: 1,
+      settlementPayout: 21,
+      roundTripCosts: 0,
+      eventsPerWeek: 20,
       horizonWeeks: 104,
       pathCount: 100,
     });
     expect(result.metadata.cappedPathCount).toBe(100);
-    expect(result.metrics.annualized.annualizedVolatility).toBe(0);
-    expect(result.metrics.annualized.sharpe).toBeNull();
-    expect(result.metrics.annualized.sortino).toBeNull();
+    expect(
+      Number.isFinite(result.metrics.annualized.annualizedVolatility),
+    ).toBe(true);
+    expect(result.metadata.approximatedLargeContractExecutions).toBeGreaterThan(
+      0,
+    );
   });
 
   it("measures a loss correctly while displayed capital remains capped", () => {
@@ -53,20 +58,20 @@ describe("log-space numerical integrity", () => {
     expect(step.underflowed).toBe(true);
   });
 
-  it("labels the analytical expectation as unstopped when practical ruin binds", () => {
+  it("labels the continuous-fraction reference as unstopped and approximate", () => {
     const result = runSimulation({
       ...DEFAULT_SIMULATION_INPUT,
       startingCapital: 100_000,
       pathCount: 100,
       winProbability: 0,
       positionFraction: 0.5,
-      tradesPerWeek: 1,
+      eventsPerWeek: 1,
       horizonWeeks: 10,
       ruinThresholdFraction: 0.1,
     });
     expect(result.metrics.terminalCapital.median).toBeCloseTo(6_250, 10);
     expect(
-      result.metrics.analyticalExpectedTerminalCapitalWithoutPracticalRuinStop,
+      result.metrics.continuousFractionExpectedTerminalCapitalReference,
     ).toBeCloseTo(97.65625, 12);
     expect(result.warnings.join(" ")).toContain(
       "ignores the practical-ruin stop",
@@ -75,11 +80,11 @@ describe("log-space numerical integrity", () => {
     expect(result.metrics.annualized.sampleObservationCount).toBe(1_000);
   });
 
-  it("maps fractional trade schedules to the requested terminal week", () => {
+  it("maps integer event schedules to the requested terminal week", () => {
     const result = runSimulation({
       ...DEFAULT_SIMULATION_INPUT,
       pathCount: 100,
-      tradesPerWeek: 1.5,
+      eventsPerWeek: 2,
       horizonWeeks: 1,
     });
     expect(result.fan.at(-1)?.week).toBe(1);
@@ -91,8 +96,10 @@ describe("log-space numerical integrity", () => {
       ...DEFAULT_SIMULATION_INPUT,
       winProbability: 1,
       positionFraction: 1,
-      netWinMultiple: 20,
-      tradesPerWeek: 20,
+      contractPurchasePrice: 1,
+      settlementPayout: 21,
+      roundTripCosts: 0,
+      eventsPerWeek: 20,
       horizonWeeks: 1,
       startingCapital: 100,
       pathCount: 100,

@@ -1,7 +1,41 @@
-import type { KellyResult } from "./types.js";
+import type { ContractEconomics, KellyResult, KellyScenario } from "./types.js";
 
 const clamp = (value: number, minimum: number, maximum: number): number =>
   Math.min(maximum, Math.max(minimum, value));
+
+const assertFinitePositive = (value: number, label: string): void => {
+  if (!Number.isFinite(value) || value <= 0) {
+    throw new Error(`${label} must be a positive finite number.`);
+  }
+};
+
+export const deriveContractEconomics = (
+  purchasePrice: number,
+  settlementPayout: number,
+  roundTripCosts: number,
+): ContractEconomics => {
+  assertFinitePositive(purchasePrice, "Contract purchase price");
+  assertFinitePositive(settlementPayout, "Settlement payout");
+  if (!Number.isFinite(roundTripCosts) || roundTripCosts < 0) {
+    throw new Error("Round-trip costs must be a non-negative finite number.");
+  }
+  const allInCost = purchasePrice + roundTripCosts;
+  if (allInCost >= settlementPayout) {
+    throw new Error(
+      "Contract purchase price plus round-trip costs must be below settlement payout.",
+    );
+  }
+  const netWinProfit = settlementPayout - allInCost;
+  return {
+    purchasePrice,
+    settlementPayout,
+    roundTripCosts,
+    allInCost,
+    netWinProfit,
+    netWinMultiple: netWinProfit / allInCost,
+    breakEvenProbability: allInCost / settlementPayout,
+  };
+};
 
 export const expectedLogGrowth = (
   winProbability: number,
@@ -16,64 +50,92 @@ export const expectedLogGrowth = (
   return winTerm + lossTerm;
 };
 
-export const calculateKelly = (
-  winProbability: number,
-  netWinMultiple: number,
-): KellyResult => {
-  if (
-    winProbability < 0 ||
-    winProbability > 1 ||
-    !Number.isFinite(winProbability)
-  ) {
+const calculateScenario = (
+  probability: number,
+  economics: ContractEconomics,
+): KellyScenario => {
+  if (!Number.isFinite(probability) || probability < 0 || probability > 1) {
     throw new Error("Win probability must be a finite number between 0 and 1.");
   }
-  if (netWinMultiple <= 0 || !Number.isFinite(netWinMultiple)) {
-    throw new Error("Net win multiple must be a positive finite number.");
-  }
-
-  const lossProbability = 1 - winProbability;
+  const lossProbability = 1 - probability;
   const rawFraction =
-    (netWinMultiple * winProbability - lossProbability) / netWinMultiple;
-  const fullFraction = clamp(rawFraction, 0, 1);
+    (economics.netWinMultiple * probability - lossProbability) /
+    economics.netWinMultiple;
+  const actionableFraction = clamp(rawFraction, 0, 1);
+  const expectedProfitPerContract =
+    probability * economics.settlementPayout - economics.allInCost;
   return {
+    probability,
     rawFraction,
-    fullFraction,
-    halfFraction: fullFraction * 0.5,
-    quarterFraction: fullFraction * 0.25,
-    edgePerUnitStaked: netWinMultiple * winProbability - lossProbability,
-    expectedLogGrowthPerTrade: expectedLogGrowth(
-      winProbability,
-      netWinMultiple,
-      fullFraction,
+    actionableFraction,
+    expectedProfitPerContract,
+    expectedReturnOnCapitalAtRisk:
+      expectedProfitPerContract / economics.allInCost,
+    expectedLogGrowthPerEvent: expectedLogGrowth(
+      probability,
+      economics.netWinMultiple,
+      actionableFraction,
     ),
   };
 };
 
-export const contractPriceToNetWinMultiple = (allInPrice: number): number => {
-  if (!Number.isFinite(allInPrice) || allInPrice <= 0 || allInPrice >= 1) {
-    throw new Error("All-in contract price must be between 0 and 1.");
-  }
-  return (1 - allInPrice) / allInPrice;
-};
-
-export const netWinMultipleToContractPrice = (
-  netWinMultiple: number,
-): number => {
-  if (!Number.isFinite(netWinMultiple) || netWinMultiple <= 0) {
-    throw new Error("Net win multiple must be a positive finite number.");
-  }
-  return 1 / (netWinMultiple + 1);
-};
-
-export const payoutNotionalFraction = (
-  bankrollFractionAtRisk: number,
-  allInPrice: number,
-): number => {
-  if (!Number.isFinite(bankrollFractionAtRisk) || bankrollFractionAtRisk < 0) {
+export const calculateKelly = (
+  winProbability: number,
+  probabilityHaircut: number,
+  purchasePrice: number,
+  settlementPayout: number,
+  roundTripCosts: number,
+): KellyResult => {
+  if (
+    !Number.isFinite(probabilityHaircut) ||
+    probabilityHaircut < 0 ||
+    probabilityHaircut > 1
+  ) {
     throw new Error(
-      "Bankroll fraction at risk must be a non-negative finite number.",
+      "Probability haircut must be a finite number between 0 and 1.",
     );
   }
-  contractPriceToNetWinMultiple(allInPrice);
-  return bankrollFractionAtRisk / allInPrice;
+  const economics = deriveContractEconomics(
+    purchasePrice,
+    settlementPayout,
+    roundTripCosts,
+  );
+  return {
+    economics,
+    estimated: calculateScenario(winProbability, economics),
+    conservative: calculateScenario(
+      Math.max(0, winProbability - probabilityHaircut),
+      economics,
+    ),
+    probabilityHaircut,
+  };
+};
+
+export const wholeContractPosition = (
+  bankroll: number,
+  targetFraction: number,
+  allInCost: number,
+): {
+  contractCount: number;
+  capitalAtRisk: number;
+  executedFraction: number;
+} => {
+  if (!Number.isFinite(bankroll) || bankroll < 0) {
+    throw new Error("Bankroll must be a non-negative finite number.");
+  }
+  if (
+    !Number.isFinite(targetFraction) ||
+    targetFraction < 0 ||
+    targetFraction > 1
+  ) {
+    throw new Error("Target fraction must be between 0 and 1.");
+  }
+  assertFinitePositive(allInCost, "All-in contract cost");
+  const contractCount = Math.floor((bankroll * targetFraction) / allInCost);
+  const capitalAtRisk = contractCount * allInCost;
+  return {
+    contractCount,
+    capitalAtRisk,
+    executedFraction: bankroll === 0 ? 0 : capitalAtRisk / bankroll,
+  };
 };

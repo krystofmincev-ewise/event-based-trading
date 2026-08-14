@@ -1,8 +1,10 @@
 import {
+  calculatePositionSizing,
   runExploration,
   runKellyComparison,
   runSimulation,
   validateSimulationInput,
+  validatePositionSizingInput,
 } from "@event-lab/simulation";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
@@ -24,11 +26,30 @@ const parseInput = async (request: IncomingMessage) => {
   return parsed.data;
 };
 
+const parseSizingInput = async (request: IncomingMessage) => {
+  assertJsonContentType(request);
+  const body = await readJsonBody(request);
+  const parsed = validatePositionSizingInput(body);
+  if (!parsed.success) {
+    throw new HttpError(
+      422,
+      "Position sizing input is invalid.",
+      parsed.errors,
+    );
+  }
+  return parsed.data;
+};
+
 const routePost = async (
   pathname: string,
   request: IncomingMessage,
   response: ServerResponse,
 ): Promise<boolean> => {
+  if (pathname === "/api/size") {
+    const input = await parseSizingInput(request);
+    sendJson(response, 200, { sizing: calculatePositionSizing(input) });
+    return true;
+  }
   if (pathname === "/api/simulate") {
     const input = await parseInput(request);
     sendJson(response, 200, { simulation: runSimulation(input) });

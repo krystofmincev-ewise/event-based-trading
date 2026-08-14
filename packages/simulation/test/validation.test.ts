@@ -19,18 +19,21 @@ describe("validateSimulationInput", () => {
   it("rejects invalid boundaries and untrusted values", () => {
     const result = validateSimulationInput({
       ...DEFAULT_SIMULATION_INPUT,
-      netWinMultiple: 0,
+      contractPurchasePrice: 1,
+      settlementPayout: 1,
       positionFraction: 1.1,
       pathCount: 2.5,
+      eventsPerWeek: 1.5,
       ruinThresholdFraction: 1,
       seed: "",
     });
     expect(result.success).toBe(false);
     if (!result.success) {
       const joined = result.errors.join(" ");
-      expect(joined).toContain("netWinMultiple");
+      expect(joined).toContain("contractPurchasePrice + roundTripCosts");
       expect(joined).toContain("positionFraction");
       expect(joined).toContain("pathCount");
+      expect(joined).toContain("eventsPerWeek must be an integer");
       expect(joined).toContain("ruinThresholdFraction");
       expect(joined).toContain("seed");
     }
@@ -40,14 +43,14 @@ describe("validateSimulationInput", () => {
     const result = validateSimulationInput({
       ...DEFAULT_SIMULATION_INPUT,
       pathCount: 25_000,
-      tradesPerWeek: 20,
+      eventsPerWeek: 20,
       horizonWeeks: 104,
     });
     expect(result.success).toBe(false);
     if (!result.success) {
-      expect(result.errors.join(" ")).toContain("path-trades exceeds");
+      expect(result.errors.join(" ")).toContain("path-events exceeds");
       expect(result.errors.join(" ")).toContain(
-        "reduce pathCount, tradesPerWeek, or horizonWeeks",
+        "reduce pathCount, eventsPerWeek, or horizonWeeks",
       );
     }
   });

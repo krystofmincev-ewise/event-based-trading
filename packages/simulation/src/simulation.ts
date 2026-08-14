@@ -3,7 +3,11 @@ import {
   drawdownFromLogCapital,
   updateLogCapital,
 } from "./bankroll.js";
-import { calculateKelly } from "./kelly.js";
+import {
+  calculateKelly,
+  deriveContractEconomics,
+  wholeContractPosition,
+} from "./kelly.js";
 import { createWeeklyReturnAccumulator } from "./metrics.js";
 import { hashSeed, randomAt } from "./prng.js";
 import {
@@ -33,8 +37,8 @@ const DEFINITIONS: SimulationDefinitions = {
     "First post-trade capital at or below the configured fraction of starting capital; the crossed positive value is retained and the path is then frozen.",
   expectedTerminal:
     "Arithmetic mean across simulated terminal capitals. It can be unstable when rare right-tail outcomes dominate.",
-  analyticalExpectedTerminal:
-    "Closed-form B₀[1 + f(bp − (1 − p))]^N without the practical-ruin stopping rule; not directly comparable when the stop binds.",
+  continuousFractionExpectedTerminal:
+    "Closed-form B₀[1 + f(bp − (1 − p))]^N as a continuous-fraction, unstopped reference. It is not an exact whole-contract expectation because contract flooring is path-dependent.",
   quantiles:
     "R-7 linear interpolation across paths at a common trade checkpoint.",
   maximumDrawdown:
@@ -43,6 +47,34 @@ const DEFINITIONS: SimulationDefinitions = {
     "Pooled simulated end-of-week return minus the geometrically converted weekly risk-free return, divided by weekly sample volatility and annualized by √52. IID square-root-of-time annualization assumes no serial correlation.",
   sortino:
     "Pooled simulated end-of-week excess return divided by full-sample downside deviation relative to the weekly risk-free return, annualized by √52.",
+  wholeContractExecution:
+    "Before each event, floor(target fraction × current bankroll / all-in contract cost) determines an integer contract count. Unused risk budget remains cash.",
+};
+
+const MAX_EXACT_CONTRACT_LOG = Math.log(Number.MAX_SAFE_INTEGER);
+
+const positionForLogCapital = (
+  logCapital: number,
+  displayCapital: number,
+  targetFraction: number,
+  allInCost: number,
+): { executedFraction: number; approximated: boolean } => {
+  if (targetFraction === 0 || logCapital === Number.NEGATIVE_INFINITY) {
+    return { executedFraction: 0, approximated: false };
+  }
+  const logDesiredContracts =
+    logCapital + Math.log(targetFraction) - Math.log(allInCost);
+  if (logDesiredContracts > MAX_EXACT_CONTRACT_LOG) {
+    return { executedFraction: targetFraction, approximated: true };
+  }
+  return {
+    executedFraction: wholeContractPosition(
+      displayCapital,
+      targetFraction,
+      allInCost,
+    ).executedFraction,
+    approximated: false,
+  };
 };
 
 const checkpointTrades = (tradeCount: number): number[] => {
@@ -79,12 +111,19 @@ const impliedCagr = (
 };
 
 export const runSimulation = (input: SimulationInput): SimulationResult => {
-  const tradeCount = Math.max(
-    1,
-    Math.round(input.tradesPerWeek * input.horizonWeeks),
-  );
+  const tradeCount = input.eventsPerWeek * input.horizonWeeks;
   const horizonYears = input.horizonWeeks / 52;
-  const effectiveTradesPerWeek = tradeCount / input.horizonWeeks;
+  const effectiveTradesPerWeek = input.eventsPerWeek;
+  const economics = deriveContractEconomics(
+    input.contractPurchasePrice,
+    input.settlementPayout,
+    input.roundTripCosts,
+  );
+  const initialPosition = wholeContractPosition(
+    input.startingCapital,
+    input.positionFraction,
+    economics.allInCost,
+  );
   const checkpointTradeValues = checkpointTrades(tradeCount);
   const checkpointIndexByTrade = new Map(
     checkpointTradeValues.map((trade, index) => [trade, index]),
@@ -119,6 +158,8 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   let lossCount = 0;
   let severeDrawdownCount = 0;
   let cappedPathCount = 0;
+  let approximatedLargeContractExecutions = 0;
+  let zeroExecutableTerminalCount = 0;
 
   for (let pathIndex = 0; pathIndex < input.pathCount; pathIndex += 1) {
     let logCapital = startLog;
@@ -139,17 +180,25 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       if (!stopped && input.positionFraction > 0) {
         const won =
           randomAt(seedHash, pathIndex, trade - 1) < input.winProbability;
+        const execution = positionForLogCapital(
+          logCapital,
+          capital,
+          input.positionFraction,
+          economics.allInCost,
+        );
+        if (execution.approximated) approximatedLargeContractExecutions += 1;
+        const executedFraction = execution.executedFraction;
         const logReturn =
-          !won && input.positionFraction === 1
+          !won && executedFraction === 1
             ? Number.NEGATIVE_INFINITY
             : won
-              ? Math.log1p(input.positionFraction * input.netWinMultiple)
-              : Math.log1p(-input.positionFraction);
+              ? Math.log1p(executedFraction * economics.netWinMultiple)
+              : Math.log1p(-executedFraction);
         const step = updateLogCapital(
           logCapital,
           won,
-          input.positionFraction,
-          input.netWinMultiple,
+          executedFraction,
+          economics.netWinMultiple,
         );
         logCapital = step.logCapital;
         weeklyLogReturn += logReturn;
@@ -193,6 +242,16 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     terminalReturns[pathIndex] = capital / input.startingCapital - 1;
     maxDrawdowns[pathIndex] = maxDrawdown;
     if (capital < input.startingCapital) lossCount += 1;
+    if (
+      input.positionFraction > 0 &&
+      wholeContractPosition(
+        capital,
+        input.positionFraction,
+        economics.allInCost,
+      ).contractCount === 0
+    ) {
+      zeroExecutableTerminalCount += 1;
+    }
     if (maxDrawdown >= input.severeDrawdownFraction) severeDrawdownCount += 1;
     if (pathCrossedDisplayRange) cappedPathCount += 1;
   }
@@ -203,14 +262,14 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   const meanMultiplier =
     1 +
     input.positionFraction *
-      (input.netWinMultiple * input.winProbability -
+      (economics.netWinMultiple * input.winProbability -
         (1 - input.winProbability));
   const analyticalTerminal = capitalFromLog(
     startLog + tradeCount * Math.log(meanMultiplier),
   );
-  const analyticalExpectedTerminalCapitalWithoutPracticalRuinStop =
+  const continuousFractionExpectedTerminalCapitalReference =
     analyticalTerminal.capital;
-  const analyticalOutputCapped =
+  const continuousFractionReferenceCapped =
     analyticalTerminal.overflowed || analyticalTerminal.underflowed;
 
   const fan: FanPoint[] = checkpointTradeValues.map((trade, index) => ({
@@ -219,7 +278,13 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     ...summarizeQuantiles(checkpointCapitals[index]!),
   }));
   const annualized = weeklyReturns.finish();
-  const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
+  const kelly = calculateKelly(
+    input.winProbability,
+    input.probabilityHaircut,
+    input.contractPurchasePrice,
+    input.settlementPayout,
+    input.roundTripCosts,
+  );
   const expectedTerminalCagr = impliedCagr(
     expectedTerminalCapital,
     input.startingCapital,
@@ -233,22 +298,35 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   const cagrOutputCapped =
     expectedTerminalCagr.capped || medianTerminalCagr.capped;
   const warnings: string[] = [
-    "Outcomes are iid with stationary known probability and payout; probability error, clustering, correlation, slippage, liquidity, taxes, contract availability, market impact, and regime shifts are not modeled.",
-    "This v1 accepts an abstract user-supplied event or one-touch barrier-hit probability and net payout. A path-dependent barrier option cannot be priced from win rate alone.",
+    "Outcomes are iid with stationary probability and contract terms; clustering, correlation, liquidity limits, taxes, market impact, and regime shifts are not modeled.",
+    "The probability haircut is a user-chosen uncertainty allowance, not a confidence interval or proof of calibration.",
+    "This model accepts an abstract user-supplied event or one-touch barrier-hit probability. A path-dependent barrier option cannot be priced from hit rate alone.",
+    "The closed-form expected-terminal figure is a continuous-fraction reference; path-dependent whole-contract flooring means it is not an exact expectation for the executable simulation.",
   ];
-  if (kelly.edgePerUnitStaked <= 0 && input.positionFraction > 0) {
+  if (
+    kelly.conservative.expectedProfitPerContract <= 0 &&
+    input.positionFraction > 0
+  ) {
     warnings.push(
-      "The assumed edge is non-positive; Kelly allocates zero under these inputs.",
+      "The conservative probability has non-positive expected value; conservative Kelly allocates zero under these inputs.",
     );
   }
-  if (Math.abs(effectiveTradesPerWeek - input.tradesPerWeek) > 1e-12) {
+  if (
+    input.winProbability < 0.5 &&
+    input.winProbability > economics.breakEvenProbability
+  ) {
     warnings.push(
-      `Whole-trade rounding produces ${tradeCount} trades, an effective ${effectiveTradesPerWeek.toFixed(4)} trades/week versus ${input.tradesPerWeek.toFixed(4)} requested.`,
+      "The estimated hit rate is below 50% but still positive-EV because it exceeds the all-in contract break-even probability.",
     );
   }
-  if (input.positionFraction === 1) {
+  if (input.positionFraction > 0 && initialPosition.contractCount === 0) {
     warnings.push(
-      "At f = 100%, a single loss creates literal zero capital; smaller fractions do not.",
+      "The starting risk budget cannot purchase one whole contract, so no position is initially executable.",
+    );
+  }
+  if (approximatedLargeContractExecutions > 0) {
+    warnings.push(
+      `${approximatedLargeContractExecutions.toLocaleString("en-US")} extreme-scale executions exceeded JavaScript's exact integer range; target-fraction dynamics were used because one-contract rounding was immaterial at that scale.`,
     );
   }
   if (annualized.sharpe === null || annualized.sortino === null) {
@@ -261,9 +339,9 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       `${cappedPathCount} simulated paths crossed finite capital display range; log wealth remained canonical for drawdown and weekly risk metrics.`,
     );
   }
-  if (analyticalOutputCapped) {
+  if (continuousFractionReferenceCapped) {
     warnings.push(
-      "The unstopped analytical expected terminal capital exceeded finite display range and was capped.",
+      "The unstopped continuous-fraction expected-terminal reference exceeded finite display range and was capped.",
     );
   }
   if (cagrOutputCapped) {
@@ -273,7 +351,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
   }
   if (practicalRuinCount > 0) {
     warnings.push(
-      "The analytical expected terminal value ignores the practical-ruin stop and is not directly comparable when that stop binds.",
+      "The continuous-fraction expected-terminal reference ignores the practical-ruin stop and is not directly comparable when that stop binds.",
     );
   }
 
@@ -282,7 +360,7 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
     kelly,
     metrics: {
       expectedTerminalCapital,
-      analyticalExpectedTerminalCapitalWithoutPracticalRuinStop,
+      continuousFractionExpectedTerminalCapitalReference,
       terminalCapital: terminalSummary,
       expectedTotalReturn: expectedTerminalCapital / input.startingCapital - 1,
       medianTotalReturn: terminalSummary.median / input.startingCapital - 1,
@@ -293,6 +371,8 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       medianMaxDrawdown: quantileSorted(sortedDrawdowns, 0.5),
       p90MaxDrawdown: quantileSorted(sortedDrawdowns, 0.9),
       probabilityOfSevereDrawdown: severeDrawdownCount / input.pathCount,
+      probabilityOfZeroExecutablePositionAtEnd:
+        zeroExecutableTerminalCount / input.pathCount,
       annualized,
     },
     fan,
@@ -310,9 +390,14 @@ export const runSimulation = (input: SimulationInput): SimulationResult => {
       practicalRuinCapital: input.startingCapital * input.ruinThresholdFraction,
       severeDrawdownFraction: input.severeDrawdownFraction,
       cappedPathCount,
-      analyticalOutputCapped,
+      continuousFractionReferenceCapped,
       cagrOutputCapped,
-      simulationModel: "iid binary fixed-fraction",
+      initialWholeContractCount: initialPosition.contractCount,
+      initialCapitalAtRisk: initialPosition.capitalAtRisk,
+      initialExecutedFraction: initialPosition.executedFraction,
+      approximatedLargeContractExecutions,
+      continuousFractionReferenceIgnoresWholeContractRounding: true,
+      simulationModel: "iid binary whole-contract target-fraction",
     },
     definitions: DEFINITIONS,
     warnings,

@@ -1,9 +1,17 @@
 import { INPUT_LIMITS } from "./defaults.js";
-import type { SimulationInput } from "./types.js";
+import type {
+  PositionSizingInput,
+  SimulationInput,
+  SizingPolicy,
+} from "./types.js";
 import { estimateLabWork, LAB_OPERATION_BUDGET } from "./workload.js";
 
 export type ValidationResult =
   | { success: true; data: SimulationInput }
+  | { success: false; errors: string[] };
+
+export type PositionSizingValidationResult =
+  | { success: true; data: PositionSizingInput }
   | { success: false; errors: string[] };
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
@@ -44,9 +52,20 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
 
   const errors: string[] = [];
   const winProbability = readFiniteNumber(value, "winProbability", errors);
+  const probabilityHaircut = readFiniteNumber(
+    value,
+    "probabilityHaircut",
+    errors,
+  );
   const positionFraction = readFiniteNumber(value, "positionFraction", errors);
-  const netWinMultiple = readFiniteNumber(value, "netWinMultiple", errors);
-  const tradesPerWeek = readFiniteNumber(value, "tradesPerWeek", errors);
+  const contractPurchasePrice = readFiniteNumber(
+    value,
+    "contractPurchasePrice",
+    errors,
+  );
+  const settlementPayout = readFiniteNumber(value, "settlementPayout", errors);
+  const roundTripCosts = readFiniteNumber(value, "roundTripCosts", errors);
+  const eventsPerWeek = readFiniteNumber(value, "eventsPerWeek", errors);
   const horizonWeeks = readFiniteNumber(value, "horizonWeeks", errors);
   const startingCapital = readFiniteNumber(value, "startingCapital", errors);
   const pathCount = readFiniteNumber(value, "pathCount", errors);
@@ -68,19 +87,40 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
   const seed = value.seed;
 
   inRange(winProbability, "winProbability", 0, 1, errors);
+  inRange(
+    probabilityHaircut,
+    "probabilityHaircut",
+    INPUT_LIMITS.probabilityHaircut.min,
+    INPUT_LIMITS.probabilityHaircut.max,
+    errors,
+  );
   inRange(positionFraction, "positionFraction", 0, 1, errors);
   inRange(
-    netWinMultiple,
-    "netWinMultiple",
-    INPUT_LIMITS.netWinMultiple.min,
-    INPUT_LIMITS.netWinMultiple.max,
+    contractPurchasePrice,
+    "contractPurchasePrice",
+    INPUT_LIMITS.contractPurchasePrice.min,
+    INPUT_LIMITS.contractPurchasePrice.max,
     errors,
   );
   inRange(
-    tradesPerWeek,
-    "tradesPerWeek",
-    INPUT_LIMITS.tradesPerWeek.min,
-    INPUT_LIMITS.tradesPerWeek.max,
+    settlementPayout,
+    "settlementPayout",
+    INPUT_LIMITS.settlementPayout.min,
+    INPUT_LIMITS.settlementPayout.max,
+    errors,
+  );
+  inRange(
+    roundTripCosts,
+    "roundTripCosts",
+    INPUT_LIMITS.roundTripCosts.min,
+    INPUT_LIMITS.roundTripCosts.max,
+    errors,
+  );
+  inRange(
+    eventsPerWeek,
+    "eventsPerWeek",
+    INPUT_LIMITS.eventsPerWeek.min,
+    INPUT_LIMITS.eventsPerWeek.max,
     errors,
   );
   inRange(
@@ -121,6 +161,21 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
   if (horizonWeeks !== undefined && !Number.isInteger(horizonWeeks)) {
     errors.push("horizonWeeks must be an integer.");
   }
+  if (eventsPerWeek !== undefined && !Number.isInteger(eventsPerWeek)) {
+    errors.push(
+      "eventsPerWeek must be an integer; partial trades are not modeled.",
+    );
+  }
+  if (
+    contractPurchasePrice !== undefined &&
+    settlementPayout !== undefined &&
+    roundTripCosts !== undefined &&
+    contractPurchasePrice + roundTripCosts >= settlementPayout
+  ) {
+    errors.push(
+      "contractPurchasePrice + roundTripCosts must be below settlementPayout.",
+    );
+  }
   if (ruinThresholdFraction !== undefined && ruinThresholdFraction >= 1) {
     errors.push("ruinThresholdFraction must be less than 1.");
   }
@@ -139,9 +194,12 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
 
   const data: SimulationInput = {
     winProbability: winProbability!,
+    probabilityHaircut: probabilityHaircut!,
     positionFraction: positionFraction!,
-    netWinMultiple: netWinMultiple!,
-    tradesPerWeek: tradesPerWeek!,
+    contractPurchasePrice: contractPurchasePrice!,
+    settlementPayout: settlementPayout!,
+    roundTripCosts: roundTripCosts!,
+    eventsPerWeek: eventsPerWeek!,
     horizonWeeks: horizonWeeks!,
     startingCapital: startingCapital!,
     pathCount: pathCount!,
@@ -155,10 +213,121 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
     return {
       success: false,
       errors: [
-        `Estimated lab workload ${work.totalPathTrades.toLocaleString("en-US")} path-trades exceeds the local limit of ${LAB_OPERATION_BUDGET.toLocaleString("en-US")}; reduce pathCount, tradesPerWeek, or horizonWeeks.`,
+        `Estimated lab workload ${work.totalPathTrades.toLocaleString("en-US")} path-events exceeds the local limit of ${LAB_OPERATION_BUDGET.toLocaleString("en-US")}; reduce pathCount, eventsPerWeek, or horizonWeeks.`,
       ],
     };
   }
 
   return { success: true, data };
+};
+
+const SIZING_POLICIES = new Set<SizingPolicy>([
+  "conservative-kelly",
+  "estimated-kelly",
+  "custom",
+]);
+
+export const validatePositionSizingInput = (
+  value: unknown,
+): PositionSizingValidationResult => {
+  if (!isRecord(value)) {
+    return { success: false, errors: ["Request body must be an object."] };
+  }
+  const errors: string[] = [];
+  const read = (key: keyof PositionSizingInput): number | undefined => {
+    const candidate = value[key];
+    if (typeof candidate !== "number" || !Number.isFinite(candidate)) {
+      errors.push(`${key} must be a finite number.`);
+      return undefined;
+    }
+    return candidate;
+  };
+  const bankroll = read("bankroll");
+  const winProbability = read("winProbability");
+  const probabilityHaircut = read("probabilityHaircut");
+  const contractPurchasePrice = read("contractPurchasePrice");
+  const settlementPayout = read("settlementPayout");
+  const roundTripCosts = read("roundTripCosts");
+  const customFraction = read("customFraction");
+  const maximumPositionFraction = read("maximumPositionFraction");
+  const sizingPolicy = value.sizingPolicy;
+
+  const range = (
+    candidate: number | undefined,
+    key: keyof PositionSizingInput,
+    minimum: number,
+    maximum: number,
+    minimumExclusive = false,
+  ): void => {
+    if (candidate === undefined) return;
+    if (
+      (minimumExclusive ? candidate <= minimum : candidate < minimum) ||
+      candidate > maximum
+    ) {
+      errors.push(
+        `${key} must be ${minimumExclusive ? "greater than" : "at least"} ${minimum} and at most ${maximum}.`,
+      );
+    }
+  };
+  range(bankroll, "bankroll", 0, INPUT_LIMITS.startingCapital.max, true);
+  range(winProbability, "winProbability", 0, 1);
+  range(
+    probabilityHaircut,
+    "probabilityHaircut",
+    INPUT_LIMITS.probabilityHaircut.min,
+    INPUT_LIMITS.probabilityHaircut.max,
+  );
+  range(
+    contractPurchasePrice,
+    "contractPurchasePrice",
+    INPUT_LIMITS.contractPurchasePrice.min,
+    INPUT_LIMITS.contractPurchasePrice.max,
+  );
+  range(
+    settlementPayout,
+    "settlementPayout",
+    INPUT_LIMITS.settlementPayout.min,
+    INPUT_LIMITS.settlementPayout.max,
+  );
+  range(
+    roundTripCosts,
+    "roundTripCosts",
+    INPUT_LIMITS.roundTripCosts.min,
+    INPUT_LIMITS.roundTripCosts.max,
+  );
+  range(customFraction, "customFraction", 0, 1);
+  range(maximumPositionFraction, "maximumPositionFraction", 0, 1);
+  if (
+    typeof sizingPolicy !== "string" ||
+    !SIZING_POLICIES.has(sizingPolicy as SizingPolicy)
+  ) {
+    errors.push(
+      "sizingPolicy must be conservative-kelly, estimated-kelly, or custom.",
+    );
+  }
+  if (
+    contractPurchasePrice !== undefined &&
+    settlementPayout !== undefined &&
+    roundTripCosts !== undefined &&
+    contractPurchasePrice + roundTripCosts >= settlementPayout
+  ) {
+    errors.push(
+      "contractPurchasePrice + roundTripCosts must be below settlementPayout.",
+    );
+  }
+  if (errors.length > 0) return { success: false, errors };
+  return {
+    success: true,
+    data: {
+      bankroll: bankroll!,
+      winProbability: winProbability!,
+      probabilityHaircut: probabilityHaircut!,
+      contractPurchasePrice: contractPurchasePrice!,
+      settlementPayout: settlementPayout!,
+      roundTripCosts: roundTripCosts!,
+      sizingPolicy: sizingPolicy as SizingPolicy,
+      customFraction: customFraction!,
+      maximumPositionFraction: maximumPositionFraction!,
+    },
+  };
 };

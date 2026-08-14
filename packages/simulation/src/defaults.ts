@@ -1,10 +1,13 @@
 import type { SimulationInput } from "./types.js";
 
 export const DEFAULT_SIMULATION_INPUT: SimulationInput = {
-  winProbability: 0.58,
-  positionFraction: 0.08,
-  netWinMultiple: 1,
-  tradesPerWeek: 1.5,
+  winProbability: 0.54,
+  probabilityHaircut: 0.03,
+  positionFraction: 0.02,
+  contractPurchasePrice: 0.49,
+  settlementPayout: 1,
+  roundTripCosts: 0.01,
+  eventsPerWeek: 2,
   horizonWeeks: 52,
   startingCapital: 100_000,
   pathCount: 5_000,
@@ -15,8 +18,11 @@ export const DEFAULT_SIMULATION_INPUT: SimulationInput = {
 };
 
 export const INPUT_LIMITS = {
-  netWinMultiple: { min: 0.01, max: 20 },
-  tradesPerWeek: { min: 0.25, max: 20 },
+  contractPurchasePrice: { min: 0.01, max: 10_000 },
+  settlementPayout: { min: 0.02, max: 100_000 },
+  roundTripCosts: { min: 0, max: 1_000 },
+  eventsPerWeek: { min: 1, max: 20 },
+  probabilityHaircut: { min: 0, max: 0.25 },
   horizonWeeks: { min: 1, max: 104 },
   startingCapital: { min: 100, max: 1_000_000_000 },
   pathCount: { min: 100, max: 25_000 },

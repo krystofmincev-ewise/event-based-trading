@@ -15,10 +15,17 @@ import type {
 import { HEATMAP_PATH_CAP, SWEEP_PATH_CAP } from "./workload.js";
 
 export const runExploration = (input: SimulationInput): ExplorationResult => {
-  const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
+  const kelly = calculateKelly(
+    input.winProbability,
+    input.probabilityHaircut,
+    input.contractPurchasePrice,
+    input.settlementPayout,
+    input.roundTripCosts,
+  );
   const fractions = buildSweepFractions(
     input.positionFraction,
-    kelly.fullFraction,
+    kelly.estimated.actionableFraction,
+    kelly.conservative.actionableFraction,
   );
   const sweepPathCount = Math.min(input.pathCount, SWEEP_PATH_CAP);
   const heatmapPathCount = Math.min(input.pathCount, HEATMAP_PATH_CAP);
@@ -39,8 +46,8 @@ export const runExploration = (input: SimulationInput): ExplorationResult => {
       probabilityOfSevereDrawdown: result.metrics.probabilityOfSevereDrawdown,
       p90MaxDrawdown: result.metrics.p90MaxDrawdown,
       expectedLogGrowthPerTrade: expectedLogGrowth(
-        input.winProbability,
-        input.netWinMultiple,
+        kelly.conservative.probability,
+        kelly.economics.netWinMultiple,
         fraction,
       ),
     };
@@ -77,15 +84,24 @@ export const runExploration = (input: SimulationInput): ExplorationResult => {
 export const runKellyComparison = (
   input: SimulationInput,
 ): KellyComparisonPoint[] => {
-  const kelly = calculateKelly(input.winProbability, input.netWinMultiple);
+  const kelly = calculateKelly(
+    input.winProbability,
+    input.probabilityHaircut,
+    input.contractPurchasePrice,
+    input.settlementPayout,
+    input.roundTripCosts,
+  );
   const variants: Array<{
     label: KellyComparisonPoint["label"];
     fraction: number;
   }> = [
     { label: "No stake", fraction: 0 },
-    { label: "Quarter Kelly", fraction: kelly.quarterFraction },
-    { label: "Half Kelly", fraction: kelly.halfFraction },
-    { label: "Full Kelly", fraction: kelly.fullFraction },
+    { label: "Current size", fraction: input.positionFraction },
+    {
+      label: "Conservative Kelly",
+      fraction: kelly.conservative.actionableFraction,
+    },
+    { label: "Raw Kelly", fraction: kelly.estimated.actionableFraction },
   ];
   return variants.map(({ label, fraction }) => {
     if (label === "No stake") {

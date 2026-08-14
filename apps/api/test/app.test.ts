@@ -86,13 +86,42 @@ describe("HTTP API", () => {
     ]);
   });
 
+  it("exposes an agent-ready whole-contract sizing endpoint", async () => {
+    const response = await fetch(`${baseUrl}/api/size`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        bankroll: 10_000,
+        winProbability: 0.55,
+        probabilityHaircut: 0.03,
+        contractPurchasePrice: 49,
+        settlementPayout: 100,
+        roundTripCosts: 1,
+        sizingPolicy: "conservative-kelly",
+        customFraction: 0,
+        maximumPositionFraction: 0.03,
+      }),
+    });
+    expect(response.status).toBe(200);
+    await expect(response.json()).resolves.toMatchObject({
+      sizing: {
+        wholeContractCount: 6,
+        actualCapitalAtRisk: 300,
+        bindingConstraint: "position-cap",
+        economics: { breakEvenProbability: 0.5 },
+      },
+    });
+  });
+
   it("keeps extreme short-horizon CAGR values finite across JSON", async () => {
     const input = {
       ...DEFAULT_SIMULATION_INPUT,
       winProbability: 1,
       positionFraction: 1,
-      netWinMultiple: 20,
-      tradesPerWeek: 20,
+      contractPurchasePrice: 1,
+      settlementPayout: 21,
+      roundTripCosts: 0,
+      eventsPerWeek: 20,
       horizonWeeks: 1,
       startingCapital: 100,
       pathCount: 100,
@@ -152,14 +181,15 @@ describe("HTTP API", () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         ...DEFAULT_SIMULATION_INPUT,
-        netWinMultiple: 0,
+        contractPurchasePrice: 1,
+        settlementPayout: 1,
       }),
     });
     expect(invalid.status).toBe(422);
     await expect(invalid.json()).resolves.toMatchObject({
       error: "Simulation input is invalid.",
       details: expect.arrayContaining([
-        expect.stringContaining("netWinMultiple"),
+        expect.stringContaining("contractPurchasePrice + roundTripCosts"),
       ]),
     });
 
@@ -169,14 +199,14 @@ describe("HTTP API", () => {
       body: JSON.stringify({
         ...DEFAULT_SIMULATION_INPUT,
         pathCount: 25_000,
-        tradesPerWeek: 20,
+        eventsPerWeek: 20,
         horizonWeeks: 104,
       }),
     });
     expect(excessive.status).toBe(422);
     await expect(excessive.json()).resolves.toMatchObject({
       details: expect.arrayContaining([
-        expect.stringContaining("path-trades exceeds"),
+        expect.stringContaining("path-events exceeds"),
       ]),
     });
   });
