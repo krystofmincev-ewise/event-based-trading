@@ -115,9 +115,7 @@ describe("numeric control drafts", () => {
   it("keeps contract price render-safe while clearing, typing, and blurring", async () => {
     const user = userEvent.setup();
     render(<StatefulControls />);
-    const payoutInput = screen.getByLabelText(
-      "Executable contract purchase price",
-    );
+    const payoutInput = screen.getByLabelText("Contract price / premium");
 
     await user.clear(payoutInput);
     expect(payoutInput).toHaveAttribute("aria-invalid", "true");
@@ -163,12 +161,10 @@ describe("numeric control drafts", () => {
     render(<StatefulControls />);
     expect(
       screen.queryByRole("slider", {
-        name: "Executable contract purchase price slider",
+        name: "Contract price / premium slider",
       }),
     ).not.toBeInTheDocument();
-    expect(
-      screen.getByLabelText("Executable contract purchase price"),
-    ).toHaveValue(0.49);
+    expect(screen.getByLabelText("Contract price / premium")).toHaveValue(0.49);
   });
 
   it("rejects fractional event counts before dispatching them", async () => {

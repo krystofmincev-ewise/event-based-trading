@@ -6,6 +6,17 @@ export {
   updateLogCapital,
 } from "./bankroll.js";
 export { DEFAULT_SIMULATION_INPUT, INPUT_LIMITS } from "./defaults.js";
+export {
+  DEFAULT_EMPIRICAL_SCENARIO,
+  EMPIRICAL_CONTEXT,
+  EVENT_EVIDENCE_SOURCES,
+  capitalizationVolatilityMultiplierFor,
+  effectiveThresholdFor,
+  minimumSupportedCompanyMoveMultiplier,
+  resolveEmpiricalScenario,
+  validateEmpiricalScenarioSelection,
+} from "./empiricalContext.js";
+export type * from "./empiricalContext.js";
 export { runExploration, runKellyComparison } from "./exploration.js";
 export {
   calculateKelly,
@@ -14,7 +25,13 @@ export {
   wholeContractPosition,
 } from "./kelly.js";
 export { annualizedWeeklyMetrics } from "./metrics.js";
-export { hashSeed, randomAt } from "./prng.js";
+export {
+  hashSeed,
+  poissonFromUniform,
+  randomAt,
+  randomStreamAt,
+  standardNormalAt,
+} from "./prng.js";
 export { runSimulation } from "./simulation.js";
 export { calculatePositionSizing } from "./sizing.js";
 export {

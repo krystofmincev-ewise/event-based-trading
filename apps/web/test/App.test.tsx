@@ -1,10 +1,20 @@
 import {
+  calculateKelly,
+  DEFAULT_EMPIRICAL_SCENARIO,
   DEFAULT_SIMULATION_INPUT,
+  resolveEmpiricalScenario,
   runExploration,
   runKellyComparison,
   runSimulation,
 } from "@event-lab/simulation";
-import { render, screen, waitFor, within } from "@testing-library/react";
+import type { SimulationInput } from "@event-lab/simulation";
+import {
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+  within,
+} from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -114,6 +124,116 @@ describe("App", () => {
         name: "Bankroll and terminal value scale",
       }),
     ).toBeInTheDocument();
+    expect(screen.getByLabelText("Target bankroll at risk")).toHaveValue(0);
+    expect(
+      screen.getByRole("region", {
+        name: "Cross-sector scenario comparison",
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("keeps the empirical selector inside its observed tail boundary", () => {
+    installFetchMock();
+    render(<App />);
+    const companyScale = screen.getByLabelText("Company move scale");
+    fireEvent.change(companyScale, { target: { value: "0.5" } });
+    expect(companyScale).toHaveValue("0.5");
+    fireEvent.change(screen.getByLabelText("Return threshold"), {
+      target: { value: "0.1" },
+    });
+    expect(companyScale).toHaveValue("1");
+    expect(screen.getByText(/smoothed-knot/i)).toBeInTheDocument();
+  });
+
+  it("keeps empirical edits draft-only until their full manifest is loaded", async () => {
+    const fetchMock = installDynamicFetchMock();
+    const user = userEvent.setup();
+    render(<App />);
+    await screen.findByRole("heading", { name: "Bankroll fan" });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+
+    await user.selectOptions(
+      screen.getByLabelText(/Sector \/ industry proxy/),
+      "pharma-biotech",
+    );
+    await user.selectOptions(screen.getByLabelText(/Terminal horizon/), "10");
+    fireEvent.change(
+      screen.getByLabelText("Model probability lift over prior"),
+      { target: { value: "0.05" } },
+    );
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(
+      screen.getByText(/Draft differs from the scenario currently loaded/i),
+    ).toBeInTheDocument();
+
+    await user.click(
+      screen.getByRole("button", {
+        name: "Load synthetic research scenario",
+      }),
+    );
+    await waitFor(() => expect(fetchMock).toHaveBeenCalledTimes(6));
+    const calls = fetchMock.mock.calls as Array<
+      [string | URL | Request, RequestInit?]
+    >;
+    let simulateCall: [string | URL | Request, RequestInit?] | undefined;
+    for (const call of calls) {
+      const resource = call[0];
+      const path =
+        typeof resource === "string"
+          ? resource
+          : resource instanceof URL
+            ? resource.pathname
+            : new URL(resource.url).pathname;
+      if (path === "/api/simulate") simulateCall = call;
+    }
+    expect(simulateCall).toBeDefined();
+    const request = JSON.parse(
+      (simulateCall![1] as RequestInit).body as string,
+    ) as SimulationInput;
+    const expected = resolveEmpiricalScenario({
+      ...DEFAULT_EMPIRICAL_SCENARIO,
+      profileId: "pharma-biotech",
+      horizon: 10,
+      modelProbabilityLift: 0.05,
+    });
+    expect(request).toMatchObject({
+      winProbability: expected.scenarioProbability,
+      contractPurchasePrice: expected.syntheticProbabilityScaledPrice,
+      eventsPerWeek: 0.5,
+      opportunityArrival: "poisson",
+      calibrationUncertaintyEnabled: true,
+      calibrationEffectiveSampleSize: 100,
+      weeklyProbabilityLogitStdDev: 0.15,
+      executionCostCoefficientVariation: 0.35,
+      researchScenarioManifest: {
+        profileId: "pharma-biotech",
+        horizonTradingDays: 10,
+        modelProbabilityLift: 0.05,
+        termsExecutable: false,
+      },
+    });
+  });
+
+  it("resets a fractional Poisson mean to a valid fixed schedule", async () => {
+    installFetchMock();
+    const user = userEvent.setup();
+    render(<App />);
+    await user.selectOptions(
+      screen.getByLabelText(/Opportunity arrival model/),
+      "poisson",
+    );
+    const opportunities = screen.getByLabelText(
+      "Mean eligible opportunities per week",
+    );
+    await user.clear(opportunities);
+    await user.type(opportunities, "1.5");
+    await user.click(
+      screen.getByRole("button", { name: "Reset core assumptions" }),
+    );
+    expect(screen.getByLabelText(/Opportunity arrival model/)).toHaveValue(
+      "fixed",
+    );
+    expect(screen.getByLabelText("Whole events per week")).toHaveValue(2);
   });
 
   it("recomputes after an accessible numeric control changes", async () => {
@@ -370,8 +490,22 @@ describe("App", () => {
     const raw = within(results)
       .getByText("Estimated-p Kelly")
       .closest(".kelly-lane");
-    await waitFor(() => expect(conservative).toHaveTextContent("14.0%"));
-    expect(raw).toHaveTextContent("20.0%");
+    const scenario = resolveEmpiricalScenario(DEFAULT_EMPIRICAL_SCENARIO);
+    const expected = calculateKelly(
+      0.6,
+      scenario.simulationPatch.probabilityHaircut!,
+      scenario.simulationPatch.contractPurchasePrice!,
+      scenario.simulationPatch.settlementPayout!,
+      scenario.simulationPatch.roundTripCosts!,
+    );
+    await waitFor(() =>
+      expect(conservative).toHaveTextContent(
+        `${(expected.conservative.actionableFraction * 100).toFixed(1)}%`,
+      ),
+    );
+    expect(raw).toHaveTextContent(
+      `${(expected.estimated.actionableFraction * 100).toFixed(1)}%`,
+    );
     expect(screen.getByLabelText("Event hit probability")).toHaveValue(60);
   });
 });

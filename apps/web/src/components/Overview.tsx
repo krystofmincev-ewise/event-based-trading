@@ -4,8 +4,10 @@ import { formatCurrency, formatPercent, formatRatio } from "../lib/format.js";
 
 export const Overview = ({ result }: { result: SimulationResult }) => {
   const { metrics, metadata } = result;
-  const effectiveTradeRate = Number.isFinite(metadata.effectiveTradesPerWeek)
-    ? `${metadata.effectiveTradesPerWeek.toFixed(2)}/wk`
+  const effectiveOpportunityRate = Number.isFinite(
+    metadata.effectiveOpportunitiesPerWeek,
+  )
+    ? `${metadata.effectiveOpportunitiesPerWeek.toFixed(2)}/wk`
     : "—";
   return (
     <div className="overview-grid">
@@ -76,8 +78,8 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
         </dl>
         <p className="metric-method-note">
           Sharpe, Sortino, and volatility pool simulated end-of-week path
-          observations and annualize by √52. IID scaling assumes no serial
-          correlation.
+          observations and annualize by √52. With regime stress enabled, this
+          remains a simple annualization approximation rather than an IID claim.
         </p>
       </section>
       <aside className="run-tape" aria-label="Simulation metadata">
@@ -88,14 +90,45 @@ export const Overview = ({ result }: { result: SimulationResult }) => {
             <dd>{metadata.pathCount.toLocaleString()}</dd>
           </div>
           <div>
-            <dt>Trades</dt>
+            <dt>Input provenance</dt>
             <dd>
-              {metadata.tradeCount.toLocaleString()} · {effectiveTradeRate}
+              {result.input.researchScenarioManifest
+                ? `${result.input.researchScenarioManifest.datasetVersion} · research-only synthetic terms`
+                : "Custom inputs · quote provenance not verified"}
             </dd>
           </div>
           <div>
-            <dt>Whole events / week</dt>
-            <dd>{result.input.eventsPerWeek}/wk</dd>
+            <dt>Expected opportunities · realized p05–p95</dt>
+            <dd>
+              {metadata.expectedOpportunityCount.toLocaleString(undefined, {
+                maximumFractionDigits: 1,
+              })}{" "}
+              · {metadata.realizedOpportunityCount.p05.toFixed(0)}–
+              {metadata.realizedOpportunityCount.p95.toFixed(0)}
+            </dd>
+          </div>
+          <div>
+            <dt>
+              {result.input.opportunityArrival === "poisson"
+                ? "Mean opportunities / week"
+                : "Whole events / week"}
+            </dt>
+            <dd>
+              {result.input.eventsPerWeek}/wk · realized{" "}
+              {effectiveOpportunityRate}
+            </dd>
+          </div>
+          <div>
+            <dt>Latent probability mean · p05–p95</dt>
+            <dd>
+              {formatPercent(metadata.meanLatentWinProbability)} ·{" "}
+              {formatPercent(metadata.latentWinProbability.p05)}–
+              {formatPercent(metadata.latentWinProbability.p95)}
+            </dd>
+          </div>
+          <div>
+            <dt>Mean path-week probability</dt>
+            <dd>{formatPercent(metadata.meanWeeklyWinProbability)}</dd>
           </div>
           <div>
             <dt>Initial contracts</dt>

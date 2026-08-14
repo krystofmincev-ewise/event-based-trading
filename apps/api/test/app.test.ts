@@ -1,4 +1,8 @@
-import { DEFAULT_SIMULATION_INPUT } from "@event-lab/simulation";
+import {
+  DEFAULT_EMPIRICAL_SCENARIO,
+  DEFAULT_SIMULATION_INPUT,
+  resolveEmpiricalScenario,
+} from "@event-lab/simulation";
 import { createServer } from "node:http";
 import type { AddressInfo } from "node:net";
 import { afterEach, beforeEach, describe, expect, it } from "vitest";
@@ -48,6 +52,38 @@ describe("HTTP API", () => {
     });
   });
 
+  it("exposes versioned empirical scenarios and resolves an agent request", async () => {
+    const catalog = await fetch(`${baseUrl}/api/scenarios`);
+    expect(catalog.status).toBe(200);
+    await expect(catalog.json()).resolves.toMatchObject({
+      dataset: {
+        profiles: expect.arrayContaining([
+          expect.objectContaining({ id: "pharma-biotech" }),
+        ]),
+      },
+      defaultSelection: DEFAULT_EMPIRICAL_SCENARIO,
+    });
+    const resolved = await fetch(`${baseUrl}/api/scenario/resolve`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        ...DEFAULT_EMPIRICAL_SCENARIO,
+        profileId: "energy",
+        horizon: 10,
+        direction: "down",
+        threshold: 0.05,
+      }),
+    });
+    expect(resolved.status).toBe(200);
+    await expect(resolved.json()).resolves.toMatchObject({
+      scenario: {
+        profile: { id: "energy" },
+        context: { sampleSize: 6530 },
+        simulationPatch: { opportunityArrival: "poisson" },
+      },
+    });
+  });
+
   it("returns a deterministic validated simulation contract", async () => {
     const input = {
       ...DEFAULT_SIMULATION_INPUT,
@@ -64,6 +100,43 @@ describe("HTTP API", () => {
     const second = await request();
     expect(first.status).toBe(200);
     expect(await first.json()).toEqual(await second.json());
+  });
+
+  it("accepts an intact research manifest and rejects tampered provenance", async () => {
+    const scenario = resolveEmpiricalScenario(DEFAULT_EMPIRICAL_SCENARIO);
+    const input = {
+      ...DEFAULT_SIMULATION_INPUT,
+      ...scenario.simulationPatch,
+      pathCount: 100,
+      horizonWeeks: 1,
+    };
+    const post = (body: unknown) =>
+      fetch(`${baseUrl}/api/simulate`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+    expect((await post(input)).status).toBe(200);
+    expect(
+      (
+        await post({
+          ...input,
+          winProbability: input.winProbability + 0.01,
+        })
+      ).status,
+    ).toBe(422);
+    expect(
+      (
+        await post({
+          ...input,
+          researchScenarioManifest: {
+            ...input.researchScenarioManifest!,
+            datasetVersion: "unverified-client-label",
+          },
+        })
+      ).status,
+    ).toBe(422);
   });
 
   it("exposes exploration and Kelly comparison endpoints", async () => {

@@ -198,14 +198,14 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
         />
         <NumericControl
           id="contractPurchasePrice"
-          label="Executable contract purchase price"
+          label="Contract price / premium"
           value={input.contractPurchasePrice}
-          min={0.01}
+          min={0.001}
           max={10_000}
-          step={0.01}
+          step={0.001}
           prefix="$"
           hideRange
-          description="Executable ask or acquisition price per contract—not a midpoint."
+          description="The loaded default is a synthetic research proxy. Replace it with a timestamped executable ask—not a midpoint—before candidate sizing."
           onChange={setNumeric}
         />
         <NumericControl
@@ -229,7 +229,7 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
           step={0.001}
           prefix="$"
           hideRange
-          description="Round-trip commissions, exchange fees, and a conservative fill/slippage allowance."
+          description="Enter every applicable transaction, broker, settlement, and fill/slippage cost. The synthetic scenario loads one illustrative single-side XSPBX customer fee plus a stress allowance, not an all-in account quote."
           onChange={setNumeric}
         />
         <NumericControl
@@ -283,15 +283,101 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
         </div>
       </Group>
       <Group title="Experiment design">
+        <label className="text-control" htmlFor="calibration-uncertainty">
+          <span>Calibration uncertainty</span>
+          <select
+            id="calibration-uncertainty"
+            value={input.calibrationUncertaintyEnabled ? "enabled" : "disabled"}
+            onChange={(event) =>
+              onChange({
+                ...input,
+                calibrationUncertaintyEnabled: event.target.value === "enabled",
+              })
+            }
+          >
+            <option value="disabled">Off — probability treated as fixed</option>
+            <option value="enabled">On — synthetic evidence stress</option>
+          </select>
+          <small>
+            Enable this to stress estimation error around a calibrated
+            probability. Sample size never silently switches the model off.
+          </small>
+        </label>
+        <label className="text-control" htmlFor="opportunity-arrival">
+          <span>Opportunity arrival model</span>
+          <select
+            id="opportunity-arrival"
+            value={input.opportunityArrival}
+            onChange={(event) =>
+              onChange({
+                ...input,
+                opportunityArrival: event.target.value as "fixed" | "poisson",
+                eventsPerWeek:
+                  event.target.value === "fixed"
+                    ? Math.max(1, Math.round(input.eventsPerWeek))
+                    : input.eventsPerWeek,
+              })
+            }
+          >
+            <option value="fixed">Exact weekly count</option>
+            <option value="poisson">Poisson opportunity flow</option>
+          </select>
+          <small>
+            Poisson uses a mean rate but realizes only whole-number weekly
+            counts—including zero-opportunity weeks.
+          </small>
+        </label>
         <NumericControl
           id="eventsPerWeek"
-          label="Whole events per week"
+          label={
+            input.opportunityArrival === "fixed"
+              ? "Whole events per week"
+              : "Mean eligible opportunities per week"
+          }
           value={input.eventsPerWeek}
-          min={1}
+          min={input.opportunityArrival === "fixed" ? 1 : 0.1}
           max={20}
+          step={input.opportunityArrival === "fixed" ? 1 : 0.1}
+          integerOnly={input.opportunityArrival === "fixed"}
+          description={
+            input.opportunityArrival === "fixed"
+              ? "Every path receives this exact integer schedule."
+              : "This is a distribution mean, not a partial trade; every realized count is an integer."
+          }
+          onChange={setNumeric}
+        />
+        <NumericControl
+          id="calibrationEffectiveSampleSize"
+          label="Calibration evidence weight"
+          value={input.calibrationEffectiveSampleSize}
+          min={4}
+          max={1_000_000}
           step={1}
           integerOnly
-          description="Integer executed opportunities only; the model never creates half a trade."
+          hideRange
+          description="Synthetic effective independent observations behind the displayed probability. Used only when calibration uncertainty is on; this is not the market-context sample size."
+          onChange={setNumeric}
+        />
+        <NumericControl
+          id="weeklyProbabilityLogitStdDev"
+          label="Weekly regime shock"
+          value={input.weeklyProbabilityLogitStdDev}
+          min={0}
+          max={2}
+          step={0.01}
+          description="Standard deviation on the log-odds scale, shared by opportunities within a week to create clustered good and bad regimes."
+          onChange={setNumeric}
+        />
+        <NumericControl
+          id="executionCostCoefficientVariation"
+          label="Execution-cost dispersion"
+          value={input.executionCostCoefficientVariation}
+          min={0}
+          max={3}
+          step={0.05}
+          displayFactor={100}
+          unit="% CV"
+          description="Right-skewed lognormal stress around the mean fee/slippage input. Use zero for a known held-to-settlement candidate cost."
           onChange={setNumeric}
         />
         <NumericControl
@@ -419,6 +505,12 @@ export const ControlPanel = ({ input, onChange }: ControlPanelProps) => {
             contractPurchasePrice: 0.49,
             settlementPayout: 1,
             roundTripCosts: 0.01,
+            opportunityArrival: "fixed",
+            eventsPerWeek: 2,
+            calibrationUncertaintyEnabled: false,
+            calibrationEffectiveSampleSize: 100_000,
+            weeklyProbabilityLogitStdDev: 0,
+            executionCostCoefficientVariation: 0,
           })
         }
       >

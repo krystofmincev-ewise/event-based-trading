@@ -1,6 +1,12 @@
 import { INPUT_LIMITS } from "./defaults.js";
+import {
+  EMPIRICAL_CONTEXT,
+  resolveEmpiricalScenario,
+  validateEmpiricalScenarioSelection,
+} from "./empiricalContext.js";
 import type {
   PositionSizingInput,
+  ResearchScenarioManifest,
   SimulationInput,
   SizingPolicy,
 } from "./types.js";
@@ -16,6 +22,54 @@ export type PositionSizingValidationResult =
 
 const isRecord = (value: unknown): value is Record<string, unknown> =>
   typeof value === "object" && value !== null && !Array.isArray(value);
+
+const readResearchScenarioManifest = (
+  value: unknown,
+  errors: string[],
+): ResearchScenarioManifest | null => {
+  if (value === null) return null;
+  if (
+    !isRecord(value) ||
+    value.kind !== "empirical-research-proxy" ||
+    typeof value.datasetVersion !== "string" ||
+    typeof value.profileId !== "string" ||
+    (value.capitalizationId !== "small" &&
+      value.capitalizationId !== "mid" &&
+      value.capitalizationId !== "large") ||
+    (value.horizonTradingDays !== 1 && value.horizonTradingDays !== 10) ||
+    (value.direction !== "up" &&
+      value.direction !== "down" &&
+      value.direction !== "absolute") ||
+    (value.threshold !== 0 &&
+      value.threshold !== 0.02 &&
+      value.threshold !== 0.05 &&
+      value.threshold !== 0.1) ||
+    typeof value.companyMoveMultiplier !== "number" ||
+    !Number.isFinite(value.companyMoveMultiplier) ||
+    typeof value.modelProbabilityLift !== "number" ||
+    !Number.isFinite(value.modelProbabilityLift) ||
+    value.termsExecutable !== false ||
+    value.sizingEligibility !== "research-only"
+  ) {
+    errors.push(
+      "researchScenarioManifest must be null or a valid empirical research-proxy manifest.",
+    );
+    return null;
+  }
+  return {
+    kind: value.kind,
+    datasetVersion: value.datasetVersion,
+    profileId: value.profileId,
+    capitalizationId: value.capitalizationId,
+    horizonTradingDays: value.horizonTradingDays,
+    direction: value.direction,
+    threshold: value.threshold,
+    companyMoveMultiplier: value.companyMoveMultiplier,
+    modelProbabilityLift: value.modelProbabilityLift,
+    termsExecutable: false,
+    sizingEligibility: "research-only",
+  };
+};
 
 const readFiniteNumber = (
   source: Record<string, unknown>,
@@ -84,7 +138,28 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
     "severeDrawdownFraction",
     errors,
   );
+  const calibrationEffectiveSampleSize = readFiniteNumber(
+    value,
+    "calibrationEffectiveSampleSize",
+    errors,
+  );
+  const weeklyProbabilityLogitStdDev = readFiniteNumber(
+    value,
+    "weeklyProbabilityLogitStdDev",
+    errors,
+  );
+  const executionCostCoefficientVariation = readFiniteNumber(
+    value,
+    "executionCostCoefficientVariation",
+    errors,
+  );
   const seed = value.seed;
+  const opportunityArrival = value.opportunityArrival;
+  const calibrationUncertaintyEnabled = value.calibrationUncertaintyEnabled;
+  const researchScenarioManifest = readResearchScenarioManifest(
+    value.researchScenarioManifest,
+    errors,
+  );
 
   inRange(winProbability, "winProbability", 0, 1, errors);
   inRange(
@@ -154,6 +229,27 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
     errors,
     false,
   );
+  inRange(
+    calibrationEffectiveSampleSize,
+    "calibrationEffectiveSampleSize",
+    INPUT_LIMITS.calibrationEffectiveSampleSize.min,
+    INPUT_LIMITS.calibrationEffectiveSampleSize.max,
+    errors,
+  );
+  inRange(
+    weeklyProbabilityLogitStdDev,
+    "weeklyProbabilityLogitStdDev",
+    INPUT_LIMITS.weeklyProbabilityLogitStdDev.min,
+    INPUT_LIMITS.weeklyProbabilityLogitStdDev.max,
+    errors,
+  );
+  inRange(
+    executionCostCoefficientVariation,
+    "executionCostCoefficientVariation",
+    INPUT_LIMITS.executionCostCoefficientVariation.min,
+    INPUT_LIMITS.executionCostCoefficientVariation.max,
+    errors,
+  );
 
   if (pathCount !== undefined && !Number.isInteger(pathCount)) {
     errors.push("pathCount must be an integer.");
@@ -161,10 +257,20 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
   if (horizonWeeks !== undefined && !Number.isInteger(horizonWeeks)) {
     errors.push("horizonWeeks must be an integer.");
   }
-  if (eventsPerWeek !== undefined && !Number.isInteger(eventsPerWeek)) {
+  if (
+    eventsPerWeek !== undefined &&
+    opportunityArrival === "fixed" &&
+    !Number.isInteger(eventsPerWeek)
+  ) {
     errors.push(
-      "eventsPerWeek must be an integer; partial trades are not modeled.",
+      "eventsPerWeek must be an integer for a fixed schedule; partial trades are not modeled.",
     );
+  }
+  if (opportunityArrival !== "fixed" && opportunityArrival !== "poisson") {
+    errors.push("opportunityArrival must be fixed or poisson.");
+  }
+  if (typeof calibrationUncertaintyEnabled !== "boolean") {
+    errors.push("calibrationUncertaintyEnabled must be a boolean.");
   }
   if (
     contractPurchasePrice !== undefined &&
@@ -189,6 +295,80 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
   ) {
     errors.push("seed must be a non-empty string of at most 100 characters.");
   }
+  if (researchScenarioManifest !== null) {
+    if (researchScenarioManifest.datasetVersion !== EMPIRICAL_CONTEXT.version) {
+      errors.push(
+        "researchScenarioManifest.datasetVersion must match the bundled empirical catalog.",
+      );
+    }
+    const selection = validateEmpiricalScenarioSelection({
+      profileId: researchScenarioManifest.profileId,
+      capitalizationId: researchScenarioManifest.capitalizationId,
+      horizon: researchScenarioManifest.horizonTradingDays,
+      direction: researchScenarioManifest.direction,
+      threshold: researchScenarioManifest.threshold,
+      companyMoveMultiplier: researchScenarioManifest.companyMoveMultiplier,
+      modelProbabilityLift: researchScenarioManifest.modelProbabilityLift,
+    });
+    if (!selection.success) {
+      errors.push(...selection.errors.map((error) => `manifest: ${error}`));
+    } else {
+      const expected = resolveEmpiricalScenario(selection.data).simulationPatch;
+      const numericPairs: Array<
+        [number | undefined, number | undefined, string]
+      > = [
+        [winProbability, expected.winProbability, "winProbability"],
+        [probabilityHaircut, expected.probabilityHaircut, "probabilityHaircut"],
+        [
+          contractPurchasePrice,
+          expected.contractPurchasePrice,
+          "contractPurchasePrice",
+        ],
+        [settlementPayout, expected.settlementPayout, "settlementPayout"],
+        [roundTripCosts, expected.roundTripCosts, "roundTripCosts"],
+        [eventsPerWeek, expected.eventsPerWeek, "eventsPerWeek"],
+        [
+          calibrationEffectiveSampleSize,
+          expected.calibrationEffectiveSampleSize,
+          "calibrationEffectiveSampleSize",
+        ],
+        [
+          weeklyProbabilityLogitStdDev,
+          expected.weeklyProbabilityLogitStdDev,
+          "weeklyProbabilityLogitStdDev",
+        ],
+        [
+          executionCostCoefficientVariation,
+          expected.executionCostCoefficientVariation,
+          "executionCostCoefficientVariation",
+        ],
+      ];
+      for (const [actual, reference, key] of numericPairs) {
+        if (
+          actual !== undefined &&
+          reference !== undefined &&
+          Math.abs(actual - reference) >
+            1e-12 * Math.max(1, Math.abs(actual), Math.abs(reference))
+        ) {
+          errors.push(
+            `${key} does not match the attached researchScenarioManifest.`,
+          );
+        }
+      }
+      if (opportunityArrival !== expected.opportunityArrival) {
+        errors.push(
+          "opportunityArrival does not match the attached researchScenarioManifest.",
+        );
+      }
+      if (
+        calibrationUncertaintyEnabled !== expected.calibrationUncertaintyEnabled
+      ) {
+        errors.push(
+          "calibrationUncertaintyEnabled does not match the attached researchScenarioManifest.",
+        );
+      }
+    }
+  }
 
   if (errors.length > 0) return { success: false, errors };
 
@@ -207,6 +387,13 @@ export const validateSimulationInput = (value: unknown): ValidationResult => {
     ruinThresholdFraction: ruinThresholdFraction!,
     annualRiskFreeRate: annualRiskFreeRate!,
     severeDrawdownFraction: severeDrawdownFraction!,
+    opportunityArrival:
+      opportunityArrival as SimulationInput["opportunityArrival"],
+    calibrationUncertaintyEnabled: calibrationUncertaintyEnabled as boolean,
+    calibrationEffectiveSampleSize: calibrationEffectiveSampleSize!,
+    weeklyProbabilityLogitStdDev: weeklyProbabilityLogitStdDev!,
+    executionCostCoefficientVariation: executionCostCoefficientVariation!,
+    researchScenarioManifest,
   };
   const work = estimateLabWork(data);
   if (work.totalPathTrades > LAB_OPERATION_BUDGET) {

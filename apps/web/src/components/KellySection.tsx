@@ -138,7 +138,7 @@ export const KellySection = ({
           ) : null}
         </div>
         <div className="kelly-current-payout">
-          <span>Current held-to-settlement economics</span>
+          <span>Current supplied held-to-settlement economics</span>
           <strong>
             ${currentAssumptions.contractPurchasePrice.toFixed(3)} purchase + $
             {currentAssumptions.roundTripCosts.toFixed(3)} costs → $

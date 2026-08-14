@@ -1,10 +1,15 @@
 import {
   calculatePositionSizing,
+  DEFAULT_EMPIRICAL_SCENARIO,
+  EMPIRICAL_CONTEXT,
+  EVENT_EVIDENCE_SOURCES,
+  resolveEmpiricalScenario,
   runExploration,
   runKellyComparison,
   runSimulation,
   validateSimulationInput,
   validatePositionSizingInput,
+  validateEmpiricalScenarioSelection,
 } from "@event-lab/simulation";
 import type { IncomingMessage, ServerResponse } from "node:http";
 
@@ -40,6 +45,16 @@ const parseSizingInput = async (request: IncomingMessage) => {
   return parsed.data;
 };
 
+const parseScenarioInput = async (request: IncomingMessage) => {
+  assertJsonContentType(request);
+  const body = await readJsonBody(request);
+  const parsed = validateEmpiricalScenarioSelection(body);
+  if (!parsed.success) {
+    throw new HttpError(422, "Scenario selection is invalid.", parsed.errors);
+  }
+  return parsed.data;
+};
+
 const routePost = async (
   pathname: string,
   request: IncomingMessage,
@@ -48,6 +63,11 @@ const routePost = async (
   if (pathname === "/api/size") {
     const input = await parseSizingInput(request);
     sendJson(response, 200, { sizing: calculatePositionSizing(input) });
+    return true;
+  }
+  if (pathname === "/api/scenario/resolve") {
+    const input = await parseScenarioInput(request);
+    sendJson(response, 200, { scenario: resolveEmpiricalScenario(input) });
     return true;
   }
   if (pathname === "/api/simulate") {
@@ -80,6 +100,15 @@ export const handleRequest = async (
         status: "ok",
         service: "event-edge-api",
         version: "0.1.0",
+      });
+      return;
+    }
+
+    if (request.method === "GET" && url.pathname === "/api/scenarios") {
+      sendJson(response, 200, {
+        dataset: EMPIRICAL_CONTEXT,
+        defaultSelection: DEFAULT_EMPIRICAL_SCENARIO,
+        eventEvidence: EVENT_EVIDENCE_SOURCES,
       });
       return;
     }
