@@ -18,12 +18,14 @@
     "isolationPolicy": "macos-seatbelt-no-home-no-subprocess-v2"
   },
   "prospectiveActivationPolicy": {
-    "firstPooledGoNoGoEvents": 360,
-    "firstSectorActivationEvents": 50,
+    "firstPooledFeasibilityEvents": 240,
+    "minimumPooledConfirmatoryEvents": 600,
+    "minimumIndependentEventDates": 50,
+    "sectorActivationPolicy": "power-derived; 50 events is feasibility only and activation normally requires hundreds",
     "minimumForecastCoverage": 0.9,
     "minimumQuoteCoverage": 0.9,
-    "requiredLower95BrierImprovement": 0,
-    "requiredLower95NetPnlPerEligibleEvent": 0,
+    "requiredMultiplicityAdjustedLower975ScoreImprovement": 0,
+    "requiredMultiplicityAdjustedLower975NetPnlPerEligibleEvent": 0,
     "maximumRiskPerEventAfterActivation": 0.005,
     "maximumSameSectorOpenRisk": 0.01,
     "maximumAggregateEventRisk": 0.02

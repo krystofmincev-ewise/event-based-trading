@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Return distribution forecast batch",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["forecasts"],
+  "properties": {
+    "forecasts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "caseId",
+          "horizonSessions",
+          "cdf",
+          "expectedReturn",
+          "abstain"
+        ],
+        "properties": {
+          "caseId": { "type": "string", "minLength": 1 },
+          "horizonSessions": { "enum": [1, 5, 10, 20, 40] },
+          "cdf": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pLeMinus10",
+              "pLeMinus5",
+              "pLeMinus2",
+              "pLeZero",
+              "pLePlus2",
+              "pLePlus5",
+              "pLePlus10"
+            ],
+            "properties": {
+              "pLeMinus10": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              },
+              "pLeMinus5": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              },
+              "pLeMinus2": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              },
+              "pLeZero": { "type": "number", "minimum": 0.02, "maximum": 0.98 },
+              "pLePlus2": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              },
+              "pLePlus5": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              },
+              "pLePlus10": {
+                "type": "number",
+                "minimum": 0.02,
+                "maximum": 0.98
+              }
+            }
+          },
+          "expectedReturn": {
+            "type": "number",
+            "minimum": -0.5,
+            "maximum": 0.5
+          },
+          "abstain": { "type": "boolean" }
+        }
+      }
+    }
+  }
+}

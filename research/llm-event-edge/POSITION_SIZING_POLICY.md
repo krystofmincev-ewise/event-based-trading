@@ -18,13 +18,15 @@ There is no verified broadly listed U.S. single-stock post-earnings price-direct
 ## Prospective gates
 
 - First 20 events per sector / 240 pooled: shadow feasibility only.
-- 30 per sector / 360 pooled: first pooled go/no-go.
-- About 50 per sector / 600 pooled: sector activation can be considered.
+- First formal pooled test: normally at least 400–600 events and 50 independent event dates for a large effect; set the final size from the locked baseline's variance and date/issuer design effect.
+- Fifty events per sector is a calibration and pipeline checkpoint, not an activation gate. Sector authorization normally requires hundreds and a power calculation for the minimum economically useful score/P&L improvement.
 - At least 90% forecast coverage and 90% quote coverage.
-- One-sided 95% calendar-block-bootstrap lower bound for Brier improvement above zero.
+- Multiplicity-adjusted one-sided 97.5% date-block-bootstrap lower bound for Brier/CRPS improvement above zero against the strongest locked non-LLM baseline.
 - Log-loss non-inferiority and acceptable pooled calibration intercept/slope.
-- At least 100 prospective paper trades, positive net P&L in both chronological halves, and no sector contributing over half of P&L.
+- Positive ask-to-bid paper P&L in both chronological halves and under spread stress, with no date, issuer, or sector contributing over half of P&L.
 - Sector claims require multiplicity control and hierarchical shrinkage.
+
+For scale, V1's paired score-difference variance implies roughly 363 independent observations to detect a two-point Brier improvement and 1,452 for a one-point improvement at 80% power and one-sided 2.5%, before clustering and multiplicity. Re-estimate these requirements from the frozen prospective design; do not treat them as universal constants.
 
 ## Conservative Kelly
 
@@ -51,3 +53,5 @@ Initial hard caps after prospective activation:
 - zero contracts when flooring cannot fund one complete contract.
 
 Kelly uses the contract's break-even probability, not a claim that every binary event must have at least a 50% hit rate. A rare event can be attractive below 50% when price is sufficiently low; the opposite side may have a different ask and fee burden.
+
+For vanilla calls, puts, and spreads, do not insert a hit rate into the fixed-payout formula. Optimize expected log growth over posterior draws of the full net-payoff distribution, including entry ask, exit bid, fees, slippage, and common event/date shocks; then apply the same quarter-Kelly and hard caps.

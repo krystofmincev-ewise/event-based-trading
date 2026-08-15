@@ -19,6 +19,8 @@ OpenAI publishes strong finance-research, browsing, science, and professional-wo
 - [Nasdaq earnings calendar](https://www.nasdaq.com/market-activity/earnings)
 - [Kenneth French public research data library](https://mba.tuck.dartmouth.edu/pages/faculty/ken.french/data_library.html)
 - [S&P U.S. Indices Methodology](https://www.spglobal.com/spdji/en/documents/methodologies/methodology-sp-us-indices.pdf)
+- [ClinicalTrials.gov API v2](https://clinicaltrials.gov/data-api/api) and [record-history explanation](https://clinicaltrials.gov/study-basics/how-to-read-study-record)
+- [FDA guidance on multiple endpoints in clinical trials](https://www.fda.gov/regulatory-information/search-fda-guidance-documents/multiple-endpoints-clinical-trials)
 
 ## Contract realism
 
@@ -29,5 +31,8 @@ OpenAI publishes strong finance-research, browsing, science, and professional-wo
 - [Cboe proposed issuer-KPI binaries](https://cdn.cboe.com/resources/regulation/rule_filings/pending/2026/SR-CBOE-2026-061.pdf)
 - [Kalshi financial markets](https://kalshi.com/category/financials) and [fee schedule](https://kalshi.com/docs/kalshi-fee-schedule.pdf)
 - [CME prediction markets](https://www.cmegroup.com/markets/prediction-markets.html)
+- [Databento OPRA options data](https://databento.com/options), [point-in-time option-chain example](https://databento.com/docs/examples/options/equity-options-introduction/opra), and [open-interest example](https://databento.com/docs/examples/options/equity-open-interest)
+- [Cboe DataShop option quote intervals](https://datashop.cboe.com/option-quote-intervals)
+- [OptionMetrics IvyDB US](https://optionmetrics.com/united-states/)
 
 Product availability, fees, eligibility, and contract specifications change. Recheck the primary venue immediately before any prospective quote capture or trade.

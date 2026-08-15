@@ -15,6 +15,8 @@
     "edge:ingest": "tsx research/llm-event-edge/src/ingest.ts",
     "edge:packets": "tsx research/llm-event-edge/src/buildPackets.ts",
     "edge:audit-seeds": "tsx research/llm-event-edge/src/auditSeedCases.ts",
+    "edge:audit-volatility": "tsx research/llm-event-edge/src/analyzeVolatilityBaseline.ts",
+    "edge:validate-clinical": "tsx research/llm-event-edge/src/validateClinicalSeeds.ts",
     "edge:refresh-outcomes": "tsx research/llm-event-edge/src/refreshOutcomes.ts",
     "edge:sanitize-ledger": "tsx research/llm-event-edge/src/sanitizeLedger.ts && tsx research/llm-event-edge/src/buildPackets.ts",
     "edge:forecast": "tsx research/llm-event-edge/src/runForecastGraph.ts",

@@ -73,8 +73,29 @@ npm run edge:format:check
 - Version-one source snapshots did not retain trustworthy per-response retrieval timestamps. The manifest nulls those fields instead of presenting a planned time as an observed time. Future ingestion records completion time directly.
 
 See [STRATEGY_RECOMMENDATIONS.md](STRATEGY_RECOMMENDATIONS.md) for the proposed
-sector/event/horizon program, [METHODOLOGY.md](METHODOLOGY.md) for target
+sector/event/horizon program, [STUDY_V2_DECISION.md](STUDY_V2_DECISION.md) for
+the volatility-baseline verdict, [clinical-trials/README.md](clinical-trials/README.md)
+for the clinical-readout arm, [OPTIONS_DATA_PLAN.md](OPTIONS_DATA_PLAN.md) for
+the executable OTM design, [METHODOLOGY.md](METHODOLOGY.md) for target
 definitions and limitations, [SOURCES.md](SOURCES.md) for provenance, and
 [the completed pilot report](data/PILOT_RESULTS.md) with its public
 [case](data/pilot-case-index.jsonl) and
 [forecast](data/pilot-forecast-index.jsonl) indexes.
+
+Additional reproducible diagnostics:
+
+```bash
+npm run edge:audit-volatility
+npm run edge:validate-clinical
+```
+
+The first command reconstructs point-in-time RV20 for all 241 mature ten-day
+cases and compares the LLM descriptively with Gaussian, walk-forward, and
+purged return-window cross-fitted volatility-only forecasts. It deliberately
+omits inferential p-values and confidence intervals because the returns overlap
+and the cohort spans only 23 event dates. Raw Nasdaq responses remain ignored;
+their URL, timestamp provenance, and hashes are bound by a public source
+manifest (with older cache mtimes explicitly distinguished from exact fetch
+times), and
+derived aggregate results are in
+[`data/VOLATILITY_BASELINE_AUDIT.md`](data/VOLATILITY_BASELINE_AUDIT.md).

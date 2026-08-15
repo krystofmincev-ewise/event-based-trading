@@ -4,6 +4,7 @@ import {
   bootstrapMeanInterval,
   brierScore,
   logLoss,
+  rocAuc,
   wilsonInterval,
 } from "../src/statistics.js";
 
@@ -23,5 +24,16 @@ describe("event-edge statistics", () => {
     expect(bootstrapMeanInterval([1, 2, 3], 100, 7)).toEqual(
       bootstrapMeanInterval([1, 2, 3], 100, 7),
     );
+  });
+
+  it("computes rank AUC with ties", () => {
+    expect(
+      rocAuc([
+        { probability: 0.9, actual: true },
+        { probability: 0.5, actual: true },
+        { probability: 0.5, actual: false },
+        { probability: 0.1, actual: false },
+      ]),
+    ).toBe(0.875);
   });
 });

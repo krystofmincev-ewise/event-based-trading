@@ -67,3 +67,19 @@ export const bootstrapMeanInterval = (
   }).sort((left, right) => left - right);
   return [quantile(estimates, 0.025), quantile(estimates, 0.975)];
 };
+
+export const rocAuc = (
+  observations: Array<{ probability: number; actual: boolean }>,
+): number => {
+  const positives = observations.filter(({ actual }) => actual);
+  const negatives = observations.filter(({ actual }) => !actual);
+  if (positives.length === 0 || negatives.length === 0) return Number.NaN;
+  let comparisons = 0;
+  for (const positive of positives) {
+    for (const negative of negatives) {
+      if (positive.probability > negative.probability) comparisons += 1;
+      if (positive.probability === negative.probability) comparisons += 0.5;
+    }
+  }
+  return comparisons / (positives.length * negatives.length);
+};

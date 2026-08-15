@@ -1,0 +1,212 @@
+[
+  {
+    "id": "MLTX:S-OLARIS:2026-02-22",
+    "eventDate": "2026-02-22",
+    "ticker": "MLTX",
+    "program": "S-OLARIS",
+    "phase": "2",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1821586/000121390026018967/ea027791001ex99-1_moonlake.htm"
+    ],
+    "confirmatoryEligibility": "needs-adjudication"
+  },
+  {
+    "id": "TBPH:CYPRESS:2026-03-03",
+    "eventDate": "2026-03-03",
+    "ticker": "TBPH",
+    "program": "CYPRESS",
+    "phase": "3",
+    "nctIds": ["NCT05696717"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1583107/000110465926022572/tm267846d1_ex99-1.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "XENE:X-TOLE2:2026-03-09",
+    "eventDate": "2026-03-09",
+    "ticker": "XENE",
+    "program": "X-TOLE2",
+    "phase": "3",
+    "nctIds": ["NCT05614063"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1582313/000119312526097577/d107087dex991.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "RYTM:EMANATE:2026-03-16",
+    "eventDate": "2026-03-16",
+    "ticker": "RYTM",
+    "program": "EMANATE",
+    "phase": "3",
+    "nctIds": ["NCT05093634"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": true,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1649904/000162828026018211/ex991rytm20260616emanatepr.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "LPCN:LPCN-1154:2026-04-02",
+    "eventDate": "2026-04-02",
+    "ticker": "LPCN",
+    "program": "LPCN 1154",
+    "phase": "3",
+    "nctIds": ["NCT06979544"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": true,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1535955/000149315226014834/ex99-1.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "SYRE:SKYLINE:2026-04-13",
+    "eventDate": "2026-04-13",
+    "ticker": "SYRE",
+    "program": "SKYLINE / SPY001",
+    "phase": "2",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1636282/000162828026024831/exhibit991-8xkdatarelease.htm"
+    ],
+    "confirmatoryEligibility": "needs-adjudication"
+  },
+  {
+    "id": "AVTX:LOTUS:2026-05-05",
+    "eventDate": "2026-05-05",
+    "ticker": "AVTX",
+    "program": "LOTUS",
+    "phase": "2",
+    "nctIds": ["NCT06603077"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1534120/000153412026000028/ex-991lotuspr.htm"
+    ],
+    "confirmatoryEligibility": "needs-adjudication"
+  },
+  {
+    "id": "APGE:APEX-B:2026-05-27",
+    "eventDate": "2026-05-27",
+    "ticker": "APGE",
+    "program": "APEX Part B",
+    "phase": "2",
+    "nctIds": ["NCT06395948"],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1974640/000110465926066572/tm2615568d1_8k.htm"
+    ],
+    "confirmatoryEligibility": "needs-adjudication"
+  },
+  {
+    "id": "OCS:DIAMOND:2026-05-29",
+    "eventDate": "2026-05-29",
+    "ticker": "OCS",
+    "program": "DIAMOND-1 / DIAMOND-2",
+    "phase": "3",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1953530/000119312526248946/ocs-ex99_1.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "ABVX:ABTECT-MAINTENANCE:2026-06-01",
+    "eventDate": "2026-06-01",
+    "ticker": "ABVX",
+    "program": "ABTECT maintenance",
+    "phase": "3",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1956827/000119312526252360/d98688dex991.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "NVCR:TRIDENT:2026-06-17",
+    "eventDate": "2026-06-17",
+    "ticker": "NVCR",
+    "program": "TRIDENT",
+    "phase": "3",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1645113/000164511326000053/tridentdatapr.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "DFTX:EMERGE:2026-06-22",
+    "eventDate": "2026-06-22",
+    "ticker": "DFTX",
+    "program": "Emerge",
+    "phase": "3",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "yes",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1813814/000110465926076091/tm2618434d1_ex99-2.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "VTGN:PALISADE-4:2026-06-30",
+    "eventDate": "2026-06-30",
+    "ticker": "VTGN",
+    "program": "PALISADE-4",
+    "phase": "3",
+    "nctIds": [],
+    "readoutKind": "final-efficacy",
+    "sponsorReportedPrimaryEndpointMet": "no",
+    "postHocPositiveOnly": true,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1411685/000162828026046143/vtgnex99220260630.htm"
+    ],
+    "confirmatoryEligibility": "eligible"
+  },
+  {
+    "id": "QTTB:SIGNAL-AA-B:2026-07-13",
+    "eventDate": "2026-07-13",
+    "ticker": "QTTB",
+    "program": "SIGNAL-AA Part B",
+    "phase": "2a",
+    "nctIds": [],
+    "readoutKind": "early-proof-of-concept",
+    "sponsorReportedPrimaryEndpointMet": "ambiguous",
+    "postHocPositiveOnly": false,
+    "sourceUrls": [
+      "https://www.sec.gov/Archives/edgar/data/1661998/000119312526301520/d143274dex991.htm"
+    ],
+    "confirmatoryEligibility": "ineligible"
+  }
+]

@@ -1,0 +1,1941 @@
+{
+  "studyId": "earnings-2026-06-15_2026-08-14-v1",
+  "inputs": [
+    {
+      "symbol": "ABT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ABT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.142Z",
+      "sha256": "cc1551c81fc9a22003d8ef6666dc3c1af967efff64e0e46a2fbfcc12037858c2",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ACI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ACI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.541Z",
+      "sha256": "31766da9cb5a9b8357123fcb0c7632f1732e684730ae554febc868d5bde7fc32",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ACN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ACN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.909Z",
+      "sha256": "4a50ef9814a828f449dd8ca09dbe82896c72689d44fb4877d0c5865f54c1fc64",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "AGNC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AGNC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.216Z",
+      "sha256": "f47d23e0dade4d8944f40b986e0445fa36c392db761415ca7c6ab9774b1d93de",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "AKR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AKR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.147Z",
+      "sha256": "bdfc26ea6910ec19c3ef043c333a07eee847e352c4a6dbfea03e4e6cab95d29f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ALGN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ALGN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.573Z",
+      "sha256": "2f46db3c1a42d81586e6e2046e8b91ec94e6ffe96e11563416728b75e3c73031",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "ALKS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ALKS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.153Z",
+      "sha256": "bdeb2b26eb78d3fca24e11677e470fe561de5b09f873492be014bd7046a4e049",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ALNY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ALNY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.028Z",
+      "sha256": "8bd55a9a8c3cac8ca3e6a86c068434f68d6e900da9c7779f34f879cd581190b6",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "AM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.602Z",
+      "sha256": "ff582be18d353a037ae057eb5b76d2ba73da35bbc528ca4ef55dcf93deb838ea",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "AMP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AMP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.554Z",
+      "sha256": "6cb533e9fc79a9489bcc0635a3940ef4ec299b5f61a03e7137380381adfdfa4e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "AMRX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AMRX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.063Z",
+      "sha256": "a30410997df33c72a6190eb757c10a59161570b4ee757f370fea66791b4d416e",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "AMT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AMT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.181Z",
+      "sha256": "af2eda2767da34912391949f75cf1c3d9c6b0814bf51a6b00b44d07990ded625",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "APD",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/APD/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.083Z",
+      "sha256": "ed62eb4ac32bf8ac2d86f7275d20e3fd75a8ebc3d3c17811e9d5fae206cdcc9d",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "APG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/APG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.184Z",
+      "sha256": "0210e1f67fd9c53c96f1b8063bdc0084ebde0590c1d5471c8c65a732fc38b77d",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "AR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.724Z",
+      "sha256": "f922874a64538593e162b1ec3ee11897e5ad64f46f2071d7c383a2513476dce1",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "ARLP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ARLP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.027Z",
+      "sha256": "5da6d76df6536dbb1e81d23656813d59d64135b13d6406c2b46d55e4b20fc9b7",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "AWK",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/AWK/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.741Z",
+      "sha256": "5518d54b76447778862b63e9abd5eb161205c9224df33c416f0fcdf3c93c312e",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.180Z",
+      "sha256": "8e3d23f19544def8ae61ca247be3b5fde0111c267db7f8156ad01d340e44f6fb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BAC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BAC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.025Z",
+      "sha256": "765c5bec20e935ac614dfa6af51f683d4a2ee2df99d28f6ce78f46ff1e14b4c7",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BAX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BAX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.224Z",
+      "sha256": "a3a62cff3d0a41d6c8da4938fc8c57a226fe313edd98ee88aeeb38beb90646b2",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.186Z",
+      "sha256": "3611b7a692eb8c2bd2390415371430db6bac566c48ed9347f10c2af8dfc26daf",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.787Z",
+      "sha256": "3290043b6eca3f93823ef13e82b534cd7859dcad01b7afacdd22c91b99a3ef7e",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BIIB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BIIB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.807Z",
+      "sha256": "3be9190f2c257e6b73ec9ec38e3943b5f3ae2e2b6c915f6400250831a3d42d51",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BLK",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BLK/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.052Z",
+      "sha256": "ac2d951ecd1629dce80a8ee32128367c1ec1421672ea1883711feae2ae71a8ed",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BMY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BMY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.280Z",
+      "sha256": "c8b00379fd35a527b64c382755a2af71d3eb0e127c042dae5712660647cc143a",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BNL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BNL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.210Z",
+      "sha256": "5cc9fec713e1b7e61b63930aaf04d07d249dd7024b1952534d3abd22a7d2aa11",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BNY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BNY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.054Z",
+      "sha256": "46fb0b3c75a9cadedc93090abb406089e6c968b32a8f48f0c48c7cf07d8b1418",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BRX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BRX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.035Z",
+      "sha256": "ae4cf15a2ec803586fb86416768e8822ab3f85717d9fa616df2ab200c0bf7279",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BTU",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BTU/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:29.942Z",
+      "sha256": "2c444d8bc64b42cec78341ae180f8142b07df98e46f611ed41bbf348dfcd1144",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "BX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.552Z",
+      "sha256": "e76ee5c0579d902137a9b81652587b7d099b070a98b160c761a0753cba5d3861",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "BXP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/BXP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.188Z",
+      "sha256": "bf782bf4077cbe6bd7ad1e4a8f021782c9e4c903f4ada2c80f151e7fadbc4186",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CAG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CAG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.058Z",
+      "sha256": "393fdabcbe17f4a0ae5cced1b43bd0b1fc04b50faba111907cb40db42aaa2dc6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CALM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CALM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.340Z",
+      "sha256": "2cc6ad1f33b97f3c6da4f14eaf70b86e54de9221e956a1b19ecde51d471b5375",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CCI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CCI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.362Z",
+      "sha256": "88ad8e16d8c94eb1800a8743a7da528b985b4f9de5a57d45c684c38ae923d842",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CCL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CCL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.905Z",
+      "sha256": "deb2faf43a13abf9a738b3f2aee7dd2915dc27dc27ef8160907154e6ca4503d4",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CDNS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CDNS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.037Z",
+      "sha256": "4d04350ac0eb20d199cf2f9aa9a60fd6eda6d5b6d14485621f574ab2f81b43a8",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CDP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CDP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.062Z",
+      "sha256": "c8939252f8c45f28d35e68a72e79c538a6a06f3f80d7742ba6f14a1cfded97ba",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CFG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CFG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.136Z",
+      "sha256": "13753f2a4f477bae26b2b390944133ff84c43ca3bc4f2c980565dec187ac0eb6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CHTR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CHTR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.965Z",
+      "sha256": "fb99eaf7e39d21d4e477b76188d7998a813628defc8d9dab7b3f95f0c39dc23f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CLF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CLF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.563Z",
+      "sha256": "d2bfcd024fc75e28060477d171cfbfbe558f9b4eb96c69e8df6f2acf8c5f4220",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CLS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CLS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.059Z",
+      "sha256": "61ee39425ff1bbb1759b9c46a66d713fdc88f79768322fa68278230521ec7b44",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CMCSA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CMCSA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.562Z",
+      "sha256": "0b1eaf85b05b1bdfeb4dc8e798012537a5f38d14ef762d2db79cf1ee7e64abef",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CME",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CME/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.357Z",
+      "sha256": "4d215f1120fa937b6950c033d29b460634304ef269dda62dfe89089c299c76c9",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CMS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CMS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.217Z",
+      "sha256": "a4d4dac3675cbb04982117f90d875e6e7b7e9c34b064d253f750957a979320fc",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CNP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CNP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.213Z",
+      "sha256": "c8f79bcfcef58c99cd1ef61b0cc8a8ad93e63754cac1e29016049f97e9b7f915",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CNX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CNX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.282Z",
+      "sha256": "5eb0a70b27e5f85d96df576d93bce16b6a5a5e09c800a0d2aa9f02bfc9727aed",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "COCO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/COCO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.576Z",
+      "sha256": "67a51196a90c10c119c770caa85c6c8ff8622028ba8abcd842edd4275813b18c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "COF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/COF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.242Z",
+      "sha256": "6c1c695d23d7338739bc00784df68e91155bc5291e9aa0aecde9e8915e17ee4c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CORT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CORT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.005Z",
+      "sha256": "cf975def3db31e7e38b4c172c36b8dda64e8b636e3e26559b0b7f96212f50531",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "CRK",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CRK/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.009Z",
+      "sha256": "0a1932e5c6fd20e83eb7a34dc8086c24e52eeac968f937bd887eeef82597a262",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "CSX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CSX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.355Z",
+      "sha256": "eafe60aab34717562a8f5d6f0b2dab4195eca409946b3ac5f95ef48585dd9d73",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CTAS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CTAS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.076Z",
+      "sha256": "5aeb6b16e939cf55d8d24999b4c29804fa6dfc01f11e46bf1f03df905d58c0f2",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "CTVA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CTVA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.401Z",
+      "sha256": "a514ae634d36395c76bf6c95ee15dcf3e9ed9cdabfd4e1c464d9148fc3f69ef6",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "CVX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/CVX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.212Z",
+      "sha256": "c8be5376700a1fe9004f31af0d885c6a0d6c78b21063000742c8f39a6cf92cc7",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "DAL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DAL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.995Z",
+      "sha256": "daee0227f0f394d6498a106a348dc6bcf4b025f3f02e9f5671a5304321fe8ffc",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DAR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DAR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.446Z",
+      "sha256": "ac58a777b9b0d01374242202dc59819db49dc4a3e011814878ae05ff4aa6207f",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "DGX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DGX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.572Z",
+      "sha256": "b1518b017adec845b73cb89406012031aedd9d5a878630acb450401ed1849c35",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DHR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DHR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.245Z",
+      "sha256": "d86fdede2d6cb6662fa41e1aa379af20a8ce162166b86ea8e99643c98d62192f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DINO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DINO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.219Z",
+      "sha256": "076c61570868a68152e12cd37871a15f2c52e281908e35c2ae015a5781166869",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DLR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DLR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.586Z",
+      "sha256": "8b4d1f9d8f7a6f0019b46a1e0ca4abdd3ec7b9b4e8563d7c5ee98586817ba0d5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DMC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DMC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.157Z",
+      "sha256": "c0aec0220613a944ddaabe40cb060876d9177129eed518768638657d966863c4",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "DOV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DOV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.585Z",
+      "sha256": "f855d08d5be408d3d95c9654a0b5e60c42b199b47d4e758b0b94d487100d7d17",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DOW",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DOW/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.600Z",
+      "sha256": "973ad171698e2863829f9c347db53ce5ceda312178cbcb1103da8ad3943203c8",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DRI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DRI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.964Z",
+      "sha256": "d3744e83bbeb5e36ef960aa04748230611d89782e576c67657394ade4b3b988e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DTE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DTE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.220Z",
+      "sha256": "13e7b91dce834009a80ee11868afea7c7402644bba46c8c3b3c59d7f0df89e99",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "DTM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DTM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.495Z",
+      "sha256": "2b3267cb5d0a5f9571e9019d954cfe0fcd0474d79ec1f7211899c872970b5d8b",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "DX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/DX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.221Z",
+      "sha256": "fceaa6b8e295b4814998c3ce0995acca3c6612808ad8cc334cc845e663b13b46",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ECL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ECL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.245Z",
+      "sha256": "cdf39ad9c58ac31b1d72a004fea35e5dec9d4d8a0df41c041ec706feac0dd261",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EFX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EFX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.244Z",
+      "sha256": "764fa7aa422c1b5d1dca72ddf43a3d0e6b29d6cd4612035ce62b14223ac80969",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EGP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EGP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.364Z",
+      "sha256": "36f10b619be12ff223c219c10c4be1e1ac894c7ff7b435224b7d88531c19d55a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ELV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ELV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.077Z",
+      "sha256": "bfb5dda542c2ca228877da42782636383f74c221db745c6de1230154fe3b62be",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ENB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ENB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.612Z",
+      "sha256": "eff4486be9131983c40a782e07843e6f8c7138031e56b49a10da03a76fbd5c7e",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "EPR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EPR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.210Z",
+      "sha256": "0701d30eb6ae87a9adab7f56ce9c67bd14e26fd25e5babb7c6664dec6e0962b4",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "EPRT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EPRT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.378Z",
+      "sha256": "e810138c5489562c72a02bbbaa70c0c299830f23546ada0140f56686035d31c0",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EQIX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EQIX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.218Z",
+      "sha256": "c7d5ac974800b691dbee9f12560b5b5b4e96086b3771a15021e30fd8f3301835",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "EQR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EQR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.379Z",
+      "sha256": "af495eba3b779b20bc96456e4970e71c6d3ad9ef8a6f4d22b60650ba1b15f938",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EQT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EQT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.251Z",
+      "sha256": "b7c7d29f11bd0a71af5fe362c23921bd74996d81e7477a0732150f33cf07c23a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ESS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ESS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.356Z",
+      "sha256": "eaec92f4a3e02b210731945797e4278141868f6f51680719f0cf4a56c27787ae",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "ETR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ETR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.427Z",
+      "sha256": "53f1d8bf11dd8be2ae16f211b5896e138856efa28fab342413814854eba112ff",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "EW",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EW/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.595Z",
+      "sha256": "9aec695ac34e8911ae8c6f6860b3bd8e48b5544439d40b3002dfb5e72234e5d6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EXE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EXE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.280Z",
+      "sha256": "5c59f098a0814fad17729e858d27381d1140d40c3145f9d2e62715afaa9d9fec",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "EXR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/EXR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.271Z",
+      "sha256": "cc5361903de3004cb9e58934310820f191caef3f380985942e7c782ccb0ade39",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FAST",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FAST/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.030Z",
+      "sha256": "c217c75d9b25b64bc885c9c76d5d45625dc2914eb78ca491c678d7194b47bf38",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FCX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FCX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.614Z",
+      "sha256": "063e17daf8a1a33c0bca270f4bf82871a9576c4adfd7bbb3efe26429429e2927",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FDX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FDX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.904Z",
+      "sha256": "1d5ed270be7b3b96bb9da7517d3c763f304fd2260902c9902d66f5a6ad672272",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.254Z",
+      "sha256": "c08fe8cc785ea79d70eee2d6939502bf713bc1ffce245b99017b8b31ac1b7c0d",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FFIV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FFIV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.065Z",
+      "sha256": "1e04adfa67d29c615aef722b844bfbe538e45053ceac1a909bd89434513ee0da",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FITB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FITB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.194Z",
+      "sha256": "0fc8fcda40cdd2ff5e1048cbb17bd08c9048aeae60bee6e949d74cd6a0253d2f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FIX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FIX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.612Z",
+      "sha256": "e46f1d86a91e44c17aca66d6c4462da4dadc09f30413ece70bcc0a62d5b8f3f9",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.383Z",
+      "sha256": "3850d88a8953bee8111c17939d0156983655f4b273e76a5b7802f24fcbe306db",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "FTAI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/FTAI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.419Z",
+      "sha256": "d9989459f243efbfee5c2b22f2c6ecf362db48b7118d1f2a9b3b1f7453dbfddc",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "GE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.139Z",
+      "sha256": "c61f494dbc2b3c504e7e3a71ae52b0aaf642d6e34f57882b7fe1891bb02f7944",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GEV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GEV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.392Z",
+      "sha256": "2ea229da86d676f8af30b6326faec607d1bd40ad9c8df157b422228122801a4f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GH",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GH/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.484Z",
+      "sha256": "705fe77fefc9a68332892c3111e2417e3035dbddb453871564583c6aac6f2896",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "GIS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GIS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.989Z",
+      "sha256": "ceacb20f2d4a5a11a0dd64fd00a8b2d99893c4194a5927813e5d5c358e536c98",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.273Z",
+      "sha256": "133963194c3f5ba9796dda3d2709c6891e5b110fd9f3741be566bb7d49161c16",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GOOG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GOOG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.400Z",
+      "sha256": "e0aafb17adbaae14b1a2c99b7a7c592b022ac4609c7966cdb6a82e6e3fa8602e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GOOGL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GOOGL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.405Z",
+      "sha256": "3f00c3fa2580dff71dfeed2d02e2164ff4d7138953be425ce5767bdc19a68e67",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GPC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GPC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.268Z",
+      "sha256": "2798f67e8122adbf5a2aceaf233641ac6c99b8b1da670fb4f64b781a684bbfcb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "GS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/GS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.027Z",
+      "sha256": "19815858a6b1c5ca60d0cbbab1c6d183db448d925916c88f169d8215bd5f1998",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "H",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/H/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.603Z",
+      "sha256": "c0947b19a46ed69c3d1ef74dea3b3bdbc1145d60ac763bac7dd706858d6cfaf0",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "HAL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/HAL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.275Z",
+      "sha256": "ff509a5312eb0e2753e8a04974b98166d1dda04f4ab7cdfe2e6eef87282980bc",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "HON",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/HON/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.631Z",
+      "sha256": "bcfc3c9b522998525d3a8a6d66c0e779cfbf990227a6bf9e39912900d30ee134",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "HSY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/HSY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.712Z",
+      "sha256": "f2e065907c9b4f5ef0d10a4ce4e8bed7162b3a74b6e083e705bfb309980e5d61",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "HTO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/HTO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.070Z",
+      "sha256": "9b99e87c8a479236e343ed380c83626f1d99763c9be01c4ecd745a9aa47fe0de",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "HUBB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/HUBB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.317Z",
+      "sha256": "a750337fe6b5c8d178314e075a249f8c3501ffff6996575a851c4fc19f08cb1e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "IBKR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IBKR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.278Z",
+      "sha256": "99cf41b142f5221047b3481d90a665f4e1ecc058f09966f6f8102768e127de5a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "IBM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IBM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.406Z",
+      "sha256": "964f213d6c63d1edcecd9eee7b6d23e926d4c1d894293a08430f48e60788d94b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "IDA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IDA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.717Z",
+      "sha256": "6189131cc95e9710517b13df9ed8ff988feabff4799eb568ad647d133bf1fff6",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "IMO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IMO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.358Z",
+      "sha256": "248e91a32ed1ba0c6e187b009e69a52ec93af3cd3c34edac6575222140aa1f06",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "INCY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/INCY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.313Z",
+      "sha256": "b4f597abeb3f80ebecb8d0d39c9e5665f61bb1ee8ea7b6169322431e5bd3f42c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "INIO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/INIO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.316Z",
+      "sha256": "a4232e4719c065754804fd0793a1dba0e279ab86ce5cdaf59b99d82d0a57950f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "INTC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/INTC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.633Z",
+      "sha256": "6f818b409d90281a79851c17169bba1aa3ff363b677d5697f0ca88a958133d64",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "IONS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IONS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.427Z",
+      "sha256": "58cafe6ec831516707763e6efbe82ca83c4e58d213b849bf0d09977c510d34a7",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "IP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.717Z",
+      "sha256": "0f5b8f642f6571c7f79a39f11c94aa197d293cf9c8570fc6b6beef2368a1e044",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "IQV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/IQV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.319Z",
+      "sha256": "1135e2180f01bd32a3adda865c99ec4c69286cd21966bdf2a1675109f93dd7ac",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ISRG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ISRG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.146Z",
+      "sha256": "0e77a3dad0b18323dd22ea548e5d2efa0282e5fa524b30f75ae24eff6c8be5ce",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "JBHT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/JBHT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.079Z",
+      "sha256": "8a31530dc74c4beb142edc426bc41954c476c0c32d9424ada15cc64b48747d2c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "JBL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/JBL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.874Z",
+      "sha256": "6f101b56e4812b44a3dfc24b1472b2a5037ae1aa31fce9440fc1f651d57226a0",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "JNJ",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/JNJ/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.087Z",
+      "sha256": "ab1462dd7150d34a965422ac0733fa9f0abd08ebb43a7de3310bb3c9586ae285",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "JPM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/JPM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.026Z",
+      "sha256": "82e9d918184da586edf4f0aab7a101049f3af32aff27103635014b4f884d1302",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KEY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KEY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.291Z",
+      "sha256": "ad40f4da8592bb8a782e4df6304d73f1d2fd3de083ff32fdd610ca4effcef20f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KLAC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KLAC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.348Z",
+      "sha256": "8d7ed5cba078f7852a9287f30ac55a60851484d66e42de2def38b2468d94545b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KMI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KMI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.416Z",
+      "sha256": "ff1cbdd8f66fd3ebced5ee8fe16c2e162b4a48cec2659c98abec231d40d20737",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.675Z",
+      "sha256": "e991a0fbb9c6ca2c7a100abcd5711aa180f28442703eff2dc286b9812b57f20e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KNSA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KNSA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.338Z",
+      "sha256": "a803d8d03d518209b18cc7056e985a7c3df14cf48b4642263a653f6aed6f9091",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.349Z",
+      "sha256": "44a8794578e3c8f05bff9531da312ced0a7bbb4222a86825a84c3ce5a1b2bcd7",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.907Z",
+      "sha256": "81f2a9b353e3d483c3012f0dbb17e65c124bfe853f35c85021f157b2efb7c66d",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "KRC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/KRC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.103Z",
+      "sha256": "cd033232d0439a80e50b7a8caae62f8d59d57ebe2b60457687513a2ae40d988a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LBTYA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LBTYA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.966Z",
+      "sha256": "ea56aec3d6949169ca5a3e62dfaa294d27aa9194062a41592eabc232ef4b62ff",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LBTYB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LBTYB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.971Z",
+      "sha256": "cc01d4fe282f5144d99f8e7c00da3dc072bd754f63208370b023f07029a71d22",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LBTYK",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LBTYK/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.996Z",
+      "sha256": "6218bf3cb8040a1c34717b81fcfc9cb2b6a44838c37dd538f20923d4dd0e7de1",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LFUS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LFUS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.557Z",
+      "sha256": "43c09faed415604ccf42a7b80cacc10f5f078bd17dc5f100cafa95440ba2c3fb",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "LIN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LIN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.394Z",
+      "sha256": "288e7946264ef2fb7ec00790604c292dd3145c89e9d9115d14e270f0f15d0063",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "LMT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LMT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.677Z",
+      "sha256": "62c131ad18effabe2603445e1b542d27bfaafd353e65e8a867d2cb6a89bbf0f1",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LUV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LUV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.424Z",
+      "sha256": "18f468152c9fa00ee9fc6287c7dc3f8e46dd6fef859579f148ef6839a834d45c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LVS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LVS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.428Z",
+      "sha256": "d4e424ed2a8e211ebcd9b05cc2fd6367cb840bd169420011362513211b23dacb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LW",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LW/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.994Z",
+      "sha256": "200ce1e4fc0b4288b9879d2f29afd568ae2f08083c1b01c58b993c23d4e94f19",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "LYB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/LYB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.425Z",
+      "sha256": "c47c5aaffef2af6be50d76f5d9cbe02a1ba7c1503c6d0704e0fe0d592ae98937",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "MCO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MCO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.429Z",
+      "sha256": "4350f83f1dc7d9693e4247e2a08583930e79f90cec93b99579c932f890522396",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MDGL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MDGL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.808Z",
+      "sha256": "f72f3946c7f2edf3e964cc4879f734820c080e5404cb70cc1f0738faa5f8b9e3",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "MDLZ",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MDLZ/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.351Z",
+      "sha256": "9ebd3a4113809a9d1a89bbff2d16e1b7c42ccd4a8c68c8882923cc9e3e38555e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MEDP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MEDP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.438Z",
+      "sha256": "bc1cee085a1381fa9c3e172acd26c3b6a1ef249d3fa7738835c10cebef5008ca",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MKC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MKC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.966Z",
+      "sha256": "43ab3b50b35c8f925214a955ecbd7687f0555e4a56e7d342e881c91a9a662c74",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MMM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MMM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.303Z",
+      "sha256": "3cb53af8fa6a485e6a28b516aa17dff7a66aefcc26412b49e607b41fe9215edb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.927Z",
+      "sha256": "9025c791da9608c57c75210079dc0774d6cc51fb2e0e30d55d006524c0c10c64",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "MRSH",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MRSH/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.305Z",
+      "sha256": "3c91ce2559cd9d62b547d0db8955a03bd57eeb3d1450342b70073b6965f5042d",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.105Z",
+      "sha256": "6fd82ebdfcbc8ff440b394359c2004255a9536d92f0a09f23684a7e8275ddadb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MSCI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MSCI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.311Z",
+      "sha256": "0ec33bc1dac6d6f2ac1438d51f2d869743bf0a60e5d3d2289235a635ce200ad4",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MTB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MTB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.112Z",
+      "sha256": "a31ab4f8862b1f9f4b2024cd2cafb76f6691c35cb7cd7b6af971a6f4cba87bfc",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "MTX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MTX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.002Z",
+      "sha256": "9a10b72688fd5e537910e33a3304d3d5d48516c0b4bdadbd0478a6a9e8a2fa6c",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "MU",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/MU/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.937Z",
+      "sha256": "18605faa95f3cfe177ef55ae785f0e80564f288148324c6d5c21189548354cef",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NBIX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NBIX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:31.925Z",
+      "sha256": "8c7cbd39f0ccfbe42e5a8fe597d5ff3b98994168f99535ce37faeee3e9788160",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "NE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.104Z",
+      "sha256": "e5f34dadc01578b8a7c21927a61d146802d8459c903179b00d19441b7a21b9f3",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NEE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NEE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.999Z",
+      "sha256": "76feb8d9cac927a45f7404d333bea743470ccc6ce51d6c2bd7d09f140a87228b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NEM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NEM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.730Z",
+      "sha256": "fc1669c5c054c081244776dadecac0799fb2c8ac495ac48f69d936ab035ee61c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NFLX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NFLX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.161Z",
+      "sha256": "315b5ff7f78a8458ea6d92e40dcb6cf069cb31026223398cf82715c74f53120e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.939Z",
+      "sha256": "4c55404d21a29e809e09acc15d48836a8ea4727ee211a696089cacf987cd0e82",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NKE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NKE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.973Z",
+      "sha256": "d096c64607153823dbef429cd2cae582e28ded92e8ff089138377d0d009ced0b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NLY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NLY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.317Z",
+      "sha256": "2a92451cc49bdff23462f6d40b418924cf99f436e2d989cb8121161f62c99b74",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NOC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NOC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.328Z",
+      "sha256": "cc569aacbee05fca6c3e03000a02599b831b59e0143a4a9cf0b66453405c7d90",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NOW",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NOW/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.446Z",
+      "sha256": "80c42f733b6fcb05d7c70ead07f34e790f4ec2edac5e86deb68a0c2f841be999",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NSC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NSC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.781Z",
+      "sha256": "929cf8e040691af3b7c936fb6239bc24eb8bc499741bcbc39545f0f853f4c6fb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NTRS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NTRS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.455Z",
+      "sha256": "64d8f4467cac941fac468ad9c246eb1663419b38b6d509bd6425e3ba37def1d8",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NUE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NUE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.099Z",
+      "sha256": "3ab0d8b1efe13cbb0501d79357dbe5825ee18d4aec3f53b89e6e76d828be9ce0",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "NXPI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/NXPI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.361Z",
+      "sha256": "907a85a269b0c5fada2f928e2c660317bde19e0e51c3c299ddf17b8c965c829e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "OGE",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/OGE/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.653Z",
+      "sha256": "114aeef4a07169542fff47f7696dfc3f664c1a06199630367bdaaf85e6dd66d0",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "OII",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/OII/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.453Z",
+      "sha256": "c377bccfaf67553d368b4e7ad3629e02b2c3cccc5f8fe0eb68a86f20c97179d6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "OTIS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/OTIS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.461Z",
+      "sha256": "41d03a28a57d179c482c173aa8e9561b12068d9f0faa731507b67dc50d7f9bf5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "OVV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/OVV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.817Z",
+      "sha256": "d65b80d79a2f48c9f33bb5914599fa84edb404e94dc3722efc6db7f2b5a1842e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PAYX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PAYX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.946Z",
+      "sha256": "d01ac6c773ba0d43b476e2ba8c96a8c17f10e253fc85c9e8e6c1386280b76815",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PBF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PBF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.012Z",
+      "sha256": "0e8f701d7c7a0d156048dc7f0d089458868497506e775667f455e4c8bb3254ab",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "PCG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PCG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.819Z",
+      "sha256": "36289a0b26a7bf306d742e9fd80c7421a9dcc0e0b6ae0ac03fb9c07a765ccd6a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PECO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PECO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.826Z",
+      "sha256": "baf54eeb924a56fc68ddca01887b846cbfc623d32720d40e7430b89b694ce4c2",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PEP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PEP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.993Z",
+      "sha256": "acc19b104ab9d56d454df5608e51d8164247e6aa2c3c7e490918c8edb88c4394",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PHM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PHM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.471Z",
+      "sha256": "f6b84962541388d15076cd3d314c38af834134c2b868d9f23101e35e1f05b7da",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PLD",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PLD/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.163Z",
+      "sha256": "c5b0c4b82c9850a2bd18eeeecc5301a12d7a2d74792faa5d623eabc03f84b6af",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.474Z",
+      "sha256": "f124873f0d2afda263c68b029cdb44b7c7b0585dd985e75361c0188ed5100799",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "PNC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PNC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.107Z",
+      "sha256": "98d93f3fc644d9582689d861df2a2934e15c0632b780fb805c040fbfe3f048d2",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "POR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/POR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.559Z",
+      "sha256": "1ca3f11b7be59bc1c488b2b80df2820e91ee47bf787eea8fcc957dfcc25a43a9",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "PSA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/PSA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.656Z",
+      "sha256": "dd5f953df6390461d4cc5b6a3eb17b03c9b0ba2285f4aae7340a3ccee25e3274",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "REXR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/REXR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.831Z",
+      "sha256": "817ba048711c6ee0dea82b0cf3f4cb4011f54a792a22b4376d4a126e3f7b323c",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.195Z",
+      "sha256": "39afa655fa94c7fb69d7938339f666a93a6a98da87ca2cc6d056b2e2e6feda86",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RGEN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RGEN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.380Z",
+      "sha256": "9a9c1e4c36a3de4d41a1bae58a713aa245ed7d4ee36b84a78b67e55cae7d42c5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RITM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RITM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.380Z",
+      "sha256": "006cccc3bcbf6b632c100746cafb62c542525946c045b91e223ae6e73214888f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RIVN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RIVN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.141Z",
+      "sha256": "c2b9fb2f7d9e78befe7dcabc995990678a52acb919df7279b008b877cafe8412",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "RJF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RJF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.479Z",
+      "sha256": "8d7bc94b5b11184a84ae23aff2c67072808fe71a99dcdfe1e864f3bc900cfbdb",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ROL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ROL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.483Z",
+      "sha256": "ffdeb3edb147bb0900266c48f75083a9ef98105ea6dabeaddd44ef59c4be25e9",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "ROP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/ROP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.862Z",
+      "sha256": "4dab25f292c5e40c3f8dc81916e19e19305e18dd479def3545135c7b5c0cbf1b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.496Z",
+      "sha256": "db92f612c1ceaf6fdc8ca9663d1912c6e0b5275ac8b26b101ba56dd138a1488e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "RTX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/RTX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.859Z",
+      "sha256": "c7abacb4d0fe11ac7836594ad499064df671d3f5209cd1ccbb74e9aaab6798e1",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SAM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SAM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.866Z",
+      "sha256": "bfe5acd40a4c513adba668f4da4fae87a9fdb79fa6bfd75621a94caafd9ace2f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SCHW",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SCHW/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.329Z",
+      "sha256": "a7dea7a45340c9864a6be715f65377efff5b6d2f8ffa5ee9e06d107bfeba46df",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SFM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SFM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.628Z",
+      "sha256": "d89ec0de2949259276b09d8763997d548804c92e51737d4cfea03e6583f73ce7",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "SLB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SLB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.004Z",
+      "sha256": "4174840aa5affcf5ec24d72e1c921d243255d3846b431b24e4eeab33da998822",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SMMT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SMMT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.873Z",
+      "sha256": "d1f738dcd7002d45cbc2aa3b8ab2ac5376cad033a86441dec53bf50ae65c58de",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SNA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SNA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.909Z",
+      "sha256": "930452182d3a900da1305497a5981e7f567823fd6624ab41a82b903466c2965f",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SNX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SNX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.965Z",
+      "sha256": "5cf87ba21763d65dc97bd731c3ba1808029c7fbf9a07d8f29aca048030529ab6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SONO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SONO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.766Z",
+      "sha256": "19709e7dbb92fdd1f6d2f2841fcf823260df956b4d640c8bb1fb0f0e721250b3",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "SPY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SPY/historical?assetclass=etf&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.841Z",
+      "sha256": "f8a1d51f49af44da6d83c21a219941225331ff39ff9917547dbb99f83cf4e877",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SSNC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SSNC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.910Z",
+      "sha256": "3b208d9936c69e21375197c59cf7b2983a8cfc7455a8971d1d184e1c0075d480",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "STAG",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/STAG/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.373Z",
+      "sha256": "0f288d390afdc3654da87d482984d2524bcd0b2272326ab7a31faed073f3c500",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "STT",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/STT/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.166Z",
+      "sha256": "f3c7643bfc5098faf44b8bbac13b8e80105fd3d0a3c425443d95acf79b4acffa",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "STX",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/STX/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.384Z",
+      "sha256": "3c32ed01a343d542447ac5fedb5f70162fbefdf7e52669980f7e81e5b2be8ffd",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "STZ",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/STZ/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.992Z",
+      "sha256": "0059c527ece8bdef67f9805d8c22c421b22529f98a25669252df13bd2d681339",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SUI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SUI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.096Z",
+      "sha256": "730342a4c0bff532af7ac17d137bbdffb02c39ace837e8a0ab536c61e3724728",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SUNB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SUNB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:25.936Z",
+      "sha256": "0b954401b2cf6e4560f55f3094497a637ab01537be4008a6f2da58be8cd0566a",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "SYF",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/SYF/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.332Z",
+      "sha256": "070be2a1c6161778791139a4a26b2c55c4a494f43b22b8c1b1fa4f2e0d5845e8",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "T",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/T/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.497Z",
+      "sha256": "225bb8910791070027ba2b6098fabc01d7a9132c160ae21e3d2a54d1e7130dc4",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TDY",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TDY/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.508Z",
+      "sha256": "568931ef8084a1dc7935268ae338ded28f778bd24796effe14492449d6d6149e",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TEL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TEL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.505Z",
+      "sha256": "c90a5af64c321cf9cc5cfe7a352c6e92e11aaa7faa0ba845268777f76c794896",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TEVA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TEVA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.830Z",
+      "sha256": "23ad805797aa5fc9b6f588cba3670faa30ffa58a9382805f91c7102f8db72550",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "TFC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TFC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.197Z",
+      "sha256": "e662b2876b8cf8c4db5ec8a3cbc15ac867c8dc242b7d6f7fe8737cc2bc246b63",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "THC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/THC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.911Z",
+      "sha256": "746328e98fb2d3e24492320a627fb1f9c6263f501f33aabac1376ee418218cd6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TMO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TMO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.915Z",
+      "sha256": "d625385ad9a64f74893c330f78dcc8913257bafcb0d14abdb75704d455acfbe6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TMUS",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TMUS/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.938Z",
+      "sha256": "61f7b05783bcd66ebb7d5c024a9245554a691ac2bb5aeb4ce8ed4f8e637b67bd",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TRV",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TRV/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.219Z",
+      "sha256": "31f3296bbae8145d2e20d31fb1ee263191d12ad671d61e3ff6dab499eb4462fc",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TSCO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TSCO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.936Z",
+      "sha256": "054a8bf643c640c8ab997c3fefa39bf3ba5c47c1b08c464d2d443254b7b1a7ee",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TSLA",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TSLA/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.521Z",
+      "sha256": "087e55d87051eeec7460f4273191eb5a6714e43cc117237abe7c1ea6885beabd",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TXN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TXN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.519Z",
+      "sha256": "569b0f119f2b35252088ba7ec22afb9d5c1baac469ef09e0633823d9abbea000",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "TXNM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/TXNM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.600Z",
+      "sha256": "6e06238a939f4a8bbc25eb683343d87b71a317b999d892af958b30f492fce84d",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "UAL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/UAL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.117Z",
+      "sha256": "9a9a77e4ca62c33fba6f2ed47fa4d145b6db7d2094d3d440945be6b28b20efa6",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "UDR",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/UDR/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.133Z",
+      "sha256": "cbf8600aab36535c48b7af027d4e1d84680d4617f45c956cae595bf2803e4819",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "UFPI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/UFPI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.851Z",
+      "sha256": "b4d0636784bd181f6856bdf4e05df2d820e7d65b9f86c62228024beae6a6a298",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "UNH",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/UNH/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.169Z",
+      "sha256": "c9d59e427451eaf942f2a258985b8fe8a3c210967122784bdbffe863308db052",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "UNP",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/UNP/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.939Z",
+      "sha256": "6a4000fbadcfbb293a2740866f6da4a350af0866bcf1ae7c29e5dc97378645b5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "URI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/URI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.531Z",
+      "sha256": "f07eb451ccd48228c7940b4c3cf7f52e58aa319ae43e20bca0dc926c83428174",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "USB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/USB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.189Z",
+      "sha256": "c515536965c57dc098153d00c2f3056fbef34138b610bc25b278703b8e5306b5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "VICI",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/VICI/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.870Z",
+      "sha256": "5d48612bc73bf1615413c973cdb87eccf2a12af0fdd06624520867a54917dbea",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "VLO",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/VLO/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.144Z",
+      "sha256": "854fcf4844efb875955da59b464410b80fb4b0d2378f774565f3c68e38741d83",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "VRSN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/VRSN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.950Z",
+      "sha256": "c32566cdfaf44e121125959e0e6833735b76dd8146a24ef31941848e2e633243",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "VZ",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/VZ/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.032Z",
+      "sha256": "4a2fd55de2811d8109b1e98450b1311c0f3cf71daa007dff1cae5f36f18c73ff",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WAB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WAB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.529Z",
+      "sha256": "2c76f9d55674af8d35c8851ff689a6ae9a28e23520744fd77d39ca607917d9c5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WCC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WCC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.202Z",
+      "sha256": "cfd1562670aaaf1fec0e9a5cf03fb6476fc738c82a34d3abdad3f8f5246ac757",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "WCN",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WCN/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.542Z",
+      "sha256": "91956bead6068715969e2de5a6293433c4bef4c42b9894650135ac29620ea580",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WELL",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WELL/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.149Z",
+      "sha256": "6c859e13a8756598ae551cf8685b7217e54a5f2016e6a76bc72094e4b391f270",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WFC",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WFC/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.049Z",
+      "sha256": "5f529fba2790c9790445274746affc0f03a5a26b7a0b0bc2d32a6ab02630412b",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:27.395Z",
+      "sha256": "de782dcac7a5dc46479d346838eaade01a72c8d3b89fb125e456bb3f74aff7a5",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WRB",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WRB/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.224Z",
+      "sha256": "b0e56dbb00311b8e8953c2d78e1b0e8b80959555861c8948cd759bd0d7204851",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WST",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WST/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T03:32:26.963Z",
+      "sha256": "17187761fd1aa2ccb57da1613af701d4fe86635520d49439b39a0fda72fde5ad",
+      "retrievalTimestampQuality": "fetch-completion"
+    },
+    {
+      "symbol": "WWD",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/WWD/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:30.966Z",
+      "sha256": "dff9638e0db4a162b36b5025fa278b3196d8d7b75bb4aa668bd8c1ffce0376a3",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    },
+    {
+      "symbol": "XOM",
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/quote/XOM/historical?assetclass=stocks&fromdate=2025-11-01&todate=2026-08-14&limit=5000",
+      "retrievedAt": "2026-08-15T02:43:32.623Z",
+      "sha256": "4ebb55f2360b09aa2b4473f055e317a751cc6120ed44982b1cdb97d26e2ef4ae",
+      "retrievalTimestampQuality": "cache-file-mtime"
+    }
+  ]
+}

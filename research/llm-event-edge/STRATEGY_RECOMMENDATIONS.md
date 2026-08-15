@@ -41,8 +41,8 @@ support trading next-close direction:
   software or life-science benchmark performance did not transfer to this
   sparse pre-earnings stock-direction task.
 
-The one result worth prioritizing as a new hypothesis was **terminal move
-magnitude**, not direction. For a 5% absolute move over ten sessions, the pooled
+The one candidate worth auditing further was **terminal move magnitude**, not
+direction. For a 5% absolute move over ten sessions, the pooled
 Brier score was 0.231 across 241 mature cases. Improvement was 0.019 versus a
 fixed 50% forecast (95% event-level bootstrap interval 0.002–0.036) and 0.044
 versus the no-lookahead settled-history base rate (0.008–0.082). These intervals
@@ -52,11 +52,19 @@ hypothesis-prioritization signal, not confirmatory evidence. Energy was the
 strongest small subgroup at 22 cases, but that is far too small for a sector
 claim.
 
-This magnitude result may simply reflect the realized-volatility fields already
-present in the packet. It must beat a locked volatility-only model and the
-option market's implied distribution prospectively before it is called LLM
-edge. There are no historical executable option quotes in the pilot, so it does
-not imply a profitable straddle, strangle, barrier, or binary trade.
+The completed volatility audit supports further testing but not an alpha claim.
+RV20 alone ranked the target almost as well as the LLM (AUC 0.679 versus 0.686).
+A stricter cross-fit excludes every observation whose entry-to-settlement return
+window overlaps the target; its Brier score was 0.2490 and AUC was 0.6133,
+versus 0.2308 and 0.6864 for the LLM. The descriptive paired Brier improvement
+was 0.0181. That is the best remaining evidence that a richer model might add
+something beyond RV20, but the outcome was selected retrospectively, 195/241
+cases sit in a two-week earnings cluster, and only 23 event dates are present.
+Valid dependence-adjusted p-values or confidence intervals are therefore not
+reported. The result is a candidate prospective magnitude/distribution
+hypothesis, not demonstrated LLM-specific edge. There are no historical
+executable option quotes in the pilot, so it does not imply a profitable
+straddle, strangle, barrier, or binary trade.
 
 The packet intentionally contained compact point-in-time fundamentals and
 market features rather than the complete filing, transcript, news, consensus
@@ -66,13 +74,14 @@ user's richer AMPL/WIX-style process can work.
 
 ## What to test first
 
-| Priority | Workflow                                    | Best initial universe                                                               | Fixed horizon                                    | Instrument benchmark                                                     | Why it is plausible                                                                                                                             | Main failure mode                                                                                                                   |
-| -------: | ------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-|        1 | Earnings move-magnitude forecast            | Pooled liquid U.S. mid/large caps; energy only as a secondary subgroup              | Terminal 5% move over 10 sessions                | Shares diagnostic; captured straddle/strangle and implied-move benchmark | The only positive pooled pilot signal was magnitude rather than direction                                                                       | May be a simple realized-volatility signal already fully priced by options; terminal move is not barrier touch                      |
-|        2 | Specialized-disclosure interpretation       | Mid-cap health care, biotech, and cross-sector conference or regulatory disclosures | Release to next close and 10 sessions            | Shares; exact event contract only when the resolution rule matches       | Dense technical evidence rewards retrieval and synthesis; published LLM evidence finds relatively stronger drift after specialized conferences  | Binary clinical outcomes can gap violently, transparent releases may be incorporated immediately, and options can be very expensive |
-|        3 | Growth-quality continuation before earnings | Mid-cap software, internet, and semiconductors                                      | Last close to next close; separately 10 sessions | Shares diagnostic; narrow debit vertical with a captured combo ask       | Recurring revenue, margins, guidance, cash conversion, and prior trend form a structured reasoning task resembling the user’s AMPL/WIX examples | “Good numbers” can still disappoint relative to expectations; point-in-time consensus and implied move are essential                |
-|        4 | Oversold fundamental rebound                | Liquid mid-cap software/internet and selected cyclicals                             | Predeclared 20 or 40 sessions                    | Shares first; defined-risk call spread second                            | A longer horizon gives valuation and continuing fundamentals time to matter and matches the WIX/IREN-style thesis                               | Market beta, short interest, macro news, and post-selection of fallen stocks can dominate                                           |
-|        5 | Standardized KPI and filing analysis        | Financials and mature software                                                      | Next close and 10 sessions                       | Shares/debit vertical                                                    | Filings expose comparable KPIs and balance-sheet evidence                                                                                       | Rate, credit, and regulatory shocks can dominate company analysis                                                                   |
+| Priority | Workflow                                        | Best initial universe                                               | Fixed horizon                                    | Instrument benchmark                                                  | Why it is plausible                                                                                                                             | Main failure mode                                                                                                    |
+| -------: | ----------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+|        1 | Post-release clinical/scientific interpretation | Liquid biotech/health-care issuers with verified readout timestamps | First executable quote to 1, 5, and 10 sessions  | Shares first; captured debit spreads only after quote coverage        | Dense technical evidence rewards retrieval and synthesis; 14 verified seeds and 733 paginated SEC phrase-search candidates show feasibility     | It cannot claim the initial gap; trial success and market reaction differ; selected seeds do not estimate edge       |
+|        2 | Pre-announced clinical readout forecast         | Scheduled randomized efficacy readouts, separated by phase/design   | Frozen pre-event quote to next close and expiry  | Shares diagnostic; fixed call/put grid after NBBO capture             | Science, protocol design, prior data, and mechanistic literature form a structured research task                                                | Event day may be unknown; must model readout-by-expiry and option IV may already price the binary risk               |
+|        3 | Earnings return-distribution forecast           | Pooled liquid U.S. mid/large caps; no sector claim initially        | Coherent CDF at 1 and 10 sessions                | Shares diagnostic; captured call/put/vertical grid and option surface | V1 showed magnitude ranking but not incremental semantic edge; a full CDF avoids threshold shopping                                             | A calibrated volatility/earnings-jump model may explain everything and options may fully price it                    |
+|        4 | Growth-quality continuation before earnings     | Mid-cap software, internet, and semiconductors                      | Last close to next close; separately 10 sessions | Shares diagnostic; narrow debit vertical with a captured combo ask    | Recurring revenue, margins, guidance, cash conversion, and prior trend form a structured reasoning task resembling the user’s AMPL/WIX examples | “Good numbers” can still disappoint relative to expectations; point-in-time consensus and implied move are essential |
+|        5 | Oversold fundamental rebound                    | Liquid mid-cap software/internet and selected cyclicals             | Predeclared 20 or 40 sessions                    | Shares first; defined-risk call spread second                         | A longer horizon gives valuation and continuing fundamentals time to matter and matches the WIX/IREN-style thesis                               | Market beta, short interest, macro news, and post-selection of fallen stocks can dominate                            |
+|        6 | Standardized KPI and filing analysis            | Financials and mature software                                      | Next close and 10 sessions                       | Shares/debit vertical                                                 | Filings expose comparable KPIs and balance-sheet evidence                                                                                       | Rate, credit, and regulatory shocks can dominate company analysis                                                    |
 
 These rankings are hypotheses, not measured sector alpha. The
 [published stock-news evidence](https://www.sciencedirect.com/science/article/pii/S0304405X26001066)
@@ -174,15 +183,20 @@ one date. Until the activation gates pass, the answer is zero contracts.
 1. Freeze one primary arm, model snapshot, prompt, calibration method, universe,
    quote time, and outcome rule.
 2. Shadow every eligible event, including abstentions and missing quotes.
-3. At 240 pooled events, audit feasibility only; at 360, run the first pooled
-   go/no-go; wait for roughly 50 events in a sector before a sector claim.
+3. Treat 240 pooled events and 50 per sector as feasibility only. Run the first
+   formal pooled test at a power-derived size, normally at least 400–600 events
+   and 50 independent event dates for a large effect; sector claims usually
+   require hundreds.
 4. Compare Brier and log loss with a settled-history base rate and, where a real
    two-sided market exists, the de-vigged market probability.
-5. Require at least 90% forecast and quote coverage, a positive one-sided 95%
-   lower bound for Brier improvement, and at least 100 prospective paper trades
-   with positive cost-adjusted results in both chronological halves.
+5. Require at least 90% forecast and quote coverage, a multiplicity-adjusted
+   one-sided 97.5% lower bound for score improvement over the strongest locked
+   baseline, and positive ask-to-bid paper P&L in both chronological halves and
+   under spread stress.
 6. Any prompt, model, target, sector, threshold, or execution-rule change starts
    a new prospective cohort.
 
-See [POSITION_SIZING_POLICY.md](POSITION_SIZING_POLICY.md) for the formal gates
-and [SOURCES.md](SOURCES.md) for primary sources.
+See [STUDY_V2_DECISION.md](STUDY_V2_DECISION.md),
+[clinical-trials/README.md](clinical-trials/README.md),
+[OPTIONS_DATA_PLAN.md](OPTIONS_DATA_PLAN.md), and
+[POSITION_SIZING_POLICY.md](POSITION_SIZING_POLICY.md) for the revised program.

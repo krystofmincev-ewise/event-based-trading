@@ -147,7 +147,7 @@ const parseNasdaqDate = (value: string): string => {
   return `${year}-${month}-${day}`;
 };
 
-const parsePrices = (body: string): DailyPrice[] => {
+export const parsePrices = (body: string): DailyPrice[] => {
   const root = parseJson(body, "Nasdaq historical response");
   const data = optionalRecord(root.data);
   const table = data === null ? null : optionalRecord(data.tradesTable);
@@ -193,7 +193,7 @@ export const fetchNasdaqPrices = async (
   fromDate: string,
   toDate: string,
 ): Promise<NasdaqResult<DailyPrice[]>> => {
-  const url = `https://api.nasdaq.com/api/quote/${encodeURIComponent(symbol)}/historical?assetclass=${assetClass}&fromdate=${fromDate}&todate=${toDate}&limit=200`;
+  const url = `https://api.nasdaq.com/api/quote/${encodeURIComponent(symbol)}/historical?assetclass=${assetClass}&fromdate=${fromDate}&todate=${toDate}&limit=5000`;
   const body = await fetchText(url, NASDAQ_HEADERS);
   return {
     value: parsePrices(body),

@@ -1,0 +1,60 @@
+{
+  "status": "candidate-discovery-only",
+  "artifactStatus": "unfrozen exploratory replay",
+  "evidenceUse": "feasibility only; not edge estimation",
+  "endpoint": "https://efts.sec.gov/LATEST/search-index",
+  "endpointStability": "public SEC search backend; freeze raw pages because ranking and index state can change",
+  "dateWindow": {
+    "start": "2026-02-17",
+    "end": "2026-08-14"
+  },
+  "forms": ["8-K", "6-K"],
+  "replayedAt": "2026-08-15T03:15:14.954Z",
+  "pageSize": 100,
+  "pagination": "from=0,100,200,... until hits.total.value is exhausted",
+  "documentFilter": "file_type starts with EX-99 or equals 8-K or 6-K",
+  "deduplicationKey": "_source.adsh",
+  "queries": [
+    {
+      "phrase": "\"topline results\"",
+      "totalHits": 630,
+      "uniqueFilteredAccessions": 520
+    },
+    {
+      "phrase": "\"top-line results\"",
+      "totalHits": 178,
+      "uniqueFilteredAccessions": 161
+    },
+    {
+      "phrase": "\"met its primary endpoint\"",
+      "totalHits": 153,
+      "uniqueFilteredAccessions": 140
+    },
+    {
+      "phrase": "\"did not meet its primary endpoint\"",
+      "totalHits": 24,
+      "uniqueFilteredAccessions": 22
+    },
+    {
+      "phrase": "\"did not meet the primary endpoint\"",
+      "totalHits": 22,
+      "uniqueFilteredAccessions": 21
+    }
+  ],
+  "globalUniqueAccessions": 733,
+  "requiredRawFields": [
+    "_id",
+    "_source.adsh",
+    "_source.file_type",
+    "_source.file_date",
+    "_source.ciks",
+    "_source.display_names",
+    "_source.root_forms",
+    "_source.items"
+  ],
+  "limitations": [
+    "Candidate count is not a count of usable current clinical readouts.",
+    "Quarterly updates, future-readout statements, repeated conference presentations, and old results create false positives.",
+    "Raw page hashes and the frozen accession list were not retained for the exploratory replay and are required for a confirmatory corpus."
+  ]
+}

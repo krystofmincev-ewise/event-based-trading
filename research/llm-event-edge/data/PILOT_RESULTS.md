@@ -31,4 +31,4 @@ The primary table scores next-close direction against two no-skill references. T
 - There are no historical executable option quotes, spreads, depth, or implied-volatility surfaces in this study. It cannot estimate option-strategy returns.
 - Daily features include the completed anchor close. That supports a close-to-close forecast diagnostic, not a claim that the strategy could fill at the observed close.
 - Ten-day returns overlap and 40-day outcomes are mostly not mature. Use the JSON report for availability by horizon.
-- No sector receives a live Kelly allocation from this sample. A prospective, immutable 360-event pooled cohort is the first go/no-go gate; sector activation should wait for about 50 prospective events per sector plus multiplicity adjustment.
+- No sector receives a live Kelly allocation from this sample. Fifty events per sector is feasibility only. The first formal pooled test should normally include at least 400–600 events and 50 independent event dates, with final size determined from the locked baseline's variance and date/issuer design effect.

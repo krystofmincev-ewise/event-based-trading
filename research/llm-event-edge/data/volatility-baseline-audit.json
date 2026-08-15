@@ -1,0 +1,85 @@
+{
+  "studyId": "earnings-2026-06-15_2026-08-14-v1",
+  "generatedAt": "2026-08-15T03:37:19.316Z",
+  "evidenceState": "retrospective-falsification-diagnostic",
+  "recommendedLivePositionFraction": 0,
+  "coverage": {
+    "eligibleCases": 241,
+    "featureCases": 241,
+    "downloadedResponsesThisRun": 0,
+    "sourceInputCount": 242,
+    "exactFetchTimestampInputs": 185,
+    "reconstructedFileMtimeInputs": 57,
+    "sourceManifestSha256": "e8f0c4986c3db7422d6cbc678d43af5a1585ca20f5c8aa3fed83092c51de4adc",
+    "missingTickers": []
+  },
+  "multiplicityAudit": [
+    {
+      "outcomeId": "up-1d",
+      "sampleSize": 326,
+      "distinctEventDates": 32,
+      "improvementVsFiftyPercent": -0.0013373466257668748
+    },
+    {
+      "outcomeId": "up-10d",
+      "sampleSize": 241,
+      "distinctEventDates": 23,
+      "improvementVsFiftyPercent": 0.0050189834024896305
+    },
+    {
+      "outcomeId": "absolute-2pct-1d",
+      "sampleSize": 326,
+      "distinctEventDates": 32,
+      "improvementVsFiftyPercent": 0.03482131546012269
+    },
+    {
+      "outcomeId": "absolute-5pct-1d",
+      "sampleSize": 326,
+      "distinctEventDates": 32,
+      "improvementVsFiftyPercent": 0.021659950153374224
+    },
+    {
+      "outcomeId": "absolute-5pct-10d",
+      "sampleSize": 241,
+      "distinctEventDates": 23,
+      "improvementVsFiftyPercent": 0.019172821576763487
+    },
+    {
+      "outcomeId": "up-40d",
+      "sampleSize": 1,
+      "distinctEventDates": 1,
+      "improvementVsFiftyPercent": 0
+    },
+    {
+      "outcomeId": "absolute-10pct-40d",
+      "sampleSize": 1,
+      "distinctEventDates": 1,
+      "improvementVsFiftyPercent": -0.18560000000000004
+    }
+  ],
+  "magnitude10d": {
+    "sampleSize": 241,
+    "observedFrequency": 0.5767634854771784,
+    "distinctEventDates": 23,
+    "llmBrier": 0.23082717842323658,
+    "llmAuc": 0.686415573423614,
+    "normalRv20Brier": 0.24997894839273369,
+    "normalRv20Auc": 0.6790802651996051,
+    "prequentialRv20Brier": 0.2697777393754759,
+    "prequentialRv20Auc": 0.5319861757652702,
+    "purgedCrossFittedRv20Brier": 0.24897275787220638,
+    "purgedCrossFittedRv20Auc": 0.6132740866130625,
+    "llmImprovementVsNormalRv20": 0.019151769969497155,
+    "llmImprovementVsPrequentialRv20": 0.03895056095223928,
+    "llmImprovementVsPurgedCrossFittedRv20": 0.01814557944896981
+  },
+  "limitations": [
+    "Retrospective current-model forecasts are not prospective validation.",
+    "The fixed Gaussian baseline omits earnings jumps and fat tails.",
+    "The walk-forward baseline uses only RV20 and settled labels; a richer tabular model may be stronger.",
+    "Overlapping returns and only 23 distinct event dates make this audit descriptive; it reports no inferential p-values or confidence intervals.",
+    "The purged cross-fit uses chronologically later non-overlapping labels and is explanatory, not executable.",
+    "Fifty-seven older cache entries bind body hashes and filesystem modification times, not exact historical network-completion timestamps.",
+    "No timestamped historical option quotes are present, so option P&L is not computed."
+  ]
+}
