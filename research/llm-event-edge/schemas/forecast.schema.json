@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "forecasts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "caseId": { "type": "string" },
+          "probabilityUp1d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityUp10d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityAbsolute2Percent1d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityAbsolute5Percent1d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityAbsolute5Percent10d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityUp40d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "probabilityAbsolute10Percent40d": {
+            "type": "number",
+            "minimum": 0.02,
+            "maximum": 0.98
+          },
+          "expectedReturn1d": { "type": "number", "minimum": -1, "maximum": 3 },
+          "expectedReturn10d": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 5
+          },
+          "expectedReturn40d": {
+            "type": "number",
+            "minimum": -1,
+            "maximum": 10
+          },
+          "confidence": { "type": "string", "enum": ["low", "medium", "high"] },
+          "abstain": { "type": "boolean" },
+          "thesis": { "type": "string", "maxLength": 500 },
+          "disconfirmingEvidence": { "type": "string", "maxLength": 500 }
+        },
+        "required": [
+          "caseId",
+          "probabilityUp1d",
+          "probabilityUp10d",
+          "probabilityAbsolute2Percent1d",
+          "probabilityAbsolute5Percent1d",
+          "probabilityAbsolute5Percent10d",
+          "probabilityUp40d",
+          "probabilityAbsolute10Percent40d",
+          "expectedReturn1d",
+          "expectedReturn10d",
+          "expectedReturn40d",
+          "confidence",
+          "abstain",
+          "thesis",
+          "disconfirmingEvidence"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": ["forecasts"],
+  "additionalProperties": false
+}

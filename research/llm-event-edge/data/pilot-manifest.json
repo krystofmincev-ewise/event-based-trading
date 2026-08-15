@@ -1,0 +1,335 @@
+{
+  "studyId": "earnings-2026-06-15_2026-08-14-v1",
+  "generatedAt": "2026-08-14T23:06:55.444Z",
+  "methodology": "reconstructed retrospective pipeline-development sample",
+  "eventType": "earnings reported on Nasdaq and matched to SEC 8-K Item 2.02",
+  "eventWindow": {
+    "start": "2026-06-15",
+    "end": "2026-08-14"
+  },
+  "totalUniqueCases": 326,
+  "sectorCounts": {
+    "communication-services": 26,
+    "consumer-discretionary": 30,
+    "consumer-staples": 30,
+    "energy": 30,
+    "financials": 30,
+    "health-care": 41,
+    "industrials": 30,
+    "information-technology": 30,
+    "materials": 19,
+    "real-estate": 30,
+    "utilities": 30,
+    "pharma-biotech": 30
+  },
+  "sourceHashes": {
+    "calendars": [
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-15",
+        "retrievedAt": null,
+        "sha256": "6e8b6860d234fe36429a96b7aae8eb705e8a37cc276a727f312f87dccc8dc125"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-16",
+        "retrievedAt": null,
+        "sha256": "2809971c89efc4f8e599c9a1635c37c0139188dd3e82083958f1266ac7150f5e"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-17",
+        "retrievedAt": null,
+        "sha256": "7bfdb1f97e7bb6a8547be88209578d573c7793d5fea4d6fbf3cef06a53132397"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-18",
+        "retrievedAt": null,
+        "sha256": "2304decb63a0c7d151977de5bb51acdab6faabce60b19806d050944b8a517152"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-19",
+        "retrievedAt": null,
+        "sha256": "3f6d9fdcfceefb62910ed5630fccec10b26316133f122e4e70dafeeabda0b35a"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-22",
+        "retrievedAt": null,
+        "sha256": "52f8e43e46c1c9e31e02f0addf6315919aa646c0bed5686d21cf254cb8ff6d7c"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-23",
+        "retrievedAt": null,
+        "sha256": "3eafc6380d315dd8ed7829c49d81c8a803afb331f1feb15450ca868e9cd26f06"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-24",
+        "retrievedAt": null,
+        "sha256": "039eeb9343ac4df76a126ee63c97417df621fb19842dc3aa38d860290c3980b1"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-25",
+        "retrievedAt": null,
+        "sha256": "41bbb2f63dd0dcb2564a3f1ce9c61516b0cbdee2a63a59564531291384fc7403"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-26",
+        "retrievedAt": null,
+        "sha256": "438fc0e178e42cd3396af7b5e8d525d61a965e9641403b71a7fdd7e3580b4976"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-29",
+        "retrievedAt": null,
+        "sha256": "2b2cdf195079345d338332c893c6427de53f2703ae6a694f3fdc6ea3e925a927"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-06-30",
+        "retrievedAt": null,
+        "sha256": "6b50f974d34db9cfee0f0116a83fd6c79248ef397e70af743e827a114ada166e"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-01",
+        "retrievedAt": null,
+        "sha256": "254ea4d35e0693d70c0aee7dad6cb6ee16eea109ab8b8ee9a571599763ab3788"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-02",
+        "retrievedAt": null,
+        "sha256": "84ffb24ee592f6fd4cfe32176c08372b6ef26e9af8c42041f2d9bd80757a7eca"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-03",
+        "retrievedAt": null,
+        "sha256": "7aeeac696ab3975f5699b1989d610e89966065fba8ad2cf2e5995ecc57750d7d"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-06",
+        "retrievedAt": null,
+        "sha256": "04ec932ea48ad8671bcc375513d941d667e06c48405e4aa4d5e6243bb2249eef"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-07",
+        "retrievedAt": null,
+        "sha256": "5815ec0a4ccb5d126035f8e654688535a9d7356133e584b8fd16767b8e150dd0"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-08",
+        "retrievedAt": null,
+        "sha256": "4cf0b0c071c7a191a84ad8b080f4420ad5098c0df50c06b9b17e3f74e239142e"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-09",
+        "retrievedAt": null,
+        "sha256": "fc15b252e4389580b5b6133210db9a077ca25670c102a1920db30dd996c3ce40"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-10",
+        "retrievedAt": null,
+        "sha256": "dc099d9a572665baa3181530d2f4096168fb724cc0a5e003b5db06053fd5cb9e"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-13",
+        "retrievedAt": null,
+        "sha256": "2bd84faa4fa3b0055bab40c78fe3c8b3d08c59f81347ddb23b3d6b09107fc38c"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-14",
+        "retrievedAt": null,
+        "sha256": "afa81a976cb5a587672b97e470fbda222e2fa4081711eb5b7d95fedfa303d9c4"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-15",
+        "retrievedAt": null,
+        "sha256": "a68fc7145b87cff2f0baa130863845ee36bed6d633b12537370a990335309238"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-16",
+        "retrievedAt": null,
+        "sha256": "07ee1a289e61ad23a0959b61c692c1df92e896560b18120b49c9510bacc15725"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-17",
+        "retrievedAt": null,
+        "sha256": "3e666e26f0932c7fde7261a303f106c1f7cc6aaacdf200001d4aeceffd943b74"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-20",
+        "retrievedAt": null,
+        "sha256": "f34affba7b264d61efc1647075a139f8b4c5cb87f06ad863ba26180b0b8126c4"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-21",
+        "retrievedAt": null,
+        "sha256": "a6b4c74b8a4029b125d2d181d22380477855b8f8ae916087e69ee8247305bd33"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-22",
+        "retrievedAt": null,
+        "sha256": "cb87faa0714edc23e9ec50502f305b69a083b87633c4eb667aabb9529b9bb048"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-23",
+        "retrievedAt": null,
+        "sha256": "dfbdde83336ba3c06bb2253f57ea0c12cef93b491f680b8c3d1d332d84ad9a8b"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-24",
+        "retrievedAt": null,
+        "sha256": "6cc9f9b727b724ca5edc6469bcf77bd17981716b948a71a41be560a473cff63c"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-27",
+        "retrievedAt": null,
+        "sha256": "b007e6b9f4e7bc461e7ba6858881bbcaf97ef78332221e09e9c75c6dabc497cb"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-28",
+        "retrievedAt": null,
+        "sha256": "d3f08a228d389a0e481458828a8fe6626786ef9fc85f23ba6dfd8d266ee4cb09"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-29",
+        "retrievedAt": null,
+        "sha256": "e361be661d1d1705de2b4bdfa90c95bf648f83ee0f6760f530cfac075dad66a3"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-30",
+        "retrievedAt": null,
+        "sha256": "0158fc40032074c40e31d2e529a8cc1a985e0d33adecc57370a187741085bb16"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-07-31",
+        "retrievedAt": null,
+        "sha256": "4114a6ab6c3a55c072169f3550d7ca39506423f79ebd324d9822efc59bf1cff9"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-03",
+        "retrievedAt": null,
+        "sha256": "6357c18e5fb3be548d170bceca105335ea11316154303b51e671402adde1668c"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-04",
+        "retrievedAt": null,
+        "sha256": "4604b9fabc88cb229d230497d8c15364514ba5cd992c14e8e51d3a504c2ff3fb"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-05",
+        "retrievedAt": null,
+        "sha256": "eeb58ed9bdcec88308f031fb7852964cc9680fb8c8066310bc7540cf8826e759"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-06",
+        "retrievedAt": null,
+        "sha256": "47e0017f2b318c41d8055d9475ce5c1d45a7e70adbe7555db779957a92d73d1d"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-07",
+        "retrievedAt": null,
+        "sha256": "dc3bbd5851e9d7f2f340eb7d367d5f4a660835a018077a2cc80418bcc7590cff"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-10",
+        "retrievedAt": null,
+        "sha256": "0264b17cb257d536d4f3cf729a83c20aedd04f1a1532876a035036b69780158e"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-11",
+        "retrievedAt": null,
+        "sha256": "9e4d1240f1878059b8f47d70f4182f5bd51539691321018a29a18176e46e8989"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-12",
+        "retrievedAt": null,
+        "sha256": "5873ce0372743f6a1dbc8bd625aed0991bbf2a33a1c37b44689b1d6490a990ec"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-13",
+        "retrievedAt": null,
+        "sha256": "4b4417fbdb6e20df542d514c73a753e5420da27ac66fcb868259ca60ec1eecae"
+      },
+      {
+        "provider": "nasdaq",
+        "url": "https://api.nasdaq.com/api/calendar/earnings?date=2026-08-14",
+        "retrievedAt": null,
+        "sha256": "e867d17d4c88b1fca5b8f48214ca1433cc63159024919300564ec56542d4165a"
+      }
+    ],
+    "screener": {
+      "provider": "nasdaq",
+      "url": "https://api.nasdaq.com/api/screener/stocks?tableonly=true&limit=10000&offset=0&download=true",
+      "retrievedAt": null,
+      "sha256": "50c0e31b6b3270441717f5ed54fd65ff291248a6915b05fb003b5f68302d8c9c"
+    },
+    "secTickerMap": {
+      "provider": "sec",
+      "url": "https://www.sec.gov/files/company_tickers.json",
+      "retrievedAt": null,
+      "sha256": "6dd9c4363c5a95d43f4d8e8f8279f9ae6538d10d295bbdeebe5a433ec954bf6d"
+    }
+  },
+  "limitations": [
+    "Current market-cap and sector labels are reconstructed, not point-in-time membership.",
+    "Retrospective forecasts from a current model are pipeline-development evidence, never capital-authorizing validation.",
+    "The pharma-biotech profile is an overlapping subset of health care.",
+    "Foreign-domiciled US listings are included when Nasdaq and SEC identifiers are available; listing, tax, currency, and option eligibility must be checked separately.",
+    "V1 raw snapshots retain source URL and response hash but not reliable per-response retrieval timestamps.",
+    "Nasdaq consensus fields were retrieved after the event and are retained only in the private audit ledger; they are excluded from forecast packets.",
+    "Sampling used post-event reconstructed market capitalization; capitalization is omitted from forecast packets and subgroup results remain selection-biased near size thresholds.",
+    "The completed anchor close is an outcome boundary, not an executable fill; retrospective trading returns are deliberately not computed.",
+    "Version-one stratification selects the earliest eligible rows within each reconstructed capitalization bucket, overweighting the earlier part of the event window."
+  ],
+  "privateCaseLedgerSha256": "09324fdb005f70b66a5d0b6dcaec720b6d81150db4a5e1c11973b4c962331e9e",
+  "remediation": {
+    "appliedAt": "2026-08-14T23:53:47.945Z",
+    "removedSameDayOrLaterObservations": 896,
+    "decisionCutoff": "last regular-session close at the outcome anchor"
+  },
+  "sourceRetrievalTimestampQuality": "Per-response timestamps were not retained in v1; planned timestamps were removed. Future ingests record completion time.",
+  "outcomeObservationDate": "2026-08-14",
+  "matureOutcomeCounts": {
+    "oneDay": 326,
+    "tenDay": 241,
+    "fortyDay": 1
+  }
+}

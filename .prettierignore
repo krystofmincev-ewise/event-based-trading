@@ -1,5 +1,9 @@
 node_modules
+research/llm-event-edge/data/raw
+research/llm-event-edge/data/private
+research/llm-event-edge/data/forecasts
+research/llm-event-edge/hypotheses/user-seed-cases.json
+research/llm-event-edge/hypotheses/seed-audit*.json
 dist
 coverage
 package-lock.json
-

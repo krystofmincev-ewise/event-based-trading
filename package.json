@@ -12,12 +12,24 @@
     "dev": "node scripts/dev.mjs",
     "dev:api": "npm run dev -w @event-lab/api",
     "dev:web": "npm run dev -w @event-lab/web",
+    "edge:ingest": "tsx research/llm-event-edge/src/ingest.ts",
+    "edge:packets": "tsx research/llm-event-edge/src/buildPackets.ts",
+    "edge:audit-seeds": "tsx research/llm-event-edge/src/auditSeedCases.ts",
+    "edge:refresh-outcomes": "tsx research/llm-event-edge/src/refreshOutcomes.ts",
+    "edge:sanitize-ledger": "tsx research/llm-event-edge/src/sanitizeLedger.ts && tsx research/llm-event-edge/src/buildPackets.ts",
+    "edge:forecast": "tsx research/llm-event-edge/src/runForecastGraph.ts",
+    "edge:format": "prettier --write research/llm-event-edge --ignore-path .prettierignore",
+    "edge:format:check": "prettier --check research/llm-event-edge --ignore-path .prettierignore",
+    "edge:lint": "eslint research/llm-event-edge --max-warnings 0",
+    "edge:score": "tsx research/llm-event-edge/src/score.ts",
+    "edge:test": "vitest run --config research/llm-event-edge/vitest.config.ts",
+    "edge:typecheck": "tsc -p research/llm-event-edge/tsconfig.json --noEmit",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint": "eslint . --max-warnings 0",
-    "test": "vitest run",
+    "test": "vitest run && npm run edge:test",
     "test:watch": "vitest",
-    "typecheck": "npm run typecheck --workspaces --if-present"
+    "typecheck": "npm run typecheck --workspaces --if-present && npm run edge:typecheck"
   },
   "engines": {
     "node": ">=22.12"

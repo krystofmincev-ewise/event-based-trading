@@ -1,0 +1,15 @@
+{
+  "studyId": "earnings-2026-06-15_2026-08-14-v1",
+  "startDate": "2026-06-15",
+  "endDate": "2026-08-14",
+  "outcomeObservationDate": "2026-08-14",
+  "targetCasesPerSector": 30,
+  "minimumMarketCapUsd": 1200000000,
+  "maximumCandidatesPerSector": 90,
+  "benchmarkSymbol": "SPY",
+  "model": "gpt-5.6-sol",
+  "reasoningEffort": "high",
+  "analystReplicates": 2,
+  "forecastBatchSize": 30,
+  "maximumConcurrentModelCalls": 2
+}

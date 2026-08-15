@@ -120,6 +120,7 @@ apps/api                 local Node HTTP API and runtime boundary
 packages/simulation      dependency-free typed domain/math library
 docs/METHODOLOGY.md      formulas, conventions, sources, limitations
 docs/EMPIRICAL_CONTEXT.md data provenance, mappings, evidence tiers, APIs
+research/llm-event-edge  leakage-aware LLM event-edge evaluation harness
 ```
 
 API routes:
@@ -145,6 +146,16 @@ npm test
 npm run build
 npm audit --audit-level=low
 ```
+
+## LLM event-edge pilot
+
+The separate [LLM event-edge research harness](research/llm-event-edge/README.md)
+builds outcome-blinded earnings packets, runs a provenance-locked two-analyst
+forecast graph, and scores calibration without presenting retrospective close
+anchors as executable fills. Read the
+[strategy interpretation](research/llm-event-edge/STRATEGY_RECOMMENDATIONS.md)
+and [completed pilot report](research/llm-event-edge/data/PILOT_RESULTS.md). The
+current live allocation remains zero until the prospective gates pass.
 
 ## Important limitations
 
