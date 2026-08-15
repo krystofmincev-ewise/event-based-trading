@@ -41,12 +41,16 @@ support trading next-close direction:
   software or life-science benchmark performance did not transfer to this
   sparse pre-earnings stock-direction task.
 
-The one exploratory positive result was **terminal move magnitude**, not
-direction. For a 5% absolute move over ten sessions, the pooled Brier score was
-0.231 across 241 mature cases. Improvement was 0.019 versus a fixed 50%
-forecast (95% bootstrap interval 0.002–0.036) and 0.044 versus the no-lookahead
-settled-history base rate (0.008–0.082). Energy was the strongest small subgroup
-at 22 cases, but that is far too small for a sector claim.
+The one result worth prioritizing as a new hypothesis was **terminal move
+magnitude**, not direction. For a 5% absolute move over ten sessions, the pooled
+Brier score was 0.231 across 241 mature cases. Improvement was 0.019 versus a
+fixed 50% forecast (95% event-level bootstrap interval 0.002–0.036) and 0.044
+versus the no-lookahead settled-history base rate (0.008–0.082). These intervals
+are naïve: they do not adjust for overlapping returns, date clusters, or the
+search across seven outcomes and pooled/sector rows. This is a
+hypothesis-prioritization signal, not confirmatory evidence. Energy was the
+strongest small subgroup at 22 cases, but that is far too small for a sector
+claim.
 
 This magnitude result may simply reflect the realized-volatility fields already
 present in the packet. It must beat a locked volatility-only model and the
