@@ -16,6 +16,10 @@ Event Edge Lab is a local Monte Carlo laboratory for studying position sizing ac
 
 A hit rate does **not** need to exceed 50%. The correct long-side edge test is estimated hit probability versus `(purchase price + costs) / settlement payout`. A 45% hit estimate can be positive-EV when all-in break-even is 40%. “Doing the opposite” requires a separately observed opposite-side quote, payout, costs, and probability; it is not a free transformation.
 
+## Animated slide app
+
+[Effectively — The size of an edge](docs/slide-app/README.md) is a portable HTML slide app with ten animated chapters, narration, source links, and interactive experiments. See its README to open chapter 10, **The portfolio has the final word**. The app includes no video or audio files.
+
 ## Quick start
 
 Requires Node.js 22.12 or newer and npm.

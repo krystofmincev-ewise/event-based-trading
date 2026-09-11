@@ -6,3 +6,15 @@ coverage/
 *.tsbuildinfo
 .env*
 !.env.example
+
+# Local presentation production, recordings, and rendered exports.
+# The portable HTML slide app is published separately in docs/slide-app/.
+/output/
+/presentations/
+*.mp4
+*.mov
+*.webm
+*.m4v
+*.mp3
+*.wav
+*.m4a
